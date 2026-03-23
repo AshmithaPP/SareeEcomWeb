@@ -1,0 +1,30 @@
+.sectionContainer {
+    max-width: 1302px;
+    margin: 60px auto;
+    /* Centered, top margin for separation from Hero */
+    padding: 0 15px;
+}
+
+.titleHeader {
+    text-align: center;
+    margin-bottom: 40px;
+    font-family: 'Jost', sans-serif;
+    color: #333333;
+}
+
+/* Adjust grid gutter/gaps if standard bootstrap g-4 doesn't fit exact coords */
+.customGutter>[class*='col-'] {
+    padding-right: 10px;
+    padding-left: 10px;
+}
+
+.customGutter {
+    margin-right: -10px;
+    margin-left: -10px;
+}
+
+@media (max-width: 1200px) {
+    .sectionContainer {
+        max-width: 100%;
+    }
+}
