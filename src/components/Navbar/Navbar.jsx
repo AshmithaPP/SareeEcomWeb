@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { NavLink } from 'react-router-dom';
 import './navbar.css';
 import Logo from '../../assets/images/Logo-SareeEcom.png';
 import SearchIcon from '../../assets/icons/search-line.png';
@@ -25,12 +26,12 @@ const Navbar = () => {
                 {/* Desktop Nav */}
                 <div className="nav-inner-content">
                     <div className={`nav-links${menuOpen ? ' show' : ''}`}>
-                        <a href="#" className="nav-link active">Home</a>
-                        <a href="#" className="nav-link">Shop Sarees</a>
-                        <a href="#" className="nav-link">Occasions</a>
-                        <a href="#" className="nav-link">Heritage</a>
-                        <a href="#" className="nav-link">Blog</a>
-                        <a href="#" className="nav-link">Contact Us</a>
+                        <NavLink to="/" className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`} end>Home</NavLink>
+                        <NavLink to="/products" className={({ isActive }) => `nav-link${isActive ? ' active' : ''}`}>Shop Sarees</NavLink>
+                        <NavLink to="/occasions" className="nav-link">Occasions</NavLink>
+                        <NavLink to="/heritage" className="nav-link">Heritage</NavLink>
+                        <NavLink to="/blog" className="nav-link">Blog</NavLink>
+                        <NavLink to="/contact" className="nav-link">Contact Us</NavLink>
                     </div>
 
                     <div className="nav-icons">

@@ -1,0 +1,140 @@
+.product-card {
+    width: 283px;
+    height: 397px;
+    border-radius: 8px;
+    border: 1px solid #E5E7EB;
+    background: #FFFFFF;
+    overflow: hidden;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.product-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.05);
+}
+
+/* Image Section */
+.product-image-container {
+    width: 100%;
+    height: 320px;
+    position: relative;
+    background-color: #F3F4F6; /* Placeholder color bg */
+}
+
+.product-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* Best Seller Tag */
+.best-seller-tag {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    width: 101px;
+    height: 32px;
+    background: #FFFFFF;
+    border-radius: 9999px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0px 4px 6px 0px rgba(0, 0, 0, 0.1), 0px 2px 4px 0px rgba(0, 0, 0, 0.1);
+}
+
+.best-seller-text {
+    font-family: 'Jost', sans-serif;
+    font-weight: 500;
+    font-size: 12px;
+    line-height: 16px;
+    letter-spacing: -0.5px;
+    color: #00790D;
+    text-transform: capitalize;
+}
+
+/* Wishlist Button */
+.wishlist-btn {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 32px;
+    height: 32px;
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid #E5E7EB;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.wishlist-btn:hover {
+    background: #FFFFFF;
+}
+
+.wishlist-icon {
+    width: 16px;
+    height: 16px; /* Icon dimension spec height 24 width 16 from prompt but square fits better usually. I'll stick to 16x16 standard fit or follow exactly if 16x24 fits inside circle. */
+    object-fit: contain;
+}
+
+/* Content Section */
+.product-info {
+    padding: 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    flex-grow: 1;
+}
+
+.product-name {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: -0.5px;
+    color: #111827;
+    margin: 0;
+    min-height: 40px; /* Space for 2 lines height */
+}
+
+/* Price Row */
+.price-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: auto; /* Push to bottom of content area */
+}
+
+.current-price {
+    font-family: 'Inter', sans-serif;
+    font-weight: 700;
+    font-size: 18px;
+    line-height: 28px;
+    letter-spacing: -0.5px;
+    color: #111827;
+}
+
+.original-price {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: -0.5px;
+    text-decoration: line-through;
+    color: #6B7280;
+}
+
+.discount-tag {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: -0.5px;
+    color: #16A34A;
+}

@@ -1,0 +1,77 @@
+.products-grid-placeholder {
+    background: #FAFBFC;
+    border: 1px dashed #E5E7EB;
+    border-radius: 8px;
+    height: 983px; /* Match sidebar for alignment placeholder */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    color: #6B7280;
+}
+
+
+.products-title {
+    font-family: 'Jost', sans-serif;
+    font-weight: 700;
+    font-size: 24px;
+    line-height: 32px;
+    letter-spacing: -0.5px;
+    color: #111827;
+    margin: 0;
+}
+
+.products-meta-controls {
+    gap: 20px; /* Space between count and dropdown */
+}
+
+.products-count {
+    font-family: 'Jost', sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: -0.5px;
+    color: #4B5563;
+}
+
+.sort-btn {
+    width: 167px;
+    height: 37px;
+    background: #FFFFFF;
+    border: 1px solid #D1D5DB;
+    border-radius: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 12px;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+}
+
+.sort-btn:hover {
+    border-color: #9CA3AF;
+}
+
+.sort-text {
+    font-family: 'Inter', sans-serif;
+    font-weight: 400;
+    font-size: 14px;
+    color: #000000;
+    line-height: 100%;
+}
+
+.sort-arrow {
+    flex-shrink: 0;
+}
+
+.placeholder-title {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 8px;
+    color: #111827;
+}
+
+.placeholder-text {
+    font-size: 14px;
+    color: #4B5563;
+}
