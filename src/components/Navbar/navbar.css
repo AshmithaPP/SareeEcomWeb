@@ -1,6 +1,28 @@
 /* ============================================================
    TopBar Styles
    ============================================================ */
+   /* ============================================================
+   Logo Coin-Flip Style Rotation (Text Readable) — Position Untouched
+   ============================================================ */
+@keyframes logoCoinSpin {
+    from { transform: perspective(400px) rotateY(0deg);   }
+    to   { transform: perspective(400px) rotateY(360deg); }
+}
+
+/* Sweet spot — feels premium and alive */
+.logo-img {
+    width: 125px;
+    height: 89.26px;
+    object-fit: contain;
+    display: block;
+    transform-origin: center center;
+    animation: logoCoinSpin 7s linear infinite;  /* 👈 changed from 10s → 7s */
+    backface-visibility: visible;
+}
+
+.logo-container:hover .logo-img {
+    animation-duration: 3.5s;  /* 👈 hover also updated proportionally */
+}
 .topbar {
     background-color: #A42829;
     height: 60px;

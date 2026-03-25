@@ -1,0 +1,105 @@
+.product-image-container {
+    width: 100%;
+    max-width: 664px;
+}
+
+.main-image-wrapper {
+    width: 100%;
+    height: 652px;
+    background-color: #F8F9FA;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.placeholder-image {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #6c757d;
+    font-family: 'Jost', sans-serif;
+    font-size: 1.2rem;
+    background-color: #E9ECEF;
+}
+
+.wishlist-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    width: 44px;
+    height: 44px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.wishlist-btn:hover {
+    transform: scale(1.05);
+}
+
+.hover-zoom-btn {
+    position: absolute;
+    bottom: 20px;
+    right: 20px;
+    font-family: 'Jost', sans-serif;
+    font-weight: 500;
+    font-size: 14px;
+    color: #111827;
+    border: none;
+    transition: all 0.3s ease;
+}
+
+.hover-zoom-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 6px rgba(0,0,0,0.1) !important;
+}
+
+.zoom-text {
+    line-height: 1;
+}
+
+/* Thumbnail Row Styling */
+.thumbnail-row {
+    width: 100%;
+}
+
+.thumbnail-wrapper {
+    width: 123.18px;
+    height: 96px;
+    border-radius: 8px;
+    background: #FFFFFF;
+    border: 2px solid transparent; /* default transparent border */
+    cursor: pointer;
+    overflow: hidden;
+    transition: all 0.2s ease;
+}
+
+.thumbnail-placeholder {
+    width: 100%;
+    height: 100%;
+    background-color: #E9ECEF;
+}
+
+/* Active State for Thumbnail - Based on user specific CSS */
+.thumbnail-wrapper.active {
+    border: 2px solid #8B2635;
+    box-shadow: 0px 4px 4px 0px #00000040;
+}
+
+.thumbnail-wrapper:hover {
+    border-color: #8B2635;
+    opacity: 0.9;
+}
+
+/* Responsive constraints */
+@media (max-width: 768px) {
+    .main-image-wrapper {
+        height: 400px; /* shorter on mobile */
+    }
+    
+    .thumbnail-wrapper {
+        width: 18%; /* Flexible width for small screens */
+        height: 70px;
+    }
+}

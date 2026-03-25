@@ -104,37 +104,51 @@
 }
 
 /* Price Row */
-.price-row {
+.product-card .price-row {
+    width: 250.65625px;
+    height: 28px;
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 8px; /* space between items to roughly match left placements (76.95px, 139.42px) */
     margin-top: auto; /* Push to bottom of content area */
 }
 
-.current-price {
+.product-card .current-price {
     font-family: 'Inter', sans-serif;
     font-weight: 700;
+    font-style: normal;
     font-size: 18px;
     line-height: 28px;
     letter-spacing: -0.5px;
     color: #111827;
+    height: 28px;
+    display: flex;
+    align-items: center;
 }
 
-.original-price {
+.product-card .original-price {
     font-family: 'Inter', sans-serif;
     font-weight: 400;
+    font-style: normal;
     font-size: 14px;
     line-height: 20px;
     letter-spacing: -0.5px;
     text-decoration: line-through;
     color: #6B7280;
+    height: 20px;
+    display: flex;
+    align-items: center;
 }
 
-.discount-tag {
+.product-card .discount-tag {
     font-family: 'Inter', sans-serif;
     font-weight: 500;
+    font-style: normal;
     font-size: 14px;
     line-height: 20px;
     letter-spacing: -0.5px;
     color: #16A34A;
+    height: 20px;
+    display: flex;
+    align-items: center;
 }

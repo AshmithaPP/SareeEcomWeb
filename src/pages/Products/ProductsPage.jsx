@@ -1,8 +1,9 @@
 import React from 'react';
-import Breadcrumbs from './components/Breadcrumbs/Breadcrumbs';
+import Breadcrumbs from '../../components/common/Breadcrumbs/Breadcrumbs';
 import FilterSidebar from './components/Filters/FilterSidebar';
 import ProductCard from './components/ProductCard/ProductCard';
 import Pagination from './components/Pagination/Pagination';
+import GiftSection from './components/GiftSection/GiftSection';
 import { mockProducts } from './data/products';
 import './productsPage.css';
 
@@ -34,15 +35,15 @@ const ProductsPage = () => {
                     <div className="row mb-4">
                         <div className="col-12 d-flex justify-content-between align-items-center">
                             <h2 className="products-title">Kanchipuram Silk Sarees</h2>
-                            
+
                             <div className="products-meta-controls d-flex align-items-center">
                                 <span className="products-count">Showing 1-12 of 156 products</span>
-                                
+
                                 <div className="sort-dropdown">
                                     <button className="sort-btn">
                                         <span className="sort-text">Featured</span>
                                         <svg width="21" height="21" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="sort-arrow">
-                                            <path d="M6 9L12 15L18 9" stroke="#000000" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                                            <path d="M6 9L12 15L18 9" stroke="#000000" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                                         </svg>
                                     </button>
                                 </div>
@@ -65,6 +66,13 @@ const ProductsPage = () => {
                             <Pagination />
                         </div>
                     </div>
+                </div>
+            </div>
+
+            {/* Gift Section */}
+            <div className="row mt-5">
+                <div className="col-12">
+                    <GiftSection />
                 </div>
             </div>
         </div>

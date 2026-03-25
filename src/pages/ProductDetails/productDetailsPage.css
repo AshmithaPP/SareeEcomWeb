@@ -1,0 +1,16 @@
+.product-details-page {
+    background-color: #FFFFFF;
+    padding-top: 40px;
+    padding-bottom: 80px;
+}
+
+@media (max-width: 991.98px) {
+    .product-details-page {
+        padding-top: 20px;
+        padding-bottom: 40px;
+    }
+    
+    .product-image-column {
+        margin-bottom: 2rem;
+    }
+}

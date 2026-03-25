@@ -1,0 +1,177 @@
+.gift-section-container {
+    width: 100%;
+    margin: 40px auto;
+}
+
+/* Badges Section */
+.badges-wrapper {
+    background: #FFFFFF;
+    border: 1px solid #E5E7EB;
+    border-radius: 11.78px;
+    box-shadow: 0px 1.47px 2.94px 0px rgba(0, 0, 0, 0.05);
+    padding: 35px 50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 159px;
+    max-width: 1319px;
+    margin: 0 auto;
+}
+
+.badges-inner {
+    max-width: 1248px;
+    margin: 0 auto;
+}
+
+.badge-item {
+    flex: 1 1 200px;
+    margin: 10px 0;
+}
+
+.badge-icon {
+    font-size: 35px; /* Matching roughly ~35x47 px */
+    color: #D4AF37; /* Yellowish gold */
+    display: block;
+}
+
+.badge-title {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 20.61px;
+    line-height: 29.44px;
+    letter-spacing: -0.74px;
+    color: #111827;
+    margin: 0;
+    text-align: center;
+}
+
+/* Gift Vouchers Wrapper */
+.gift-vouchers-wrapper {
+    background: linear-gradient(90deg, #800020 0%, #7F1D1D 100%);
+    border-radius: 22.59px;
+    border: 1px solid #E5E7EB;
+    padding: 45px 45px;
+    max-width: 1265px;
+    height: auto;
+    min-height: 649px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.gift-title {
+    font-family: 'Jost', sans-serif;
+    font-weight: 700;
+    font-size: 42.35px;
+    line-height: 50.83px;
+    letter-spacing: -0.71px;
+    color: #FFFFFF;
+    margin-bottom: 9px;
+}
+
+.gift-subtitle {
+    font-family: 'Jost', sans-serif;
+    font-weight: 400;
+    font-size: 25.41px;
+    line-height: 39.53px;
+    letter-spacing: -0.71px;
+    color: #FFFFFF;
+    margin-bottom: 0px;
+}
+
+.vouchers-grid {
+    margin-top: 25px;
+    max-width: 1174px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.voucher-card {
+    background: #FFFFFF;
+    border: 1px solid #E5E7EB;
+    border-radius: 11.29px;
+    box-shadow: 0px 5.65px 8.47px 0px rgba(0, 0, 0, 0.1), 0px 14.12px 21.18px 0px rgba(0, 0, 0, 0.1);
+    padding: 34px 34px;
+    text-align: center;
+    height: 288px;
+    width: 100%;
+    max-width: 369px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: center;
+    margin: 0 auto;
+}
+
+.voucher-price {
+    font-family: 'Jost', sans-serif;
+    font-weight: 700;
+    font-size: 33.88px;
+    line-height: 33.88px;
+    letter-spacing: -0.71px;
+    color: #800020;
+    margin-bottom: 10px;
+}
+
+.voucher-label {
+    font-family: 'Jost', sans-serif;
+    font-weight: 400;
+    font-size: 19.77px;
+    line-height: 19.77px;
+    letter-spacing: -0.71px;
+    color: #4B5563;
+    margin-bottom: 25px;
+}
+
+.voucher-button {
+    background: linear-gradient(90deg, #D4AF37 0%, #FACC15 100%);
+    border-radius: 11.29px;
+    border: 1px solid #E5E7EB;
+    font-family: 'Jost', sans-serif;
+    font-weight: 700;
+    font-size: 22.59px;
+    line-height: 33.88px;
+    letter-spacing: -0.71px;
+    color: #FFFFFF;
+    padding: 0;
+    height: 113px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 0;
+    cursor: pointer;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    width: 100%;
+}
+
+.voucher-button:hover {
+    transform: translateY(-2px);
+    box-shadow: 0px 4px 12px rgba(212, 175, 55, 0.4);
+}
+
+.shop-gift-cards-btn {
+    background: #FFFFFF;
+    color: #800020;
+    font-family: 'Jost', sans-serif;
+    font-weight: 700;
+    font-size: 20px;
+    padding: 12px 35px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+    margin-top: 20px;
+}
+
+.shop-gift-cards-btn:hover {
+    background: #f8f9fa;
+    transform: translateY(-2px);
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+/* Handloom badge specific color adjusting, etc. */
+.bi-balloon-heart-fill {
+    transform: scale(1.1);
+}
