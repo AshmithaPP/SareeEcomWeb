@@ -1,10 +1,10 @@
 import React from 'react';
 import './productInfo.css';
-import checklistIcon from '../../../../assets/icons/checklisticon.png';
-import timerIcon from '../../../../assets/icons/timer.png';
-import buyNowIcon from '../../../../assets/icons/buynow.png';
-import addToCartIcon from '../../../../assets/icons/addtocart.png';
-import whatsappIcon from '../../../../assets/icons/whatsapp.png';
+import checklistIcon from '../../../../assets/icons/ui/checklisticon.png';
+import timerIcon from '../../../../assets/icons/ui/timer.png';
+import buyNowIcon from '../../../../assets/icons/ui/buynow.png';
+import addToCartIcon from '../../../../assets/icons/ui/addtocart.png';
+import whatsappIcon from '../../../../assets/icons/social/whatsapp.png';
 
 const ProductInfo = () => {
     return (

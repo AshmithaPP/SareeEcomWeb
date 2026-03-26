@@ -7,7 +7,7 @@ import WhyChoose from './components/WhyChoose/WhyChoose';
 import ProductSpecifications from './components/ProductSpecifications/ProductSpecifications';
 import AuthenticitySection from './components/AuthenticitySection/AuthenticitySection';
 import CustomerReviews from './components/CustomerReviews/CustomerReviews';
-import silkMarkIcon from '../../assets/icons/silkmarkicon.png';
+import silkMarkIcon from '../../assets/icons/ui/silkmarkicon.png';
 import './productDetailsPage.css';
 
 const ProductDetailsPage = () => {

@@ -4,10 +4,10 @@ import ProductCard from '../../../../components/common/ProductCard';
 import ArrowButton from '../../../../components/common/ArrowButton';
 
 // Import images
-import collection1 from '../../../../assets/images/collection1.png';
-import collection2 from '../../../../assets/images/collection2.png';
-import collection3 from '../../../../assets/images/collection3.png';
-import collection4 from '../../../../assets/images/collection4.png';
+import collection1 from '../../../../assets/images/silk/collection1.png';
+import collection2 from '../../../../assets/images/silk/collection2.png';
+import collection3 from '../../../../assets/images/silk/collection3.png';
+import collection4 from '../../../../assets/images/silk/collection4.png';
 
 const ShopByCollections = ({ 
     title = "Shop by Collections", 

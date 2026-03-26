@@ -3,9 +3,9 @@ import CategoryCard from './CategoryCard';
 import styles from './CategoriesSection.module.css';
 
 // Import local assets (ensure paths are correct)
-import bridalSaree from '../../../../assets/images/bridal_saree.png';
-import traditionalSilk from '../../../../assets/images/traditional_silk.png';
-import lightweightSilk from '../../../../assets/images/lightweight_silk.png';
+import bridalSaree from '../../../../assets/images/bridal/bridal_saree.png';
+import traditionalSilk from '../../../../assets/images/bridal/traditional_silk.png';
+import lightweightSilk from '../../../../assets/images/bridal/lightweight_silk.png';
 
 const CategoriesSection = () => {
     const categories = [

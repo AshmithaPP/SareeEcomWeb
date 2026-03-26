@@ -1,12 +1,16 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styles from './WishlistButton.module.css';
+import { useWishlist } from '../../context/WishlistContext';
 
-const WishlistButton = () => {
-    const [isLiked, setIsLiked] = useState(false);
+const WishlistButton = ({ product }) => {
+    const { toggleWishlist, isInWishlist } = useWishlist();
+    const isLiked = isInWishlist(product?.id);
 
     const toggleLike = (e) => {
         e.stopPropagation(); // Prevent card clicks if any
-        setIsLiked(!isLiked);
+        if (product) {
+            toggleWishlist(product);
+        }
     };
 
     return (

@@ -1,13 +1,15 @@
 import React, { useState } from 'react';
 import { NavLink } from 'react-router-dom';
 import './navbar.css';
-import Logo from '../../assets/images/Logo-SareeEcom.png';
-import SearchIcon from '../../assets/icons/search-line.png';
-import UserIcon from '../../assets/icons/contact.png';
-import CartIcon from '../../assets/icons/shopping-cart.png';
+import Logo from '../../assets/images/logo/Logo-SareeEcom.png';
+import SearchIcon from '../../assets/icons/ui/search-line.png';
+import UserIcon from '../../assets/icons/ui/contact.png';
+import CartIcon from '../../assets/icons/ui/shopping-cart.png';
+import { useWishlist } from '../../context/WishlistContext';
 
 const Navbar = () => {
     const [menuOpen, setMenuOpen] = useState(false);
+    const { wishlistItems } = useWishlist();
 
     const toggleMenu = () => setMenuOpen(prev => !prev);
 
@@ -41,6 +43,12 @@ const Navbar = () => {
                         <div className="nav-icon">
                             <img src={UserIcon} alt="User" />
                         </div>
+                        <NavLink to="/wishlist" className="nav-icon wishlist-nav-icon">
+                            <i className="bi bi-heart"></i>
+                            {wishlistItems.length > 0 && (
+                                <span className="wishlist-badge">{wishlistItems.length}</span>
+                            )}
+                        </NavLink>
                         <div className="nav-icon">
                             <img src={CartIcon} alt="Cart" />
                         </div>

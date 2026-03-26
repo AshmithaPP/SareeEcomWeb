@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import './newsletterSection.css';
-import newsletterImg from '../../../../assets/images/NewsSection.png'; // Verified file name
+import newsletterImg from '../../../../assets/images/silk/NewsSection.png'; // Verified file name
 
 const NewsletterSection = () => {
   const [email, setEmail] = useState('');

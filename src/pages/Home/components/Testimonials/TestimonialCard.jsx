@@ -1,7 +1,7 @@
 import React from 'react';
 import './testimonials.css';
-import starsIcon from '../../../../assets/icons/stars.png';
-import quotesIcon from '../../../../assets/icons/quotesIcon.png';
+import starsIcon from '../../../../assets/icons/ui/stars.png';
+import quotesIcon from '../../../../assets/icons/ui/quotesIcon.png';
 
 const TestimonialCard = ({ testimonial, className }) => {
     const { image, name, role, review} = testimonial;

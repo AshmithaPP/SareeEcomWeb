@@ -1,7 +1,7 @@
 import React from 'react';
 import styles from './ProductCard.module.css';
 import WishlistButton from './WishlistButton';
-import cartIcon from '../../assets/icons/cartIcon.png';
+import cartIcon from '../../assets/icons/ui/cartIcon.png';
 
 
 const ProductCard = ({ product }) => {
@@ -24,7 +24,7 @@ const ProductCard = ({ product }) => {
                     )}
 
                     <div className={styles.wishlistContainer}>
-                        <WishlistButton />
+                        <WishlistButton product={product} />
                     </div>
 
                     <div className={styles.addToCartOverlay}>

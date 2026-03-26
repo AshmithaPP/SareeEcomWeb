@@ -1,6 +1,6 @@
 import React from 'react';
-import starIcon from '../../../assets/icons/stars.png';
-import halfStarIcon from '../../../assets/icons/halfstariocn.png';
+import starIcon from '../../../assets/icons/ui/stars.png';
+import halfStarIcon from '../../../assets/icons/ui/halfstariocn.png';
 import './ratingStars.css';
 
 const RatingStars = ({ rating = 5, size = 'small' }) => {

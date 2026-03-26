@@ -1,6 +1,6 @@
 import React from 'react';
 import RatingStars from '../RatingStars/RatingStars';
-import thumbsUpIcon from '../../../assets/icons/hand.png';
+import thumbsUpIcon from '../../../assets/icons/ui/hand.png';
 import './reviewCard.css';
 
 const ReviewCard = ({ review }) => {

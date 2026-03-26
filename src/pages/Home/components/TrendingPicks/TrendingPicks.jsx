@@ -3,14 +3,14 @@ import TrendingCard from './TrendingCard';
 import './trendingPicks.css';
 
 // Import images from assets
-import occasion1 from '../../../../assets/images/occasion1.png';
-import occasion2 from '../../../../assets/images/occasion2.png';
-import occasion3 from '../../../../assets/images/occasion3.png';
-import occasion4 from '../../../../assets/images/occasion4.png';
-import occasion5 from '../../../../assets/images/occasion5.png';
-import collection1 from '../../../../assets/images/collection1.png';
-import collection2 from '../../../../assets/images/collection2.png';
-import collection3 from '../../../../assets/images/collection3.png';
+import occasion1 from '../../../../assets/images/bridal/occasion1.png';
+import occasion2 from '../../../../assets/images/bridal/occasion2.png';
+import occasion3 from '../../../../assets/images/bridal/occasion3.png';
+import occasion4 from '../../../../assets/images/bridal/occasion4.png';
+import occasion5 from '../../../../assets/images/cotton/occasion5.png';
+import collection1 from '../../../../assets/images/silk/collection1.png';
+import collection2 from '../../../../assets/images/silk/collection2.png';
+import collection3 from '../../../../assets/images/silk/collection3.png';
 
 const trendingCardsData = [
   { id: 1, title: 'Pure Kanchipuram Silks', size: 'large', image: occasion1 },

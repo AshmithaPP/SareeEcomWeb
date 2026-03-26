@@ -3,11 +3,11 @@ import './shopByPrice.css';
 import PriceCard from './PriceCard';
 
 // Import images
-import everydaySaree from '../../../../assets/images/occasion1.png';
-import officeSaree from '../../../../assets/images/occasion2.png';
-import weddingSaree from '../../../../assets/images/bridal_saree.png';
-import festiveSaree from '../../../../assets/images/occasion4.png';
-import largeSaree from '../../../../assets/images/occasion1.png'; // Reusing large image for consistency
+import everydaySaree from '../../../../assets/images/bridal/occasion1.png';
+import officeSaree from '../../../../assets/images/bridal/occasion2.png';
+import weddingSaree from '../../../../assets/images/bridal/bridal_saree.png';
+import festiveSaree from '../../../../assets/images/bridal/occasion4.png';
+import largeSaree from '../../../../assets/images/bridal/occasion1.png'; // Reusing large image for consistency
 
 const priceData = [
     {

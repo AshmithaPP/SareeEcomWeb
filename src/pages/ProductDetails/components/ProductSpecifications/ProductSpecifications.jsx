@@ -4,11 +4,11 @@ import CareInstructions from '../CareInstructions/CareInstructions';
 import './productSpecifications.css';
 
 // Importing local icons correctly based on previous setup
-import dropIcon from '../../../../assets/icons/drop.png';
-import flowerIcon from '../../../../assets/icons/flower.png';
-import coolIcon from '../../../../assets/icons/cool.png';
-import chemicalIcon from '../../../../assets/icons/chemical.png';
-import handIcon from '../../../../assets/icons/hand.png';
+import dropIcon from '../../../../assets/icons/ui/drop.png';
+import flowerIcon from '../../../../assets/icons/ui/flower.png';
+import coolIcon from '../../../../assets/icons/ui/cool.png';
+import chemicalIcon from '../../../../assets/icons/ui/chemical.png';
+import handIcon from '../../../../assets/icons/ui/hand.png';
 
 const ProductSpecifications = () => {
     // Mock API Data for Specifications

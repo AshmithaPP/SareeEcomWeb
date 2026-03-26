@@ -1,11 +1,11 @@
 import React from 'react';
 import './Footer.css';
-import logo from '../../assets/images/Logo-SareeEcom.png';
+import logo from '../../assets/images/logo/Logo-SareeEcom.png';
 import paymentCards from '../../assets/images/footerCards.png';
-import fbIcon from '../../assets/icons/facebookicon.png';
-import instaIcon from '../../assets/icons/instaicon.png';
-import linkedinIcon from '../../assets/icons/linkedinicon.png';
-import twitterIcon from '../../assets/icons/twittericon.png';
+import fbIcon from '../../assets/icons/social/facebookicon.png';
+import instaIcon from '../../assets/icons/social/instaicon.png';
+import linkedinIcon from '../../assets/icons/social/linkedinicon.png';
+import twitterIcon from '../../assets/icons/social/twittericon.png';
 
 const Footer = () => {
     return (

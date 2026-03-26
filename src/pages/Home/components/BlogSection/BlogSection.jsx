@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import BlogCard from './BlogCard';
 import './blogSection.css';
-import Blog1 from '../../../../assets/images/Blog1.png';
-import Blog2 from '../../../../assets/images/Blog2.png';
-import Blog3 from '../../../../assets/images/Blog3.png';
+import Blog1 from '../../../../assets/images/silk/Blog1.png';
+import Blog2 from '../../../../assets/images/silk/Blog2.png';
+import Blog3 from '../../../../assets/images/silk/Blog3.png';
 
 const blogs = [
   {

@@ -1,11 +1,19 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 import './productCard.css';
-import heartIcon from '../../../../assets/icons/heartIcon.png'; 
+import heartIcon from '../../../../assets/icons/ui/heartIcon.png'; 
+import { useWishlist } from '../../../../context/WishlistContext';
 
 const ProductCard = ({ product }) => {
-    const { name, price, originalPrice, discount, image, isBestSeller } = product;
+    const { name, price, originalPrice, discount, image, isBestSeller, id } = product;
     const navigate = useNavigate();
+    const { toggleWishlist, isInWishlist } = useWishlist();
+    const isLiked = isInWishlist(id);
+
+    const handleWishlistToggle = (e) => {
+        e.stopPropagation();
+        toggleWishlist(product);
+    };
 
     return (
         <div className="product-card" onClick={() => navigate('/product-details')} style={{ cursor: 'pointer' }}>
@@ -21,8 +29,12 @@ const ProductCard = ({ product }) => {
                 )}
 
                 {/* Wishlist Button */}
-                <button className="wishlist-btn" aria-label="Add to wishlist">
-                    <img src={heartIcon} alt="Heart" className="wishlist-icon" />
+                <button 
+                    className={`wishlist-btn ${isLiked ? 'liked' : ''}`} 
+                    aria-label="Add to wishlist"
+                    onClick={handleWishlistToggle}
+                >
+                    <i className={`bi ${isLiked ? 'bi-heart-fill text-danger' : 'bi-heart'} wishlist-icon`}></i>
                 </button>
             </div>
 

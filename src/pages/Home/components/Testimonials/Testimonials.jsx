@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import TestimonialCard from './TestimonialCard';
 import ArrowButton from '../../../../components/common/ArrowButton';
 import './testimonials.css';
-import collection1 from '../../../../assets/images/testimonial.png';
+import collection1 from '../../../../assets/images/bridal/testimonial.png';
 
 const Testimonials = () => {
     const [activeIndex, setActiveIndex] = useState(0);

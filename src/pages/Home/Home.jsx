@@ -9,17 +9,17 @@ import Testimonials from './components/Testimonials/Testimonials';
 import BlogSection from './components/BlogSection/BlogSection';
 import NewsletterSection from './components/NewsletterSection/NewsletterSection';
 
-import cottonS1 from '../../assets/images/cottonS1.png';
-import cottonS2 from '../../assets/images/cottonS2.png';
-import cottonS3 from '../../assets/images/cottonS3.png';
-import cottonS4 from '../../assets/images/cottonS4.png';
+import cottonS1 from '../../assets/images/cotton/cottonS1.png';
+import cottonS2 from '../../assets/images/cotton/cottonS2.png';
+import cottonS3 from '../../assets/images/cotton/cottonS3.png';
+import cottonS4 from '../../assets/images/silk/cottonS4.png';
 
-import traditional_silk from '../../assets/images/traditional_silk.png';
-import bridal_saree from '../../assets/images/bridal_saree.png';
-import lightweight_silk from '../../assets/images/lightweight_silk.png';
+import traditional_silk from '../../assets/images/bridal/traditional_silk.png';
+import bridal_saree from '../../assets/images/bridal/bridal_saree.png';
+import lightweight_silk from '../../assets/images/bridal/lightweight_silk.png';
 
-import collection1 from '../../assets/images/collection1.png';
-import collection2 from '../../assets/images/collection2.png';
+import collection1 from '../../assets/images/silk/collection1.png';
+import collection2 from '../../assets/images/silk/collection2.png';
 
 const cottonProducts = [
   { id: 1, discount: "20%", discountBg: "#10B981", title: "Bridal Kanchipuram Silk Saree", discountedPrice: "₹24,999", originalPrice: "₹29,999", image: cottonS1 },

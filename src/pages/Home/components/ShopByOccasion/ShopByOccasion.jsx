@@ -3,11 +3,11 @@ import CircleCard from './CircleCard';
 import './shopByOccasion.css';
 
 // Import local images
-import bridalSaree from '../../../../assets/images/occasion1.png';
-import lightweightSilk from '../../../../assets/images/occasion2.png';
-import traditionalSilk from '../../../../assets/images/occasion3.png';
-import collection1 from '../../../../assets/images/occasion4.png';
-import collection2 from '../../../../assets/images/occasion5.png';
+import bridalSaree from '../../../../assets/images/bridal/occasion1.png';
+import lightweightSilk from '../../../../assets/images/bridal/occasion2.png';
+import traditionalSilk from '../../../../assets/images/bridal/occasion3.png';
+import collection1 from '../../../../assets/images/bridal/occasion4.png';
+import collection2 from '../../../../assets/images/cotton/occasion5.png';
 
 const occasionItems = [
   {
