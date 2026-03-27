@@ -13,12 +13,17 @@ const ProductsPage = () => {
         // Future API hook integration will go here
     };
 
+    const breadcrumbItems = [
+        { label: 'Home', path: '/' },
+        { label: 'Shop', path: '/products' }
+    ];
+
     return (
         <div className="products-page-container container-fluid px-md-5 py-4">
             {/* Breadcrumbs Row */}
             <div className="row mb-3">
                 <div className="col-12 d-flex justify-content-start">
-                    <Breadcrumbs />
+                    <Breadcrumbs items={breadcrumbItems} />
                 </div>
             </div>
 

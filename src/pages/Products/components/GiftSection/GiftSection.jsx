@@ -48,9 +48,9 @@ const GiftSection = () => {
         <div className="gift-section-container">
             {/* Top Guarantees Banner */}
             <div className="gift-section-card mb-5">
-                <div className="row g-0 justify-content-center align-items-center h-100 mt-5">
+                <div className="row g-0 justify-content-center align-items-center h-100 mt-3">
                     {features.map((feature) => (
-                        <div key={feature.id} className="col-6 col-md-3 h-100">
+                        <div key={feature.id} className="col-12 col-sm-6 col-md-3 h-100 mb-4 mb-md-0">
                             <div className="gift-feature-item">
                                 <div className="gift-feature-icon-wrapper">
                                     <span className="gift-feature-icon">

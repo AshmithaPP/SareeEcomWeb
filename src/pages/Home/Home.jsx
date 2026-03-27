@@ -22,25 +22,26 @@ import collection1 from '../../assets/images/silk/collection1.png';
 import collection2 from '../../assets/images/silk/collection2.png';
 
 const cottonProducts = [
-  { id: 1, discount: "20%", discountBg: "#10B981", title: "Bridal Kanchipuram Silk Saree", discountedPrice: "₹24,999", originalPrice: "₹29,999", image: cottonS1 },
-  { id: 2, discount: "30%", discountBg: "#E11D48", title: "Traditional Kanchipuram Silk Saree", discountedPrice: "₹24,999", originalPrice: "₹29,999", image: cottonS2 },
-  { id: 3, discount: "30%", discountBg: "#E11D48", title: "Light Weight Silk Saree", discountedPrice: "₹24,999", originalPrice: "₹29,999", image: cottonS3 },
-  { id: 4, discount: "50%", discountBg: "#F59E0B", title: "Traditional Kanchipuram Silk Saree", discountedPrice: "₹24,999", originalPrice: "₹29,999", image: cottonS4 }
+  { id: 'cotton_1', discount: "20%", discountBg: "#10B981", title: "Bridal Kanchipuram Silk Saree", discountedPrice: "₹24,999", originalPrice: "₹29,999", image: cottonS1 },
+  { id: 'cotton_2', discount: "30%", discountBg: "#E11D48", title: "Traditional Kanchipuram Silk Saree", discountedPrice: "₹24,999", originalPrice: "₹29,999", image: cottonS2 },
+  { id: 'cotton_3', discount: "30%", discountBg: "#E11D48", title: "Light Weight Silk Saree", discountedPrice: "₹24,999", originalPrice: "₹29,999", image: cottonS3 },
+  { id: 'cotton_4', discount: "50%", discountBg: "#F59E0B", title: "Traditional Kanchipuram Silk Saree", discountedPrice: "₹24,999", originalPrice: "₹29,999", image: cottonS4 }
 ];
 
 const newArrivalsProducts = [
-  { id: 1, discount: "20%", discountBg: "#10B981", title: "Bridal Kanchipuram Silk", discountedPrice: "₹24,999", originalPrice: "₹29,999", image: collection1 },
-  { id: 2, discount: "30%", discountBg: "#E11D48", title: "Traditional Silk Saree", discountedPrice: "₹21,999", originalPrice: "₹25,999", image: traditional_silk },
-  { id: 3, discount: "30%", discountBg: "#E11D48", title: "Light Weight Saree", discountedPrice: "₹18,999", originalPrice: "₹22,999", image: lightweight_silk },
-  { id: 4, discount: "50%", discountBg: "#F59E0B", title: "Rich Zari Silk Saree", discountedPrice: "₹27,999", originalPrice: "₹32,999", image: collection2 }
+  { id: 'arrival_1', discount: "20%", discountBg: "#10B981", title: "Bridal Kanchipuram Silk", discountedPrice: "₹24,999", originalPrice: "₹29,999", image: collection1 },
+  { id: 'arrival_2', discount: "30%", discountBg: "#E11D48", title: "Traditional Silk Saree", discountedPrice: "₹21,999", originalPrice: "₹25,999", image: traditional_silk },
+  { id: 'arrival_3', discount: "30%", discountBg: "#E11D48", title: "Light Weight Saree", discountedPrice: "₹18,999", originalPrice: "₹22,999", image: lightweight_silk },
+  { id: 'arrival_4', discount: "50%", discountBg: "#F59E0B", title: "Rich Zari Silk Saree", discountedPrice: "₹27,999", originalPrice: "₹32,999", image: collection2 }
 ];
 
 const bridalProducts = [
-  { id: 1, discount: "20%", discountBg: "#10B981", title: "Bridal Special Saree", discountedPrice: "₹34,999", originalPrice: "₹39,999", image: bridal_saree },
-  { id: 2, discount: "30%", discountBg: "#E11D48", title: "Vibrant Silk Saree", discountedPrice: "₹21,999", originalPrice: "₹25,999", image: traditional_silk },
-  { id: 3, discount: "30%", discountBg: "#E11D48", title: "Elegant Light Saree", discountedPrice: "₹18,999", originalPrice: "₹22,999", image: lightweight_silk },
-  { id: 4, discount: "50%", discountBg: "#F59E0B", title: "Bridal Special Saree", discountedPrice: "₹34,999", originalPrice: "₹39,999", image: bridal_saree }
+  { id: 'bridal_1', discount: "20%", discountBg: "#10B981", title: "Bridal Special Saree", discountedPrice: "₹34,999", originalPrice: "₹39,999", image: bridal_saree },
+  { id: 'bridal_2', discount: "30%", discountBg: "#E11D48", title: "Vibrant Silk Saree", discountedPrice: "₹21,999", originalPrice: "₹25,999", image: traditional_silk },
+  { id: 'bridal_3', discount: "30%", discountBg: "#E11D48", title: "Elegant Light Saree", discountedPrice: "₹18,999", originalPrice: "₹22,999", image: lightweight_silk },
+  { id: 'bridal_4', discount: "50%", discountBg: "#F59E0B", title: "Bridal Special Saree", discountedPrice: "₹34,999", originalPrice: "₹39,999", image: bridal_saree }
 ];
+
 
 const Home = () => {
     return (

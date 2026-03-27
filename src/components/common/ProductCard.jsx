@@ -2,10 +2,16 @@ import React from 'react';
 import styles from './ProductCard.module.css';
 import WishlistButton from './WishlistButton';
 import cartIcon from '../../assets/icons/ui/cartIcon.png';
-
+import { useCart } from '../../context/CartContext';
 
 const ProductCard = ({ product }) => {
     const { title, image, discount, discountedPrice, originalPrice } = product;
+    const { addToCart } = useCart();
+
+    const handleAddToCart = (e) => {
+        e.stopPropagation();
+        addToCart(product);
+    };
 
     return (
         <div className={styles.cardItem}>
@@ -27,7 +33,7 @@ const ProductCard = ({ product }) => {
                         <WishlistButton product={product} />
                     </div>
 
-                    <div className={styles.addToCartOverlay}>
+                    <div className={styles.addToCartOverlay} onClick={handleAddToCart}>
                         <img src={cartIcon} alt="Cart" className={styles.cartIconImage} />
                         <span className={styles.addToCartText}>Add to Cart</span>
                     </div>

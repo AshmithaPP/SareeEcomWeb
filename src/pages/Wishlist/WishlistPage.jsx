@@ -3,14 +3,15 @@ import Breadcrumbs from '../../components/common/Breadcrumbs/Breadcrumbs';
 import Sidebar from './components/Sidebar/Sidebar';
 import WishlistCard from './components/WishlistCard/WishlistCard';
 import { useWishlist } from '../../context/WishlistContext';
+import { useCart } from '../../context/CartContext';
 import './wishlistPage.css';
 
 const WishlistPage = () => {
     const { wishlistItems } = useWishlist();
+    const { addToCart } = useCart();
 
     const handleAddAllToCart = () => {
-        // Future cart integration
-        console.log("Add all products to cart:", wishlistItems);
+        wishlistItems.forEach(item => addToCart(item));
     };
 
     const breadcrumbItems = [

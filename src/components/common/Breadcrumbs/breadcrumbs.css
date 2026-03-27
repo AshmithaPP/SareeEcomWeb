@@ -1,8 +1,4 @@
 .breadcrumb-nav {
-    max-width: 297px; /* Specs say 297, but usually container takes flex */
-    height: 17px;
-    margin-top: 20px; /* Placeholder for 'top' positioning in grid */
-    margin-left: 20px; /* Placeholder for 'left' positioning in grid */
     opacity: 1;
 }
 

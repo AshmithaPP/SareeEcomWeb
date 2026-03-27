@@ -77,10 +77,36 @@
     background: #FFFFFF;
 }
 
-.wishlist-icon {
-    width: 16px;
-    height: 16px; /* Icon dimension spec height 24 width 16 from prompt but square fits better usually. I'll stick to 16x16 standard fit or follow exactly if 16x24 fits inside circle. */
+.wishlist-icon,
+.cart-icon {
+    width: 18px; /* Slightly larger base size for image icons */
+    height: 18px;
     object-fit: contain;
+    display: block;
+}
+
+/* Cart Button */
+.cart-btn {
+    position: absolute;
+    top: 52px; /* Positioned below wishlist button */
+    right: 12px;
+    width: 34px; /* Slightly larger for better icon fitting */
+    height: 34px;
+    border-radius: 9999px;
+    background: rgba(255, 255, 255, 0.95);
+    border: 1px solid #E5E7EB;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    transition: background 0.2s ease, transform 0.2s ease, box-shadow 0.2s ease;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+}
+
+.cart-btn:hover {
+    background: #FFFFFF;
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
 }
 
 /* Content Section */
@@ -151,4 +177,74 @@
     height: 20px;
     display: flex;
     align-items: center;
+}
+
+/* ====================================================
+   RESPONSIVE OVERRIDES
+   ==================================================== */
+
+/* Tablet — ≤ 992px */
+@media (max-width: 992px) {
+    .product-card {
+        width: 100%;
+        height: auto;
+    }
+
+    .product-image-container {
+        height: auto;
+        aspect-ratio: 1 / 1.13;
+    }
+
+    .product-card .price-row {
+        width: 100%;
+    }
+}
+
+/* Mobile — ≤ 576px */
+@media (max-width: 576px) {
+    .product-info {
+        padding: 10px;
+    }
+
+    .product-name {
+        font-size: 13px;
+        min-height: auto;
+        margin-bottom: 8px;
+    }
+
+    .product-card .current-price {
+        font-size: 16px;
+    }
+
+    .product-card .original-price,
+    .product-card .discount-tag {
+        font-size: 12px;
+    }
+
+    .best-seller-tag {
+        width: 80px;
+        height: 26px;
+        left: 8px;
+        top: 8px;
+    }
+
+    .best-seller-text {
+        font-size: 10px;
+    }
+
+    .wishlist-btn,
+    .cart-btn {
+        width: 36px;
+        height: 36px;
+        right: 10px;
+    }
+
+    .wishlist-btn { top: 10px; }
+    .cart-btn { top: 52px; }
+
+    .wishlist-icon,
+    .cart-icon {
+        width: 20px;
+        height: 20px;
+    }
 }

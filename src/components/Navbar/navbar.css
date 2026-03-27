@@ -1,12 +1,17 @@
 /* ============================================================
    TopBar Styles
    ============================================================ */
-   /* ============================================================
+/* ============================================================
    Logo Coin-Flip Style Rotation (Text Readable) — Position Untouched
    ============================================================ */
 @keyframes logoCoinSpin {
-    from { transform: perspective(400px) rotateY(0deg);   }
-    to   { transform: perspective(400px) rotateY(360deg); }
+    from {
+        transform: perspective(400px) rotateY(0deg);
+    }
+
+    to {
+        transform: perspective(400px) rotateY(360deg);
+    }
 }
 
 /* Sweet spot — feels premium and alive */
@@ -16,13 +21,16 @@
     object-fit: contain;
     display: block;
     transform-origin: center center;
-    animation: logoCoinSpin 7s linear infinite;  /* 👈 changed from 10s → 7s */
+    animation: logoCoinSpin 7s linear infinite;
+    /* 👈 changed from 10s → 7s */
     backface-visibility: visible;
 }
 
 .logo-container:hover .logo-img {
-    animation-duration: 3.5s;  /* 👈 hover also updated proportionally */
+    animation-duration: 3.5s;
+    /* 👈 hover also updated proportionally */
 }
+
 .topbar {
     background-color: #A42829;
     height: 60px;
@@ -73,6 +81,12 @@
     height: 43.75px;
 }
 
+.thick-heart {
+    font-size: 20px;
+    color: transparent;
+    -webkit-text-stroke: 1px #000;
+}
+
 .logo-container {
     position: absolute;
     left: 30px;
@@ -121,7 +135,8 @@
     position: absolute;
     left: 1050px;
     top: 10px;
-    width: 160px; /* Increased from 120px to accommodate extra icon */
+    width: 160px;
+    /* Increased from 120px to accommodate extra icon */
     height: 24px;
     display: flex;
     justify-content: space-between;
@@ -154,7 +169,8 @@
     position: relative;
 }
 
-.wishlist-badge {
+.wishlist-badge,
+.cart-badge {
     position: absolute;
     top: -5px;
     right: -8px;
@@ -171,13 +187,28 @@
     padding: 0 4px;
 }
 
+.cart-nav-icon {
+    position: relative;
+}
+
+/* Desktop visibility defaults */
+.mobile-only-icons {
+    display: none;
+}
+
+.desktop-only-icons {
+    display: flex;
+}
+
 /* Hamburger — hidden on desktop */
 .hamburger {
     display: none;
     flex-direction: column;
     justify-content: space-between;
-    width: 26px;
-    height: 20px;
+    width: 28px;
+    /* Slightly wider to match design better */
+    height: 18px;
+    /* Slightly shorter for a cleaner look */
     background: none;
     border: none;
     cursor: pointer;
@@ -191,23 +222,33 @@
 .hamburger-line {
     display: block;
     width: 100%;
-    height: 2.5px;
-    background-color: #2C2C2C;
-    border-radius: 2px;
-    transition: transform 0.3s ease, opacity 0.3s ease;
+    height: 2px;
+    /* Thinner lines as per image */
+    background-color: #000000;
+    border-radius: 0;
+    /* Sharp corners as per image */
+    transition: all 0.3s ease;
     transform-origin: center;
+}
+
+.hamburger-line:nth-child(2) {
+    width: 60%;
+    align-self: flex-end;
 }
 
 /* Animate hamburger → X when open */
 .hamburger-line.open:nth-child(1) {
-    transform: translateY(8.75px) rotate(45deg);
+    transform: translateY(8px) rotate(45deg);
+    width: 100%;
 }
+
 .hamburger-line.open:nth-child(2) {
     opacity: 0;
-    transform: scaleX(0);
 }
+
 .hamburger-line.open:nth-child(3) {
-    transform: translateY(-8.75px) rotate(-45deg);
+    transform: translateY(-8px) rotate(-45deg);
+    width: 100%;
 }
 
 
@@ -292,24 +333,41 @@
         max-width: 100%;
         display: flex;
         align-items: center;
+        justify-content: space-between;
     }
 
     .nav-inner-content {
         position: static;
-        width: 100%;
+        width: auto;
         height: 64px;
         display: flex;
         align-items: center;
         justify-content: flex-end;
-        gap: 16px;
+        gap: 0;
     }
 
-    /* Logo stays left, positioned relative to navbar-inner */
+    .desktop-only-icons {
+        display: none;
+    }
+
+    .mobile-only-icons {
+        display: flex;
+        width: 100%;
+        justify-content: flex-start;
+        padding: 30px 24px;
+        /* Increased top/bottom for breathing space */
+        gap: 16px;
+        /* Reduced gap between icons */
+        border-top: 1px solid #F2EDED;
+        margin-top: 10px;
+    }
+
+    /* Logo stays left */
     .logo-container {
-        position: absolute;
-        left: 20px;
-        top: 50%;
-        transform: translateY(-50%);
+        position: static;
+        transform: none;
+        display: flex;
+        align-items: center;
     }
 
     .logo-img {
@@ -317,11 +375,38 @@
         height: 55px;
     }
 
-    /* Hide desktop nav links by default */
-    .nav-links {
+    /* Body scroll lock */
+    body.no-scroll {
+        overflow: hidden;
+    }
+
+    /* Backdrop styling */
+    .menu-backdrop {
         display: none;
         position: fixed;
-        top: 104px; /* topbar(44px min) + navbar(64px) ≈ 108px; adjust as needed */
+        top: 108px; /* Start below header */
+        left: 0;
+        width: 100%;
+        height: calc(100vh - 108px);
+        background-color: rgba(0, 0, 0, 0.4);
+        backdrop-filter: blur(2px);
+        z-index: 1005;
+        opacity: 0;
+        transition: opacity 0.4s ease;
+        pointer-events: none;
+    }
+
+    .menu-backdrop.show {
+        display: block;
+        opacity: 1;
+        pointer-events: auto;
+    }
+
+    /* Mobile nav links — Premium Slide-Down transition */
+    .nav-links {
+        display: flex; /* Always flex to allow transitions */
+        position: fixed;
+        top: 108px;
         left: 0;
         right: 0;
         background-color: #FFFFFF;
@@ -330,44 +415,52 @@
         gap: 0;
         padding: 0;
         width: 100%;
-        box-shadow: 0 6px 16px rgba(0, 0, 0, 0.08);
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
         z-index: 1010;
-        font-size: 16px;
+
+        /* Initial hidden state */
+        transform: translateY(-20px);
+        opacity: 0;
+        visibility: hidden;
+        transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), 
+                    opacity 0.4s ease,
+                    visibility 0.4s;
     }
 
-    /* Show menu when toggled */
     .nav-links.show {
-        display: flex;
+        transform: translateY(0);
+        opacity: 1;
+        visibility: visible;
     }
 
     .nav-link {
         width: 100%;
-        padding: 14px 24px;
+        padding: 16px 24px;
         border-bottom: 1px solid #F2EDED;
         font-size: 16px;
+        font-weight: 500;
+        color: #333;
+        transition: background 0.2s ease;
     }
 
-    .nav-link:last-child {
+    .nav-link:active {
+        background-color: #FCEAEA; /* Subtle brand highlight on tap */
+    }
+
+    .nav-link:last-of-type {
         border-bottom: none;
     }
 
-    /* Icons stay visible */
-    .nav-icons {
-        position: static;
-        width: auto;
-        display: flex;
-        gap: 16px;
-        align-items: center;
-    }
-
     .nav-icon {
-        width: 22px;
-        height: 22px;
+        width: 24px;
+        height: 24px;
     }
 
     /* Show hamburger */
     .hamburger {
         display: flex;
+        position: static;
+        margin-left: 0;
     }
 }
 
@@ -385,26 +478,18 @@
         padding: 0 16px;
     }
 
-    .logo-container {
-        left: 16px;
-    }
-
     .logo-img {
         width: 56px;
         height: 48px;
     }
 
     .nav-icon {
-        width: 20px;
-        height: 20px;
+        width: 22px;
+        height: 22px;
     }
 
-    .nav-icons {
-        gap: 12px;
-    }
-
-    .nav-link {
-        font-size: 15px;
-        padding: 13px 20px;
+    .mobile-only-icons {
+        padding: 24px 20px;
+        gap: 14px;
     }
 }
