@@ -1,6 +1,6 @@
 import React from 'react';
 import styles from './WishlistButton.module.css';
-import { useWishlist } from '../../context/WishlistContext';
+import { useWishlist } from 'context/WishlistContext';
 
 const WishlistButton = ({ product }) => {
     const { toggleWishlist, isInWishlist } = useWishlist();
