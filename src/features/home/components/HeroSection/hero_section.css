@@ -48,14 +48,11 @@
     font-weight: 400;
     font-size: 24px;
     line-height: 100%;
-    /* 24px */
     color: #000000;
     letter-spacing: 0%;
     max-width: 489px;
     height: 79px;
-    /* Exact box height from specs */
     margin-bottom: 23px;
-    /* Exact gap to button: 539 - (437 + 79) = 23 */
 }
 
 .hero-btn {
@@ -86,7 +83,6 @@
 .hero-right {
     display: flex;
     align-items: flex-end;
-    /* Sits at bottom */
     height: 100%;
 }
 
@@ -94,7 +90,6 @@
     width: 456px;
     height: 570px;
     object-fit: cover;
-    /* Sits exactly at bottom of 589 height section due to align-items: flex-end */
 }
 
 @media (max-width: 1440px) {
