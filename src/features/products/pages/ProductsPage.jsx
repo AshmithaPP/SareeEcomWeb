@@ -28,7 +28,7 @@ const ProductsPage = () => {
             </div>
 
             {/* Main Content Row */}
-            <div className="row g-4">
+            <div className="row g-3 g-md-4">
                 {/* Left Sidebar Filters */}
                 <div className="col-lg-3 col-md-4">
                     <FilterSidebar onFilterChange={handleFilterChange} />

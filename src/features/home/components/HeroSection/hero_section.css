@@ -16,9 +16,6 @@
 }
 
 .hero-left {
-    /* Absolute coords suggested Top 133px from section top */
-    /* padding-top: 133px; */
-    /* Centering works closely, let's use flex spacing to match EXACT spacing */
     display: flex;
     flex-direction: column;
     justify-content: flex-start;

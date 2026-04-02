@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import './productInfo.css';
 import checklistIcon from 'assets/icons/ui/checklisticon.png';
 import timerIcon from 'assets/icons/ui/timer.png';
@@ -7,6 +8,11 @@ import addToCartIcon from 'assets/icons/ui/addtocart.png';
 import whatsappIcon from 'assets/icons/social/whatsapp.png';
 
 const ProductInfo = () => {
+    const navigate = useNavigate();
+
+    const handleBuyNow = () => {
+        navigate('/checkout');
+    };
     return (
         <div className="product-info-wrapper">
             {/* Title & Badge */}
@@ -57,7 +63,7 @@ const ProductInfo = () => {
 
             {/* Action Buttons */}
             <div className="action-buttons-container d-flex flex-column gap-3 mb-5">
-                <button className="btn btn-buy-now w-100 d-flex justify-content-center align-items-center gap-2">
+                <button className="btn btn-buy-now w-100 d-flex justify-content-center align-items-center gap-2" onClick={handleBuyNow}>
                     <img src={buyNowIcon} alt="Buy Now" width="16" height="21" />
                     Buy Now
                 </button>

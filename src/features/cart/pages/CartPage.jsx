@@ -27,7 +27,7 @@ const CartPage = () => {
                 <h2 className="cart-page-title text-center mb-5">Your Cart Items</h2>
 
                 {cartItems.length > 0 ? (
-                    <div className="row g-5">
+                    <div className="row g-3 g-md-4 g-lg-5">
                         {/* Left: Cart Items */}
                         <div className="col-lg-7">
                             <div className="cart-items-list">

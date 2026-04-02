@@ -2,14 +2,14 @@
     background-color: #FFFFFF;
     padding-top: 40px;
     padding-bottom: 80px;
+    overflow-x: hidden; /* Prevent horizontal "dancing" layout */
 }
 
 @media (max-width: 991.98px) {
     .product-details-page {
-        padding-top: 20px;
-        padding-bottom: 40px;
+        padding: 20px 15px 40px 15px !important;
     }
-    
+
     .product-image-column {
         margin-bottom: 2rem;
     }

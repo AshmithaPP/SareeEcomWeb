@@ -49,7 +49,7 @@ const ProductDetailsPage = () => {
             </div>
 
             {/* Main Content Area */}
-            <div className="row g-5">
+            <div className="row g-3 g-md-4 g-lg-5">
                 {/* Left Column: Product Image Gallery */}
                 <div className="col-lg-6 product-image-column">
                     <ProductImage />

@@ -4,12 +4,19 @@
     width: 100%;
     display: flex;
     justify-content: center;
+    overflow-x: hidden; /* Prevent horizontal "dancing" layout */
 }
 
 .cart-page-inner {
     width: 100%;
     max-width: 1200px;
-    padding: 0 20px;
+    padding: 0 15px;
+}
+
+@media (min-width: 768px) {
+    .cart-page-inner {
+        padding: 0 20px;
+    }
 }
 
 .cart-page-title {
@@ -31,9 +38,17 @@
 }
 
 @keyframes cartPulse {
-    0% { transform: scale(1); }
-    50% { transform: scale(1.1); }
-    100% { transform: scale(1); }
+    0% {
+        transform: scale(1);
+    }
+
+    50% {
+        transform: scale(1.1);
+    }
+
+    100% {
+        transform: scale(1);
+    }
 }
 
 @media (max-width: 991px) {

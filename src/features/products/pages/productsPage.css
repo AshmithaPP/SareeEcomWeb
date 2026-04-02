@@ -1,8 +1,13 @@
+.products-page-container {
+    overflow-x: hidden;
+}
+
 .products-grid-placeholder {
     background: #FAFBFC;
     border: 1px dashed #E5E7EB;
     border-radius: 8px;
-    height: 983px; /* Match sidebar for alignment placeholder */
+    height: 983px;
+    /* Match sidebar for alignment placeholder */
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -22,7 +27,8 @@
 }
 
 .products-meta-controls {
-    gap: 20px; /* Space between count and dropdown */
+    gap: 20px;
+    /* Space between count and dropdown */
 }
 
 .products-count {
@@ -116,7 +122,8 @@
     }
 
     .sort-btn {
-        width: 100%; /* Full width sort on mobile */
+        width: 100%;
+        /* Full width sort on mobile */
         max-width: 200px;
     }
 }
