@@ -161,7 +161,7 @@ const CustomerReviews = () => {
         <div className="customer-reviews-section container p-4 shadow-sm mt-4">
             {/* Header */}
             <div className="d-flex justify-content-between align-items-center mb-4">
-                <h3 className="section-title mb-0">Customer Reviews</h3>
+                <h3 className="reviews-section-title mb-0">Customer Reviews</h3>
                 <a href="#write-review" className="write-review-btn">Write a Review</a>
             </div>
 

@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import './blogSection.css';
 
 const BlogCard = ({ image, category, date, title, description, link }) => {
@@ -14,7 +15,7 @@ const BlogCard = ({ image, category, date, title, description, link }) => {
         </div>
         <h3 className="blog-title">{title}</h3>
         <p className="blog-description">{description}</p>
-        <a href={link} className="blog-readmore">Read More...</a>
+        <Link to="/blogdetails" className="blog-readmore">Read More...</Link>
       </div>
     </div>
   );

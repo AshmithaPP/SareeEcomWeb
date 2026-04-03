@@ -11,7 +11,7 @@
 }
 
 /* Title Header */
-.blog-section .section-title {
+.blog-section-title {
   font-family: 'Jost', sans-serif;
   font-weight: 500;
   font-size: 32px;
@@ -19,7 +19,7 @@
   color: #000000;
   text-align: center;
   text-transform: capitalize;
-  margin-bottom: 54px; /* Spacing below title */
+  margin-bottom: 34px; /* Spacing below title */
 }
 
 /* Blog Card Component */

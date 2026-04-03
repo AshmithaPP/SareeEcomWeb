@@ -77,7 +77,7 @@ Address: ${formData.address}, ${formData.city}, ${formData.state} - ${formData.p
                 <div className="left-side-form">
                         <section className="delivery-address-section mb-4">
                             <div className="d-flex justify-content-between align-items-center mb-4">
-                                <h2 className="section-title">Delivery Address</h2>
+                                <h2 className="checkout-section-title">Delivery Address</h2>
                                 <button className="btn-select-address">SELECT SAVED ADDRESS</button>
                             </div>
 
@@ -210,7 +210,7 @@ Address: ${formData.address}, ${formData.city}, ${formData.state} - ${formData.p
                         </div>
 
                         <section className="payment-method-section mb-4">
-                            <h2 className="section-title mb-4">Payment Method</h2>
+                            <h2 className="checkout-section-title mb-4">Payment Method</h2>
                             
                             <div className="payment-options">
                                 {/* UPI Option (Selected in image) */}

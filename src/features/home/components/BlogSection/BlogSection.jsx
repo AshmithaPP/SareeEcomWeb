@@ -35,7 +35,7 @@ const blogs = [
   }
 ];
 
-const BlogSection = () => {
+const BlogSection = ({ showTitle = true, title = "Our Blogs", customTitleClass = "" }) => {
   useEffect(() => {
     // future API call here
   }, []);
@@ -43,7 +43,7 @@ const BlogSection = () => {
   return (
     <section className="blog-section">
       <div className="container blog-container">
-        <h2 className="section-title">Our Blogs</h2>
+        {showTitle && <h2 className={`blog-section-title ${customTitleClass}`}>{title}</h2>}
         <div className="row g-4 justify-content-center">
           {blogs.map((blog) => (
             <div className="col-lg-4 col-md-6 col-12 d-flex justify-content-center" key={blog.id}>

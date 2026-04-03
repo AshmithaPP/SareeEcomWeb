@@ -8,6 +8,9 @@ import CartPage from 'features/cart/pages/CartPage'
 import ContactPage from 'features/contact/pages/ContactPage'
 import CheckoutPage from 'pages/CheckoutPage'
 import OrderConfirmationPage from 'pages/OrderConfirmationPage'
+import AboutPage from '@/features/about/pages/AboutPage'
+import BlogPage from '@/features/blog/components/pages/BlogPage'
+import BlogDetails from '@/features/blog/components/pages/BlogDetails'
 
 
 const AppRoutes = () => {
@@ -19,6 +22,9 @@ const AppRoutes = () => {
       <Route path="/wishlist" element={<WishlistPage />} />
       <Route path="/cart" element={<CartPage />} />
       <Route path="/contact" element={<ContactPage />} />
+      <Route path="/blog" element={<BlogPage />} />
+      <Route path="/blogdetails" element={<BlogDetails />} />
+      <Route path="/about" element={<AboutPage />} />
       <Route path="/checkout" element={<CheckoutPage />} />
       <Route path="/order-confirmation/:orderId?" element={<OrderConfirmationPage />} />
 

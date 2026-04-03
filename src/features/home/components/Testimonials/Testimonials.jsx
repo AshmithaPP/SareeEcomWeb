@@ -50,7 +50,7 @@ const Testimonials = () => {
     return (
         <section className="testimonials-section">
             <div className="container">
-                <h2 className="section-title">Our Customer Testimonials</h2>
+                <h2 className="testimonials-section-title">Our Customer Testimonials</h2>
                 
                 <div className="carousel-wrapper">
                     <div className="carousel-container">
