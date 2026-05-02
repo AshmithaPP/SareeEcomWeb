@@ -10,39 +10,30 @@ import coolIcon from '../../../../assets/icons/ui/cool.png';
 import chemicalIcon from '../../../../assets/icons/ui/chemical.png';
 import handIcon from '../../../../assets/icons/ui/hand.png';
 
-const ProductSpecifications = () => {
-    // Mock API Data for Specifications
-    const specificationsData = [
-        { label: 'Saree Type:', value: 'Kanchipuram Silk Saree' },
-        { label: 'Silk Type:', value: 'Pure Mulberry Silk' },
-        { label: 'Zari Type:', value: 'Pure Zari' },
-        { label: 'Saree Colour:', value: 'Deep Maroon' },
-        { label: 'Border Colour:', value: 'Gold with Temple Design' },
-        { label: 'Pallu Design:', value: 'Peacock & Floral Motifs' },
-        { label: 'Saree Length:', value: '5.5 Meters' },
-        { label: 'Blouse Piece:', value: '0.8 Meters (Included)' },
-        { label: 'Saree Width:', value: '46 Inches' },
-        { label: 'Weight:', value: '750 grams' },
-        { label: 'Weaving Type:', value: 'Handloom' },
-        { label: 'Occasion:', value: 'Wedding / Bridal / Festival' },
-        { label: 'Craft Origin:', value: 'Kanchipuram, Tamil Nadu' }
-    ];
+const ProductSpecifications = ({ specifications, careInstructions }) => {
+    // Map API Data to Specifications format
+    const specificationsData = specifications && Object.keys(specifications).length > 0 
+        ? Object.entries(specifications).map(([key, value]) => ({
+            label: `${key}:`,
+            value: value
+        })) 
+        : [];
 
-    // Mock API Data for Care Instructions
-    const careInstructionsData = [
-        { text: 'Dry clean only for best results', icon: dropIcon },
-        { text: 'Avoid direct sunlight exposure', icon: flowerIcon },
-        { text: 'Store in a cool, dry place wrapped in muslin cloth', icon: coolIcon },
-        { text: 'Avoid contact with perfumes and chemicals', icon: chemicalIcon },
-        { text: 'Iron on low heat with a cotton cloth', icon: handIcon }
-    ];
+    // Map API Data to Care Instructions format
+    const careInstructionsData = (careInstructions && careInstructions.length > 0)
+        ? careInstructions.map((item, index) => ({
+            text: typeof item === 'string' ? item : item.text,
+            // Cycle through local icons if not provided in API
+            icon: item.icon || [dropIcon, flowerIcon, coolIcon, chemicalIcon, handIcon][index % 5]
+        }))
+        : [];
 
     return (
         <div className="product-specifications-section mt-5 mb-5 pb-5">
             <div className="product-specifications-wrapper d-flex flex-column">
                 
                 {/* Heading */}
-                <h2 className="specifications-heading">Saree Specifications</h2>
+                <h2 className="specifications-heading">Product Specifications</h2>
                 
                 {/* Specs Table */}
                 <div className="specifications-table-container">

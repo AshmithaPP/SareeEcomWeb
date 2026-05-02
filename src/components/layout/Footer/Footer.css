@@ -14,6 +14,7 @@
 /* Logo */
 .footer-logo-container {
     margin-bottom: 0;
+    padding-top: 30px;
 }
 
 .footer-logo {
@@ -61,7 +62,7 @@
     display: flex;
     gap: 12px;
     align-items: center;
-    margin-top: 40px; 
+    margin-top: 30px; 
 }
 
 .social-icon-link {

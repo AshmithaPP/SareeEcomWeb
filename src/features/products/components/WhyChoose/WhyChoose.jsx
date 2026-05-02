@@ -4,7 +4,7 @@ import './whyChoose.css';
 const WhyChoose = ({ features }) => {
     return (
         <div className="why-choose-card p-4 rounded-3">
-            <h3 className="why-choose-heading mb-4">Why Choose This Saree?</h3>
+            <h3 className="why-choose-heading mb-4">Why Choose This Product?</h3>
             <ul className="why-choose-list list-unstyled mb-0">
                 {features.map((feature, index) => (
                     <li key={index} className="d-flex align-items-start mb-3">

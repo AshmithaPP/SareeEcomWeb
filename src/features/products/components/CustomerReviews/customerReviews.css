@@ -280,3 +280,53 @@
     gap: 1px;
     line-height: 1;
 }
+
+/* ── Skeleton Loaders ────────────────────────────────────────────────────── */
+@keyframes skeleton-loading {
+    0% { background-position: 100% 50%; }
+    100% { background-position: 0 50%; }
+}
+
+.skeleton-summary {
+    height: 150px;
+    width: 100%;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 400% 100%;
+    animation: skeleton-loading 1.5s infinite;
+    border-radius: 8px;
+}
+
+.skeleton-card {
+    height: 120px;
+    width: 100%;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 400% 100%;
+    animation: skeleton-loading 1.5s infinite;
+    border-radius: 8px;
+}
+
+/* ── Mobile Responsive Adjustments ───────────────────────────────────────── */
+@media (max-width: 768px) {
+    .review-comment, .review-images, .review-footer {
+        margin-left: 0;
+    }
+    
+    .reviewer-info {
+        gap: 10px;
+    }
+    
+    .reviewer-avatar {
+        width: 36px;
+        height: 36px;
+    }
+    
+    .reviews-section-title {
+        font-size: 24px;
+    }
+}
+
+.empty-reviews {
+    border: 1px dashed #E5E7EB;
+    border-radius: 8px;
+    background-color: #F9FAFB;
+}

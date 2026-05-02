@@ -92,6 +92,20 @@
     opacity: 0.9;
 }
 
+.video-thumbnail {
+    background-color: #000;
+    transition: all 0.3s ease;
+}
+
+.video-thumbnail i {
+    z-index: 2;
+    filter: drop-shadow(0 0 10px rgba(0,0,0,0.5));
+}
+
+.thumbnail-wrapper:hover .video-thumbnail {
+    background-color: #1a1a1a;
+}
+
 /* Responsive constraints */
 @media (max-width: 768px) {
     .main-image-wrapper {

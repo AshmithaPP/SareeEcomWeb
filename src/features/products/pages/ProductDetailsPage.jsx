@@ -1,4 +1,6 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+import useProductStore from '@/store/useProductStore';
 import Breadcrumbs from 'components/ui/Breadcrumbs/Breadcrumbs';
 import ProductImage from 'features/products/components/ProductImage/ProductImage';
 import ProductInfo from 'features/products/components/ProductInfo/ProductInfo';
@@ -11,33 +13,41 @@ import silkMarkIcon from 'assets/icons/ui/silkmarkicon.png';
 import './productDetailsPage.css';
 
 const ProductDetailsPage = () => {
-    // Array of quality badges data
-    const qualityBadges = [
-        { icon: '/icons/pure-silk.svg', title: 'Pure Silk', subtitle: 'Guarantee' },
-        { icon: '/icons/handloom.svg', title: 'Handloom', subtitle: 'Certified' },
-        { icon: '/icons/secure.svg', title: 'Secure', subtitle: 'Payment' }
-    ];
+    const { slug } = useParams();
+    const { selectedProduct: product, loading, error, fetchProductBySlug } = useProductStore();
 
-    // Array for why choose this saree features
-    const sareeFeatures = [
-        "100% Pure Kanchipuram Silk",
-        "Handwoven by Master Weavers",
-        "Premium Zari Work",
-        "Ideal for Wedding & Bridal Wear",
-        "Long-lasting silk quality"
-    ];
+    useEffect(() => {
+        if (slug) {
+            fetchProductBySlug(slug);
+        }
+    }, [slug, fetchProductBySlug]);
 
-    // Data for the Authenticity Section
-    const authenticityData = {
-        heading: "Original from Kanchipuram",
-        description: "Each saree is handwoven by master artisans from Kanchipuram, Tamil Nadu, preserving centuries-old weaving traditions. This saree comes with a Silk Mark certification and authenticity certificate, ensuring you receive genuine Kanchipuram silk.",
-        stats: [
-            { value: "25+", label: "Years Legacy" },
-            { value: "50K+", label: "Happy Customers" },
-            { value: "100%", label: "Authentic" }
-        ],
-        badgeImage: silkMarkIcon
-    };
+    // Dynamically derive quality badges from API
+    const qualityBadges = product?.trustBadges || [];
+
+    // Dynamically derive features from API highlights
+    const features = product?.highlights || [];
+
+    // Dynamically derive Authenticity Section data
+    const hasAuthenticityData = (product?.originInfo && Object.keys(product.originInfo).length > 0) || (product?.stats && product.stats.length > 0);
+    const authenticityData = hasAuthenticityData ? {
+        heading: product?.originInfo?.heading || '',
+        description: product?.originInfo?.description || '',
+        stats: product?.stats || [],
+        badgeImage: product?.originInfo?.badgeImage || null
+    } : null;
+
+    if (loading) {
+        return <div className="container py-5 text-center"><h3>Loading Product Details...</h3></div>;
+    }
+
+    if (error) {
+        return <div className="container py-5 text-center"><h3 className="text-danger">Error: {error}</h3></div>;
+    }
+
+    if (!product) {
+        return <div className="container py-5 text-center"><h3>Product not found.</h3></div>;
+    }
 
     return (
         <div className="product-details-page container-fluid px-md-5 py-4">
@@ -52,13 +62,16 @@ const ProductDetailsPage = () => {
             <div className="row g-3 g-md-4 g-lg-5">
                 {/* Left Column: Product Image Gallery */}
                 <div className="col-lg-6 product-image-column">
-                    <ProductImage />
+                    <ProductImage 
+                        media={product.selectedVariant?.images || product.media} 
+                        video={product.video || product.media?.video}
+                    />
                 </div>
 
                 {/* Right Column: Product Info & Actions */}
                 <div className="col-lg-6 product-info-column text-start">
                     {/* Basic Info, Price, Actions */}
-                    <ProductInfo />
+                    <ProductInfo product={product} />
 
                     {/* Quality Badges Row */}
                     <div className="quality-badges-section mt-4 d-flex justify-content-between flex-wrap gap-2">
@@ -69,7 +82,7 @@ const ProductDetailsPage = () => {
 
                     {/* Why Choose Section */}
                     <div className="why-choose-section mt-4">
-                        <WhyChoose features={sareeFeatures} />
+                        <WhyChoose features={features} />
                     </div>
                 </div>
             </div>
@@ -77,23 +90,29 @@ const ProductDetailsPage = () => {
             {/* Product Specifications Section (Full width / container width row below) */}
             <div className="row mt-4 ">
                 <div className="col-12">
-                    <ProductSpecifications />
+                    <ProductSpecifications 
+                        specifications={product.specifications} 
+                        careInstructions={product.careInstructions || product.care_instructions}
+                    />
                 </div>
             </div>
 
             {/* Authenticity Section */}
-            <div className="row mb-4 ">
-                <div className="col-12">
-                    <AuthenticitySection {...authenticityData} />
+            {authenticityData && (
+                <div className="row mb-4 ">
+                    <div className="col-12">
+                        <AuthenticitySection {...authenticityData} />
+                    </div>
                 </div>
-            </div>
+            )}
 
             {/* Customer Reviews Section */}
             <div className="row mb-5">
                 <div className="col-12">
-                    <CustomerReviews />
+                    <CustomerReviews productId={product.product_id || product.id} />
                 </div>
             </div>
+
         </div>
     );
 };

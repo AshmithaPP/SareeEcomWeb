@@ -1,15 +1,23 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { toast } from 'react-toastify';
+import useAuthStore from '@/store/useAuthStore';
 
 const WishlistContext = createContext();
 
 export const useWishlist = () => useContext(WishlistContext);
 
 export const WishlistProvider = ({ children }) => {
+    const { isAuthenticated } = useAuthStore();
     const [wishlistItems, setWishlistItems] = useState(() => {
         const savedWishlist = localStorage.getItem('wishlistItems');
         return savedWishlist ? JSON.parse(savedWishlist) : [];
     });
+
+    useEffect(() => {
+        if (!isAuthenticated) {
+            setWishlistItems([]);
+        }
+    }, [isAuthenticated]);
 
     const countRef = React.useRef(0);
     const toastId = React.useRef(null);

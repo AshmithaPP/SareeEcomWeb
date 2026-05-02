@@ -5,27 +5,57 @@ import heartIcon from 'assets/icons/ui/heartIcon.png';
 import CartIcon from 'assets/icons/ui/shopping-cart.png';
 import { useWishlist } from 'context/WishlistContext';
 import { useCart } from 'context/CartContext';
+import useAuthStore from '@/store/useAuthStore';
 
 const ProductCard = ({ product }) => {
-    const { name, price, originalPrice, discount, image, isBestSeller, id } = product;
+    // Handle both Frontend mock data and Backend raw API data
+    const name = product.name || product.title;
+    const id = product.product_id || product.id;
+    const isBestSeller = product.isBestSeller || product.is_best_seller;
+    
+    // Image fallback
+    const image = product.thumbnail || product.image;
+
+    // Price and Discount Logic
+    let price = product.price || product.discountedPrice;
+    let originalPrice = product.originalPrice;
+    let discount = product.discount;
+
+    if (typeof product.price === 'object') {
+        // If it's raw API data
+        price = parseFloat(product.price.sellingPrice);
+        originalPrice = product.price.mrp ? parseFloat(product.price.mrp) : null;
+        discount = product.price.discountPercentage > 0 ? product.price.discountPercentage : null;
+    }
     const navigate = useNavigate();
     const { toggleWishlist, isInWishlist } = useWishlist();
     const { addToCart } = useCart();
+    const { isAuthenticated } = useAuthStore();
 
     const isLiked = isInWishlist(id);
 
     const handleWishlistToggle = (e) => {
         e.stopPropagation();
+        if (!isAuthenticated) {
+            navigate('/login');
+            return;
+        }
         toggleWishlist(product);
     };
 
     const handleAddToCart = (e) => {
         e.stopPropagation();
+        if (!isAuthenticated) {
+            navigate('/login');
+            return;
+        }
         addToCart(product);
     };
 
+    const slug = product.slug || id;
+
     return (
-        <div className="product-card" onClick={() => navigate('/product-details')} style={{ cursor: 'pointer' }}>
+        <div className="product-card" onClick={() => navigate(`/product-details/${slug}`)} style={{ cursor: 'pointer' }}>
             {/* Image Section */}
             <div className="product-image-container">
                 <img src={image} alt={name} className="product-image" />
@@ -61,12 +91,18 @@ const ProductCard = ({ product }) => {
                 <h3 className="product-name">{name}</h3>
 
                 <div className="price-row">
-                    <span className="current-price">₹{price.toLocaleString()}</span>
+                    <span className="current-price">
+                        {typeof price === 'number' ? `₹${price.toLocaleString('en-IN')}` : (price || '')}
+                    </span>
                     {originalPrice && (
-                        <span className="original-price">₹{originalPrice.toLocaleString()}</span>
+                        <span className="original-price">
+                            {typeof originalPrice === 'number' ? `₹${originalPrice.toLocaleString('en-IN')}` : originalPrice}
+                        </span>
                     )}
                     {discount && (
-                        <span className="discount-tag">{discount}% off</span>
+                        <span className="discount-tag">
+                            {typeof discount === 'number' ? `${discount}% off` : discount}
+                        </span>
                     )}
                 </div>
             </div>

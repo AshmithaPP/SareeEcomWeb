@@ -11,16 +11,19 @@ import OrderConfirmationPage from 'pages/OrderConfirmationPage'
 import AboutPage from '@/features/about/pages/AboutPage'
 import BlogPage from '@/features/blog/components/pages/BlogPage'
 import BlogDetails from '@/features/blog/components/pages/BlogDetails'
+import LoginPage from '@/features/auth/pages/LoginPage'
+import ProtectedRoute from '@/components/auth/ProtectedRoute'
 
 
 const AppRoutes = () => {
   return (
     <Routes>
       <Route path="/" element={<Home />} />
+      <Route path="/login" element={<LoginPage />} />
       <Route path="/products" element={<ProductsPage />} />
-      <Route path="/product-details" element={<ProductDetailsPage />} />
-      <Route path="/wishlist" element={<WishlistPage />} />
-      <Route path="/cart" element={<CartPage />} />
+      <Route path="/product-details/:slug" element={<ProductDetailsPage />} />
+      <Route path="/wishlist" element={<ProtectedRoute><WishlistPage /></ProtectedRoute>} />
+      <Route path="/cart" element={<ProtectedRoute><CartPage /></ProtectedRoute>} />
       <Route path="/contact" element={<ContactPage />} />
       <Route path="/blog" element={<BlogPage />} />
       <Route path="/blogdetails" element={<BlogDetails />} />

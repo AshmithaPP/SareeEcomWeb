@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import './Footer.css';
@@ -8,9 +8,24 @@ import fbIcon from 'assets/icons/social/facebookicon.png';
 import instaIcon from 'assets/icons/social/instaicon.png';
 import linkedinIcon from 'assets/icons/social/linkedinicon.png';
 import twitterIcon from 'assets/icons/social/twittericon.png';
+import useSettingsStore from '@/store/useSettingsStore';
 
 const Footer = () => {
+    const { fetchSettings, getSiteInfo } = useSettingsStore();
+    const siteInfo = getSiteInfo();
+
+    useEffect(() => {
+        fetchSettings();
+    }, [fetchSettings]);
+
+    const IMAGE_BASE_URL = 'http://localhost:5000';
+    const logoSrc = siteInfo.site_logo 
+        ? (siteInfo.site_logo.startsWith('http') ? siteInfo.site_logo : `${IMAGE_BASE_URL}${siteInfo.site_logo}`)
+        : LogoWhite;
+
+
     return (
+
         <footer className="footer-section">
             <div className="container footer-container">
                 <div className="row footer-row">
@@ -18,17 +33,25 @@ const Footer = () => {
                     {/* Column 1: Logo, Address, Contact, Socials */}
                     <div className="col-lg-3 col-md-6 mb-4 footer-col-info">
                         <div className="footer-logo-container">
-                            <img src={LogoWhite} alt="Kanchipuram Silks Logo" className="footer-logo" />
+                            <img 
+                                src={logoSrc} 
+                                alt={siteInfo.site_title || "Kanchipuram Silks Logo"} 
+                                className="footer-logo" 
+                                onError={(e) => {
+                                    e.target.onerror = null; 
+                                    e.target.src = LogoWhite;
+                                }}
+                            />
                         </div>
+
                         <p className="footer-text footer-address">
-                            No: 15, Krishna Kandha Building,<br />
-                            SA Garden, Saravanampatti,<br />
-                            Coimbatore, Tamil Nadu 641026
+                            {siteInfo.address || <>No: 15, Krishna Kandha Building,<br />SA Garden, Saravanampatti,<br />Coimbatore, Tamil Nadu 641026</>}
                         </p>
                         <p className="footer-text footer-contact">
-                            1-202-555-0106<br />
-                            help@shopper.com
+                            {siteInfo.phone || "1-202-555-0106"}<br />
+                            {siteInfo.email || "help@shopper.com"}
                         </p>
+
                         <div className="social-icons">
                             <a href="#" className="social-icon-link">
                                 <img src={twitterIcon} alt="Twitter" className="social-icon" />
@@ -95,9 +118,10 @@ const Footer = () => {
 
             <div className="container text-center">
                 <p className="footer-copyright">
-                    © 2026 Kanchipuram Silks. All Rights Reserved.
+                    © {new Date().getFullYear()} {siteInfo.site_title || "Kanchipuram Silks"}. All Rights Reserved.
                 </p>
             </div>
+
         </footer>
     );
 };

@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { fetchOrderDetails } from '../api/orderApi';
+import useOrderStore from '@/store/useOrderStore';
 import './orderConfirmation.css';
 
 // Import icons/images
@@ -11,26 +11,11 @@ const OrderConfirmationPage = () => {
   const { orderId } = useParams();
   const navigate = useNavigate();
   
-  const [loading, setLoading] = useState(true);
-  const [orderData, setOrderData] = useState(null);
-  const [error, setError] = useState(null);
+  const { orderDetails: orderData, loading, error, fetchOrderDetails } = useOrderStore();
 
   useEffect(() => {
-    const getOrderData = async () => {
-      try {
-        setLoading(true);
-        const data = await fetchOrderDetails(orderId);
-        setOrderData(data);
-        setError(null);
-      } catch (err) {
-        setError(err.message || 'Something went wrong while fetching your order details.');
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    getOrderData();
-  }, [orderId]);
+    fetchOrderDetails(orderId);
+  }, [orderId, fetchOrderDetails]);
 
   if (loading) {
     return (

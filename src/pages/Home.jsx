@@ -46,34 +46,34 @@ const bridalProducts = [
 
 
 const Home = () => {
-    return (
-        <>
-            <HeroSection />
-            <CategoriesSection />
-            <ShopByCollections />
-            <ShopByCollections
-                title="Best Selling Kanchipuram Silk Sarees"
-                subtitle="Our customers' most loved designs"
-                products={cottonProducts}
-            />
-            <ShopByCollections
-                title="New Arrivals - Kanchipuram Silk Sarees"
-                subtitle="Fresh designs from our master weavers"
-                products={newArrivalsProducts}
-            />
-            <ShopByCollections
-                title="Bridal Kanchipuram Silk Sarees"
-                subtitle="Exquisite designs for your special day"
-                products={bridalProducts}
-            />
-            <ShopByOccasion />
-            <TrendingPicks />
-            <ShopByPrice />
-            <Testimonials />
-            <BlogSection />
-            <NewsletterSection />
-        </>
-    );
+  return (
+    <>
+      <HeroSection />
+      <CategoriesSection />
+      <ShopByCollections />
+      <ShopByCollections
+        title="Best Selling Kanchipuram Silk Sarees"
+        subtitle="Our customers' most loved designs"
+        products={cottonProducts}
+      />
+      <ShopByCollections
+        title="New Arrivals - Kanchipuram Silk Sarees"
+        subtitle="Fresh designs from our master weavers"
+        products={newArrivalsProducts}
+      />
+      <ShopByCollections
+        title="Bridal Kanchipuram Silk Sarees"
+        subtitle="Exquisite designs for your special day"
+        products={bridalProducts}
+      />
+      <ShopByOccasion />
+      <TrendingPicks />
+      <ShopByPrice />
+      <Testimonials />
+      <BlogSection />
+      <NewsletterSection />
+    </>
+  );
 };
 
 export default Home;

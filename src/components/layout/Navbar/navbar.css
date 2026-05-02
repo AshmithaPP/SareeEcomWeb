@@ -133,13 +133,11 @@
 
 .nav-icons {
     position: absolute;
-    left: 1050px;
-    top: 10px;
-    width: 160px;
-    /* Increased from 120px to accommodate extra icon */
-    height: 24px;
+    right: 30px;
+    top: 50%;
+    transform: translateY(-50%);
     display: flex;
-    justify-content: space-between;
+    gap: 28px;
     align-items: center;
 }
 
@@ -493,3 +491,131 @@
         gap: 14px;
     }
 }
+
+/* ============================================================
+   Profile Dropdown Styles
+   ============================================================ */
+.user-profile-nav {
+    position: relative;
+}
+
+.profile-trigger {
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+}
+
+.profile-dropdown {
+    position: absolute;
+    top: 35px;
+    right: 0;
+    background-color: #ffffff;
+    border: 1px solid #f2eded;
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    width: 200px;
+    padding: 10px 0;
+    z-index: 1100;
+    display: flex;
+    flex-direction: column;
+    animation: fadeInSlideUp 0.3s ease;
+}
+
+@keyframes fadeInSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.dropdown-header {
+    padding: 10px 20px;
+    border-bottom: 1px solid #f2eded;
+    margin-bottom: 5px;
+}
+
+.user-name {
+    margin: 0;
+    font-weight: 700;
+    color: #2c2c2c;
+    font-size: 14px;
+}
+
+.user-email {
+    margin: 0;
+    font-size: 12px;
+    color: #888;
+}
+
+.dropdown-item {
+    padding: 10px 20px;
+    text-decoration: none;
+    color: #2c2c2c;
+    font-size: 14px;
+    transition: background 0.2s ease;
+    text-align: left;
+    border: none;
+    background: none;
+    width: 100%;
+    display: block;
+    cursor: pointer;
+}
+
+.dropdown-item:hover {
+    background-color: #fceaea;
+    color: #a42829;
+}
+
+.logout-btn {
+    border-top: 1px solid #f2eded;
+    margin-top: 5px;
+    color: #a42829;
+    font-weight: 600;
+}
+
+.nav-user-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.nav-user-wrapper img {
+    width: 24px;
+    height: 24px;
+    object-fit: contain;
+}
+
+.nav-icon-link {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    gap: 6px;
+    color: #2c2c2c;
+    transition: all 0.3s ease;
+}
+
+.icon-text {
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    line-height: 1;
+}
+
+.nav-icon-link:hover {
+    color: #a42829;
+}
+
+.nav-icon-link:hover img {
+    filter: brightness(0) saturate(100%) invert(21%) sepia(59%) saturate(1915%) hue-rotate(338deg) brightness(88%) contrast(98%);
+}
+

@@ -1,15 +1,23 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import { toast } from 'react-toastify';
+import useAuthStore from '@/store/useAuthStore';
 
 const CartContext = createContext();
 
 export const useCart = () => useContext(CartContext);
 
 export const CartProvider = ({ children }) => {
+    const { isAuthenticated } = useAuthStore();
     const [cartItems, setCartItems] = useState(() => {
         const savedCart = localStorage.getItem('cartItems');
         return savedCart ? JSON.parse(savedCart) : [];
     });
+
+    useEffect(() => {
+        if (!isAuthenticated) {
+            setCartItems([]);
+        }
+    }, [isAuthenticated]);
 
     const countRef = React.useRef(0);
     const toastId = React.useRef(null);

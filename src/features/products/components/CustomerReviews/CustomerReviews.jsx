@@ -1,18 +1,23 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import useReviewStore from '@/store/useReviewStore';
+import useAuthStore from '@/store/useAuthStore';
 import './customerReviews.css';
 
-// ── Inline sub-components (drop-in replacements for the imported ones) ──────
+// ── Inline sub-components ───────────────────────────────────────────────────
 
-const RatingStars = ({ rating, size = 'normal' }) => {
+const RatingStars = ({ rating, size = 'normal', onClick }) => {
     const starSize = size === 'large' ? 26 : 18;
     const stars = [];
     for (let i = 1; i <= 5; i++) {
         const fill = Math.min(1, Math.max(0, rating - (i - 1)));
         stars.push(
-            <span key={i} className="star-wrap" style={{ fontSize: starSize, position: 'relative', display: 'inline-block', lineHeight: 1 }}>
-                {/* Empty star */}
+            <span 
+                key={i} 
+                className={`star-wrap ${onClick ? 'cursor-pointer' : ''}`} 
+                style={{ fontSize: starSize, position: 'relative', display: 'inline-block', lineHeight: 1 }}
+                onClick={() => onClick && onClick(i)}
+            >
                 <span style={{ color: '#D1D5DB' }}>★</span>
-                {/* Filled star clipped to fill % */}
                 {fill > 0 && (
                     <span style={{
                         color: '#FBBF24',
@@ -33,14 +38,18 @@ const RatingBreakdown = ({ distribution, totalReviews }) => {
     return (
         <div className="rating-breakdown">
             {distribution.map(({ star, count }) => {
-                const pct = totalReviews > 0 ? (count / totalReviews) * 100 : 0;
+                const percentage = totalReviews > 0 ? Math.round((count / totalReviews) * 100) : 0;
                 return (
-                    <div key={star} className="breakdown-row">
+                    <div key={star} className="breakdown-row" title={`${percentage}%`}>
                         <span className="breakdown-label">{star} Star</span>
                         <div className="breakdown-bar-track">
                             <div
                                 className="breakdown-bar-fill"
-                                style={{ width: `${pct}%` }}
+                                style={{ width: `${percentage}%` }}
+                                role="progressbar"
+                                aria-valuenow={percentage}
+                                aria-valuemin="0"
+                                aria-valuemax="100"
                             />
                         </div>
                         <span className="breakdown-count">{count}</span>
@@ -59,7 +68,18 @@ const ThumbsUpIcon = () => (
 );
 
 const ReviewCard = ({ review }) => {
-    const { customerName, rating, date, comment, verifiedPurchase, helpfulCount, avatar, images = [] } = review;
+    // Mapping API fields to UI component fields
+    const customerName = review.userName || review.user_name || review.customer_name || review.Customer?.name || review.customer?.name || review.user?.name || "Guest User";
+    const rating = review.rating;
+    const date = new Date(review.date || review.createdAt || review.created_at).toLocaleDateString('en-IN', {
+        day: 'numeric',
+        month: 'short',
+        year: 'numeric'
+    });
+    const comment = review.comment || review.review_text;
+    const verifiedPurchase = review.verifiedPurchase || review.verified_purchase || false;
+    const helpfulCount = review.helpfulCount || review.helpful_count || 0;
+    const avatar = review.avatar || review.Customer?.profile_image || `https://ui-avatars.com/api/?name=${encodeURIComponent(customerName)}&background=e5e7eb&color=374151`;
 
     return (
         <div className="review-card">
@@ -83,15 +103,15 @@ const ReviewCard = ({ review }) => {
 
             <p className="review-comment">{comment}</p>
 
-            {images.length > 0 && (
+            {review.images && Array.isArray(review.images) && review.images.length > 0 && (
                 <div className="review-images">
-                    {images.map((src, i) => (
-                        <img key={i} src={src} alt={`Review image ${i + 1}`} className="review-image-thumb" />
+                    {review.images.map((img, idx) => (
+                        <img key={idx} src={img} alt="Review" className="review-image-thumb" />
                     ))}
                 </div>
             )}
 
-            <div className="review-footer">
+            <div className="review-footer ms-md-5 ps-md-3">
                 <button className="helpful-btn">
                     <ThumbsUpIcon />
                     <span>Helpful ({helpfulCount})</span>
@@ -106,98 +126,165 @@ const ReviewCard = ({ review }) => {
 
 // ── Main component ────────────────────────────────────────────────────────────
 
-const CustomerReviews = () => {
-    const reviewsData = [
-        {
-            id: 1,
-            customerName: "Priya Sharma",
-            rating: 5,
-            date: "2 weeks ago",
-            title: "Absolutely stunning!",
-            comment: "Absolutely stunning saree! The quality of silk and zari work is exceptional. I wore it for my sister's wedding and received countless compliments. Worth every penny!",
-            verifiedPurchase: true,
-            helpfulCount: 24,
-            avatar: "https://randomuser.me/api/portraits/women/44.jpg",
-            images: [
-                "https://images.unsplash.com/photo-1610189014605-e3d82a178ac2?auto=format&fit=crop&q=80&w=200",
-                "https://images.unsplash.com/photo-1583391733958-61192b0adac7?auto=format&fit=crop&q=80&w=200"
-            ]
-        },
-        {
-            id: 2,
-            customerName: "Anjali Reddy",
-            rating: 5,
-            date: "1 month ago",
-            title: "Beautiful traditional saree",
-            comment: "Beautiful traditional saree with authentic Kanchipuram weaving. The color is rich and the silk quality is top-notch. Delivery was fast and packaging was excellent.",
-            verifiedPurchase: true,
-            helpfulCount: 18,
-            avatar: "https://randomuser.me/api/portraits/women/68.jpg",
-            images: []
-        },
-        {
-            id: 3,
-            customerName: "Sneha V.",
-            rating: 4,
-            date: "3 months ago",
-            title: "Lovely fabric",
-            comment: "The saree is exactly as pictured. Beautiful zari work. Dropped one star because I felt the blouse piece could have been a bit longer, but otherwise perfect.",
-            verifiedPurchase: true,
-            helpfulCount: 5,
-            avatar: "https://randomuser.me/api/portraits/women/32.jpg",
-            images: []
-        }
-    ];
+const CustomerReviews = ({ productId }) => {
+    const { 
+        reviews, 
+        totalReviews, 
+        averageRating, 
+        ratingDistribution, 
+        loading, 
+        summaryLoading,
+        fetchReviews, 
+        fetchReviewSummary,
+        submitReview,
+        hasMore,
+        page
+    } = useReviewStore();
+    const { user, token, isAuthenticated } = useAuthStore();
 
-    const ratingDistribution = [
-        { star: 5, count: 321 },
-        { star: 4, count: 64 },
-        { star: 3, count: 30 },
-        { star: 2, count: 9 },
-        { star: 1, count: 4 }
-    ];
+    const [showForm, setShowForm] = useState(false);
+    const [newReview, setNewReview] = useState({ rating: 5, comment: '' });
+    const [submitLoading, setSubmitLoading] = useState(false);
+
+    useEffect(() => {
+        if (productId) {
+            fetchReviewSummary(productId);
+            fetchReviews(productId, 1, 10, true);
+        }
+    }, [productId, fetchReviewSummary, fetchReviews]);
+
+    const handleLoadMore = () => {
+        fetchReviews(productId, page + 1, 10);
+    };
+
+    const handleFormSubmit = async (e) => {
+        e.preventDefault();
+        setSubmitLoading(true);
+        
+        const reviewData = {
+            rating: newReview.rating,
+            comment: newReview.comment,
+            userId: user?.user_id || user?.id
+        };
+
+        const result = await submitReview(productId, reviewData, token);
+        
+        if (result.success) {
+            setShowForm(false);
+            setNewReview({ rating: 5, comment: '' });
+        } else {
+            alert(result.error);
+        }
+        setSubmitLoading(false);
+    };
+
 
     return (
         <div className="customer-reviews-section container p-4 shadow-sm mt-4">
             {/* Header */}
-            <div className="d-flex justify-content-between align-items-center mb-4">
+            <div className="d-flex justify-content-between align-items-center mb-5">
                 <h3 className="reviews-section-title mb-0">Customer Reviews</h3>
-                <a href="#write-review" className="write-review-btn">Write a Review</a>
+                <button 
+                    onClick={() => setShowForm(!showForm)} 
+                    className="write-review-btn"
+                >
+                    {showForm ? 'Cancel' : 'Write a Review'}
+                </button>
             </div>
 
-            {/* Rating summary + breakdown */}
-            <div className="row mb-4 align-items-center">
-                <div className="col-md-4 text-center rating-summary-col">
-                    <div className="rating-value mb-2">4.6</div>
-                    <div className="d-flex justify-content-center mb-2">
-                        <RatingStars rating={4.6} size="large" />
-                    </div>
-                    <div className="rating-based-on">Based on 428 reviews</div>
-                </div>
+            {/* Review Form */}
+            {showForm && (
+                <div className="review-form-container mb-5 p-4 border rounded bg-light shadow-sm">
+                    <h4 className="mb-4">Share Your Thoughts</h4>
+                    <form onSubmit={handleFormSubmit}>
+                        <div className="mb-4">
+                            <label className="form-label d-block fw-bold">Overall Rating (Required)</label>
+                            <div className="star-rating-input">
+                                <RatingStars 
+                                    rating={newReview.rating} 
+                                    size="large" 
+                                    onClick={(val) => setNewReview({...newReview, rating: val})} 
+                                />
+                            </div>
+                        </div>
 
-                <div className="col-md-8 px-md-5 mt-4 mt-md-0">
-                    <RatingBreakdown
-                        distribution={ratingDistribution}
-                        totalReviews={428}
-                    />
+                        <div className="mb-4">
+                            <label className="form-label fw-bold">Your Review (Optional)</label>
+                            <textarea 
+                                className="form-control" 
+                                rows="4" 
+                                value={newReview.comment}
+                                onChange={(e) => setNewReview({...newReview, comment: e.target.value})}
+                                placeholder="What did you like or dislike about the product?"
+                            ></textarea>
+                        </div>
+                        <button type="submit" className="btn btn-dark px-5 py-2 fw-bold" disabled={submitLoading}>
+                            {submitLoading ? 'Submitting...' : 'Post Review'}
+                        </button>
+                    </form>
                 </div>
+            )}
+
+            {/* Rating summary + breakdown */}
+            <div className="row mb-5 align-items-center summary-section">
+                {summaryLoading ? (
+                    <div className="col-12 py-4">
+                        <div className="skeleton-summary"></div>
+                    </div>
+                ) : (
+                    <>
+                        <div className="col-md-4 text-center rating-summary-col">
+                            <div className="rating-value mb-2">
+                                {typeof averageRating === 'number' ? averageRating.toFixed(1) : averageRating}
+                            </div>
+                            <div className="d-flex justify-content-center mb-2">
+                                <RatingStars rating={averageRating} size="large" />
+                            </div>
+                            <div className="rating-based-on">Based on {totalReviews} reviews</div>
+                        </div>
+
+                        <div className="col-md-8 px-md-5 mt-4 mt-md-0">
+                            <RatingBreakdown
+                                distribution={ratingDistribution}
+                                totalReviews={totalReviews}
+                            />
+                        </div>
+                    </>
+                )}
             </div>
 
             <hr className="reviews-divider" />
 
             {/* Reviews list */}
             <div className="reviews-list">
-                {reviewsData.map(review => (
-                    <ReviewCard key={review.id} review={review} />
-                ))}
+                {loading && reviews.length === 0 ? (
+                    <div className="review-skeletons">
+                        {[1, 2, 3].map(i => <div key={i} className="skeleton-card mb-3"></div>)}
+                    </div>
+                ) : reviews.length > 0 ? (
+                    reviews.map((review, index) => (
+                        <ReviewCard key={review.id || `review-${index}`} review={review} />
+                    ))
+                ) : totalReviews === 0 ? (
+                    <div className="text-center py-5 empty-reviews">
+                        <p className="text-muted fs-5">No reviews yet. Be the first to review this product!</p>
+                    </div>
+                ) : null}
             </div>
 
+
             {/* Load more */}
-            <div className="text-center mt-4 mb-2">
-                <button className="btn load-more-btn fw-bold px-4 py-2">
-                    Load More Reviews
-                </button>
-            </div>
+            {hasMore && reviews.length > 0 && (
+                <div className="text-center mt-5">
+                    <button 
+                        onClick={handleLoadMore} 
+                        className="btn load-more-btn fw-bold"
+                        disabled={loading}
+                    >
+                        {loading ? 'Loading...' : 'Load More Reviews'}
+                    </button>
+                </div>
+            )}
         </div>
     );
 };
