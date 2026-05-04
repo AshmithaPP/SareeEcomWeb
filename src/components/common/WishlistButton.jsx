@@ -1,23 +1,25 @@
-import React from 'react';
+import useWishlistStore from '@/store/useWishlistStore';
+import { toast } from 'react-toastify';
 import styles from './WishlistButton.module.css';
-import { useWishlist } from 'context/WishlistContext';
-import useAuthStore from '@/store/useAuthStore';
-import { useNavigate } from 'react-router-dom';
 
 const WishlistButton = ({ product }) => {
-    const { toggleWishlist, isInWishlist } = useWishlist();
-    const { isAuthenticated } = useAuthStore();
-    const navigate = useNavigate();
-    const isLiked = isInWishlist(product?.id || product?.product_id);
+    const { items, toggleWishlist } = useWishlistStore();
+    const productId = product?.product_id || product?.id;
+    const isLiked = items.some(item => item.product_id === productId);
 
-    const toggleLike = (e) => {
-        e.stopPropagation(); // Prevent card clicks if any
-        if (!isAuthenticated) {
-            navigate('/login');
-            return;
-        }
-        if (product) {
-            toggleWishlist(product);
+    const toggleLike = async (e) => {
+        e.stopPropagation();
+        if (!productId) return;
+
+        const result = await toggleWishlist(productId);
+        if (result.success) {
+            if (result.action === 'added') {
+                toast.success('Added to wishlist!');
+            } else {
+                toast.info('Removed from wishlist');
+            }
+        } else {
+            toast.error(result.message || 'Failed to update wishlist');
         }
     };
 

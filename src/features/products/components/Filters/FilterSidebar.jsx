@@ -1,203 +1,140 @@
-import React, { useState } from 'react';
+import React from 'react';
+import { useSearchParams } from 'react-router-dom';
+import useProductStore from '@/store/useProductStore';
 import FilterSection from './FilterSection';
 import './filters.css';
 
-const FilterSidebar = ({ onFilterChange }) => {
-    // State management
-    const [priceRange, setPriceRange] = useState({ min: 5000, max: 25000 });
-    const [selectedPattern, setSelectedPattern] = useState(null);
-    const [selectedColors, setSelectedColors] = useState([]);
-    const [selectedOccasions, setSelectedOccasions] = useState([]);
+const FilterSidebar = () => {
+    const { availableFilters, activeFilters, updateFilter, setPriceRange, clearAllFilters } = useProductStore();
 
-    const patterns = [
-        { name: 'Florals', count: 24 },
-        { name: 'Floral Buttis', count: 18 },
-        { name: 'Buttis', count: 32 },
-        { name: 'Checks', count: 12 },
-        { name: 'Floral Jaal', count: 16 },
-        { name: 'Leafs', count: 8 }
-    ];
+    // Mapping UI keys to API keys
+    const apiKeyMap = {
+        colors: 'color',
+        patterns: 'pattern',
+        occasions: 'occasion',
+        fabrics: 'fabric',
+        categories: 'category'
+    };
 
-    const colors = [
-        { name: 'Pink', style: { backgroundColor: '#F472B6' } },
-        { name: 'Dual', style: { background: 'linear-gradient(90deg, #F87171 0%, #60A5FA 100%)' } },
-        { name: 'Multi', style: { background: 'linear-gradient(90deg, #F87171 0%, #FACC15 50%, #60A5FA 100%)' } },
-        { name: 'Gold', style: { backgroundColor: '#D4AF37' } },
-        { name: 'Sky Blue', style: { backgroundColor: '#38BDF8' } },
-        { name: 'Purple', style: { backgroundColor: '#A855F7' } }
-    ];
+    // Mapping API keys to UI Labels
+    const filterLabels = {
+        colors: 'Color',
+        patterns: 'Pattern',
+        occasions: 'Occasion',
+        fabrics: 'Fabric',
+        categories: 'Category'
+    };
 
-    const occasions = ['Wedding', 'Bridal', 'Festival', 'Gift'];
+    const handleFilterChange = (key, value, isChecked) => {
+        updateFilter(apiKeyMap[key] || key, value, isChecked);
+    };
 
     const handlePriceChange = (e) => {
         const { name, value } = e.target;
-        const updatedPrice = { ...priceRange, [name]: Number(value) };
-        setPriceRange(updatedPrice);
-        fireFilterChange({ price: updatedPrice });
+        const min = name === 'min' ? value : (activeFilters.min_price || 0);
+        const max = name === 'max' ? value : (activeFilters.max_price || 50000);
+        setPriceRange(min, max);
     };
 
-    const handlePatternSelect = (pattern) => {
-        const newPattern = selectedPattern === pattern ? null : pattern;
-        setSelectedPattern(newPattern);
-        fireFilterChange({ pattern: newPattern });
+    const isFilterActive = (key, value) => {
+        const apiKey = apiKeyMap[key] || key;
+        const values = activeFilters[apiKey] ? activeFilters[apiKey].split(',') : [];
+        return values.includes(value);
     };
 
-    const handleColorToggle = (colorName) => {
-        const updated = selectedColors.includes(colorName)
-            ? selectedColors.filter(c => c !== colorName)
-            : [...selectedColors, colorName];
-        setSelectedColors(updated);
-        fireFilterChange({ colors: updated });
-    };
-
-    const handleOccasionToggle = (occasion) => {
-        const updated = selectedOccasions.includes(occasion)
-            ? selectedOccasions.filter(o => o !== occasion)
-            : [...selectedOccasions, occasion];
-        setSelectedOccasions(updated);
-        fireFilterChange({ occasions: updated });
-    };
-
-    const fireFilterChange = (overrides = {}) => {
-        if (onFilterChange) {
-            onFilterChange({
-                price: overrides.price || priceRange,
-                pattern: overrides.pattern !== undefined ? overrides.pattern : selectedPattern,
-                colors: overrides.colors || selectedColors,
-                occasions: overrides.occasions || selectedOccasions
-            });
-        }
-    };
-
-    const handleClearAll = () => {
-        setPriceRange({ min: 5000, max: 25000 });
-        setSelectedPattern(null);
-        setSelectedColors([]);
-        setSelectedOccasions([]);
-        if (onFilterChange) {
-            onFilterChange({});
-        }
-    };
+    if (!availableFilters || Object.keys(availableFilters).length === 0) return null;
 
     return (
         <aside className="filter-sidebar">
-            {/* Header */}
             <div className="filter-header">
                 <span className="filters-title">Filters</span>
-                <button className="clear-all-btn" onClick={handleClearAll}>Clear All</button>
+                <button className="clear-all-btn" onClick={clearAllFilters}>Clear All</button>
             </div>
 
             {/* Price Range Section */}
-            <FilterSection title="Price Range">
-                <div className="price-range-content">
-                    <div className="price-range-values">
-                        <span className="price-label">₹5,000</span>
-                        <span className="price-label">₹50,000</span>
-                    </div>
+            {availableFilters.price_range && (
+                <FilterSection title="Price Range">
+                    <div className="price-range-content">
+                        <div className="price-range-values">
+                            <span className="price-label">₹{availableFilters.price_range.min}</span>
+                            <span className="price-label">₹{availableFilters.price_range.max}</span>
+                        </div>
 
-                    <div className="slider-container">
-                        <div className="slider-track">
-                            <div 
-                                className="slider-filled-track" 
-                                style={{
-                                    width: `${((priceRange.max - 5000) / 45000) * 100}%`
-                                }}
+                        <div className="slider-container">
+                            <input
+                                type="range"
+                                min={availableFilters.price_range.min}
+                                max={availableFilters.price_range.max}
+                                value={activeFilters.max_price || availableFilters.price_range.max}
+                                name="max"
+                                onChange={handlePriceChange}
+                                className="slider-input single-slider"
                             />
                         </div>
-                        <input
-                            type="range"
-                            min="5000"
-                            max="50000"
-                            value={priceRange.max}
-                            name="max"
-                            onChange={handlePriceChange}
-                            className="slider-input single-slider"
-                        />
+
+                        <div className="price-inputs-row">
+                            <input
+                                type="number"
+                                value={activeFilters.min_price || ''}
+                                name="min"
+                                onChange={handlePriceChange}
+                                className="price-box"
+                                placeholder="Min"
+                            />
+                            <span className="to-text">to</span>
+                            <input
+                                type="number"
+                                value={activeFilters.max_price || ''}
+                                name="max"
+                                onChange={handlePriceChange}
+                                className="price-box"
+                                placeholder="Max"
+                            />
+                        </div>
                     </div>
+                </FilterSection>
+            )}
 
-                    <div className="price-inputs-row">
-                        <input
-                            type="number"
-                            value={priceRange.min}
-                            name="min"
-                            onChange={handlePriceChange}
-                            className="price-box"
-                            placeholder="Min"
-                        />
-                        <span className="to-text">to</span>
-                        <input
-                            type="number"
-                            value={priceRange.max}
-                            name="max"
-                            onChange={handlePriceChange}
-                            className="price-box"
-                            placeholder="Max"
-                        />
-                    </div>
-                </div>
-            </FilterSection>
+            {/* Dynamic Attribute Sections */}
+            {Object.entries(availableFilters).map(([key, items]) => {
+                if (key === 'price_range') return null;
+                if (!items || items.length === 0) return null;
 
-            {/* Pattern Section */}
-            <FilterSection title="Pattern">
-                <div className="pattern-content">
-                    <ul className="pattern-list">
-                        {patterns.map((attr, index) => (
-                            <li 
-                                key={index} 
-                                className={`pattern-item ${selectedPattern === attr.name ? 'active' : ''}`}
-                                onClick={() => handlePatternSelect(attr.name)}
-                                role="button"
-                            >
-                                <span className="pattern-name">{attr.name} ({attr.count})</span>
-                            </li>
-                        ))}
-                    </ul>
-                    <button className="show-more-btn">Show More</button>
-                </div>
-            </FilterSection>
+                const apiKey = apiKeyMap[key] || key;
 
-            {/* Color Section */}
-            <FilterSection title="Color">
-                <div className="color-content">
-                    <ul className="color-list">
-                        {colors.map((c, index) => (
-                            <li 
-                                key={index} 
-                                className={`color-item ${selectedColors.includes(c.name) ? 'active' : ''}`}
-                                onClick={() => handleColorToggle(c.name)}
-                                role="button"
-                            >
-                                <div className="color-circle" style={c.style}></div>
-                                <span className="color-name">{c.name}</span>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-            </FilterSection>
-
-            {/* Occasion Section */}
-            <FilterSection title="Occasion">
-                <div className="occasion-content">
-                    <ul className="occasion-list">
-                        {occasions.map((o, index) => (
-                            <li key={index} className="occasion-item">
-                                <label className="occasion-label">
-                                    <input 
-                                        type="checkbox" 
-                                        checked={selectedOccasions.includes(o)}
-                                        onChange={() => handleOccasionToggle(o)}
-                                        className="occasion-checkbox"
-                                    />
-                                    <span className="occasion-name">{o}</span>
-                                </label>
-                            </li>
-                        ))}
-                    </ul>
-                </div>
-            </FilterSection>
-
-            <div className="filter-sidebar-content-filler">
-            </div>
+                return (
+                    <FilterSection key={key} title={filterLabels[key] || key}>
+                        <div className="filter-group-content">
+                            <ul className="filter-list">
+                                <li className="filter-item">
+                                    <label className="filter-label">
+                                        <input 
+                                            type="checkbox" 
+                                            checked={!activeFilters[apiKey]}
+                                            onChange={() => updateFilter(apiKey, '', false)} // Passing empty clears it
+                                            className="filter-checkbox"
+                                        />
+                                        <span className="filter-name">All</span>
+                                    </label>
+                                </li>
+                                {items.map((item) => (
+                                    <li key={item.slug} className="filter-item">
+                                        <label className="filter-label">
+                                            <input 
+                                                type="checkbox" 
+                                                checked={isFilterActive(key, item.slug)}
+                                                onChange={(e) => handleFilterChange(key, item.slug, e.target.checked)}
+                                                className="filter-checkbox"
+                                            />
+                                            <span className="filter-name">{item.name} ({item.count})</span>
+                                        </label>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    </FilterSection>
+                );
+            })}
         </aside>
     );
 };

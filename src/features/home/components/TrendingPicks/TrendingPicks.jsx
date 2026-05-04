@@ -23,7 +23,17 @@ const trendingCardsData = [
   { id: 8, title: 'Contemporary Kanchipuram Silks', size: 'equal', image: collection3 }
 ];
 
-const TrendingPicks = () => {
+const TrendingPicks = ({ data }) => {
+    const IMAGE_BASE_URL = 'http://localhost:5000';
+    
+    const displayData = data && data.length > 0 ? data.map((item, index) => ({
+        id: item.category_id || item.id,
+        title: item.category_name || item.name,
+        image: item.image_url ? (item.image_url.startsWith('http') ? item.image_url : `${IMAGE_BASE_URL}${item.image_url}`) : occasion1,
+        size: index === 0 ? 'large' : (index > 4 ? 'equal' : 'small'),
+        url: item.redirect_url || `/category/${item.slug || item.id}`
+    })) : trendingCardsData;
+
     return (
         <section className="trending-picks-section">
             <div className="container">
@@ -33,10 +43,10 @@ const TrendingPicks = () => {
                     {/* Top Section Layout */}
                     <div className="top-section">
                         <div className="left-column">
-                            <TrendingCard {...trendingCardsData[0]} />
+                            {displayData[0] && <TrendingCard {...displayData[0]} />}
                         </div>
                         <div className="right-column">
-                            {trendingCardsData.slice(1, 4+1).map(card => (
+                            {displayData.slice(1, 5).map(card => (
                                 <TrendingCard key={card.id} {...card} />
                             ))}
                         </div>
@@ -44,7 +54,7 @@ const TrendingPicks = () => {
 
                     {/* Bottom Section Layout */}
                     <div className="bottom-section">
-                        {trendingCardsData.slice(5).map(card => (
+                        {displayData.slice(5).map(card => (
                             <TrendingCard key={card.id} {...card} />
                         ))}
                     </div>

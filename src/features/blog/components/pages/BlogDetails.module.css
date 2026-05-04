@@ -141,6 +141,39 @@
     height: auto !important;
 }
 
+.dynamicContent p {
+    font-size: 16px;
+    line-height: 150%;
+    color: #313131;
+    margin-bottom: 24px;
+}
+
+.dynamicContent blockquote {
+    border-left: 5px solid #F34100;
+    padding-left: 20px;
+    margin: 40px 0;
+    font-size: 24px;
+    line-height: 40px;
+    color: #666666;
+    font-style: italic;
+}
+
+.dynamicContent cite {
+    display: block;
+    font-weight: 600;
+    font-size: 16px;
+    margin-top: 10px;
+    color: #333333;
+    font-style: normal;
+}
+
+.loading, .error {
+    text-align: center;
+    padding: 100px 0;
+    font-size: 20px;
+    color: #747B84;
+}
+
 /* Responsive Overrides */
 @media (max-width: 1200px) {
 

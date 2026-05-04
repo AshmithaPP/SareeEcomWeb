@@ -5,40 +5,26 @@ import Blog1 from 'assets/images/silk/Blog1.png';
 import Blog2 from 'assets/images/silk/Blog2.png';
 import Blog3 from 'assets/images/silk/Blog3.png';
 
-const blogs = [
-  {
-    id: 1,
-    image: Blog1,
-    category: "Travel",
-    date: "13 March 2023",
-    title: "Who is the best singer on chart? Know him?",
-    description: "chart by Billboard which ranks the all-time greatest artists based on their performance on the weekly Billboard Hot 100 and",
-    link: "#"
-  },
-  {
-    id: 2,
-    image: Blog2,
-    category: "Travel",
-    date: "13 March 2023",
-    title: "Who is the best singer on chart? Know him?",
-    description: "chart by Billboard which ranks the all-time greatest artists based on their performance on the weekly Billboard Hot 100 and",
-    link: "#"
-  },
-  {
-    id: 3,
-    image: Blog3,
-    category: "Travel",
-    date: "13 March 2023",
-    title: "Who is the best singer on chart? Know him?",
-    description: "chart by Billboard which ranks the all-time greatest artists based on their performance on the weekly Billboard Hot 100 and",
-    link: "#"
-  }
-];
+import useBlogStore from '@/store/useBlogStore';
 
-const BlogSection = ({ showTitle = true, title = "Our Blogs", customTitleClass = "" }) => {
+const BlogSection = ({ showTitle = true, title = "Our Blogs", customTitleClass = "", dynamicBlogs }) => {
+  const { blogs: storeBlogs, fetchBlogs } = useBlogStore();
+
   useEffect(() => {
-    // future API call here
-  }, []);
+    if (!dynamicBlogs) {
+      fetchBlogs();
+    }
+  }, [fetchBlogs, dynamicBlogs]);
+
+  const blogs = dynamicBlogs || storeBlogs;
+
+  // Fallback for image paths if they are from the backend
+  const getImageUrl = (image) => {
+    if (!image) return '';
+    if (image.startsWith('http')) return image;
+    if (image.startsWith('/uploads')) return `http://localhost:5000${image}`;
+    return image;
+  };
 
   return (
     <section className="blog-section">
@@ -46,8 +32,12 @@ const BlogSection = ({ showTitle = true, title = "Our Blogs", customTitleClass =
         {showTitle && <h2 className={`blog-section-title ${customTitleClass}`}>{title}</h2>}
         <div className="row g-4 justify-content-center">
           {blogs.map((blog) => (
-            <div className="col-lg-4 col-md-6 col-12 d-flex justify-content-center" key={blog.id}>
-              <BlogCard {...blog} />
+            <div className="col-lg-4 col-md-6 col-12 d-flex justify-content-center" key={blog.blog_id || blog.id}>
+              <BlogCard 
+                {...blog} 
+                image={getImageUrl(blog.image_url || blog.image)} 
+                description={blog.excerpt || blog.subtitle || (blog.content ? blog.content.substring(0, 100).replace(/<[^>]*>?/gm, '') + '...' : '')}
+              />
             </div>
           ))}
         </div>

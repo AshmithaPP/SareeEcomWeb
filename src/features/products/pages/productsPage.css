@@ -66,6 +66,44 @@
     line-height: 100%;
 }
 
+.products-search-box {
+    position: relative;
+    max-width: 280px;
+    width: 100%;
+}
+
+.products-search-box .search-input {
+    width: 100%;
+    padding: 10px 15px 10px 40px;
+    border: 1px solid #e5e7eb;
+    border-radius: 50px;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+    background: #f9fafb;
+}
+
+.products-search-box .search-input:focus {
+    outline: none;
+    border-color: #d1d5db;
+    background: #fff;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.products-search-box .search-icon {
+    position: absolute;
+    left: 15px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #9ca3af;
+    font-size: 0.9rem;
+    pointer-events: none;
+}
+
+.products-count {
+    font-size: 0.9rem;
+    white-space: nowrap;
+}
+
 .sort-arrow {
     flex-shrink: 0;
 }

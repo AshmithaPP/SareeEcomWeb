@@ -9,51 +9,62 @@ import whatsappIcon from 'assets/icons/social/whatsapp.png';
 
 import useProductStore from '@/store/useProductStore';
 import useAuthStore from '@/store/useAuthStore';
-import { useCart } from 'context/CartContext';
+import useCartStore from '@/store/useCartStore';
+import useWishlistStore from '@/store/useWishlistStore';
+import { toast } from 'react-toastify';
 
 const ProductInfo = ({ product }) => {
     const navigate = useNavigate();
     const { setSelectedVariant } = useProductStore();
     const { isAuthenticated } = useAuthStore();
-    const { addToCart } = useCart();
+    const { addToCart, loading: cartLoading } = useCartStore();
+    const { items: wishlistItems, toggleWishlist } = useWishlistStore();
 
-    const handleBuyNow = () => {
-        if (!isAuthenticated) {
-            navigate('/login');
-            return;
-        }
-        // If it's a specific variant, we might want to add that variant to cart first
-        addToCart(product);
-        navigate('/checkout');
+    const isLiked = wishlistItems.some(item => item.product_id === product?.product_id);
+
+    const handleWishlistToggle = (e) => {
+        e.stopPropagation();
+        toggleWishlist(product.product_id);
     };
 
-    const handleAddToCart = () => {
-        if (!isAuthenticated) {
-            navigate('/login');
-            return;
+    const handleBuyNow = async () => {
+        const variantId = product.selected_variant?.variant_id || product.default_variant_id;
+        
+        const result = await addToCart(product.product_id, variantId, 1);
+        if (result.success) {
+            navigate('/checkout');
+        } else {
+            toast.error(result.message || "Failed to add to cart");
         }
-        addToCart(product);
+    };
+
+    const handleAddToCart = async () => {
+        const variantId = product.selected_variant?.variant_id || product.default_variant_id;
+        
+        const result = await addToCart(product.product_id, variantId, 1);
+        if (result.success) {
+            toast.success("Added to cart successfully!");
+        } else {
+            toast.error(result.message || "Failed to add to cart");
+        }
     };
 
     if (!product) return null;
 
-    const { name, brand, rating, selectedVariant, variants } = product;
+    const { name, brand, rating, selected_variant, variants } = product;
     
     // Use variant price if available, otherwise fallback to base price
-    const currentPrice = selectedVariant?.price || product.price;
-    const isOutOfStock = selectedVariant?.stock?.status === 'out_of_stock';
+    const currentPrice = selected_variant?.price || product.price;
+    const isOutOfStock = selected_variant?.stock?.status === 'out_of_stock';
 
     // Extract unique attributes for selection (e.g., Color, Size)
-    const colors = variants ? Array.from(new Set(variants.map(v => JSON.stringify(v.attributes.color)))).map(s => JSON.parse(s)) : [];
-    const sizes = variants ? Array.from(new Set(variants.filter(v => v.attributes.size).map(v => 
-        typeof v.attributes.size === 'object' ? v.attributes.size.name : v.attributes.size
-    ))) : [];
+    const colors = product.variant_options?.color || [];
+    const sizes = product.variant_options?.size || [];
 
-    const activeColor = selectedVariant?.attributes?.color?.name;
-    const activeSize = typeof selectedVariant?.attributes?.size === 'object' ? selectedVariant?.attributes?.size.name : selectedVariant?.attributes?.size;
+    const activeColor = selected_variant?.attributes?.color?.name;
+    const activeSize = typeof selected_variant?.attributes?.size === 'object' ? selected_variant?.attributes?.size.name : selected_variant?.attributes?.size;
 
     const handleColorSelect = (colorName) => {
-        // Find first variant with this color and current size (if any)
         const variant = variants.find(v => {
             const vSize = typeof v.attributes.size === 'object' ? v.attributes.size.name : v.attributes.size;
             return v.attributes.color?.name === colorName && (!activeSize || vSize === activeSize);
@@ -72,9 +83,21 @@ const ProductInfo = ({ product }) => {
     return (
         <div className="product-info-wrapper">
             {/* Title & Badge */}
-            <div className="mb-3">
-                <span className="bridal-badge mb-2 d-inline-block">Bridal Special</span>
-                <h1 className="product-title m-0 text-capitalize">{name}</h1>
+            <div className="mb-3 position-relative">
+                <div className="d-flex justify-content-between align-items-start">
+                    <div>
+                        <span className="bridal-badge mb-2 d-inline-block">Bridal Special</span>
+                        <h1 className="product-title m-0 text-capitalize">{name}</h1>
+                    </div>
+                    <button 
+                        className={`pdp-wishlist-btn ${isLiked ? 'liked' : ''}`}
+                        onClick={handleWishlistToggle}
+                        style={{ background: 'none', border: 'none', fontSize: '1.5rem', outline: 'none' }}
+                        aria-label="Toggle Wishlist"
+                    >
+                        <i className={`bi ${isLiked ? 'bi-heart-fill text-danger' : 'bi-heart'}`}></i>
+                    </button>
+                </div>
                 <h2 className="product-subtitle mt-2 mb-3">{brand} | {product.category?.name}</h2>
                 <p className="product-description text-muted">{product.description}</p>
             </div>
@@ -123,16 +146,19 @@ const ProductInfo = ({ product }) => {
                     <div className="size-selection mb-3">
                         <div className="variant-label mb-2">Size: <strong>{activeSize}</strong></div>
                         <div className="d-flex gap-2">
-                            {sizes.map((size, idx) => (
-                                <button 
-                                    key={idx}
-                                    className={`size-chip btn btn-outline-dark ${activeSize === size ? 'active bg-dark text-white' : ''}`}
-                                    onClick={() => handleSizeSelect(size)}
-                                    style={{ minWidth: '45px', fontWeight: '500' }}
-                                >
-                                    {size}
-                                </button>
-                            ))}
+                            {sizes.map((size, idx) => {
+                                const sizeName = typeof size === 'object' ? size.name : size;
+                                return (
+                                    <button 
+                                        key={idx}
+                                        className={`size-chip btn btn-outline-dark ${activeSize === sizeName ? 'active bg-dark text-white' : ''}`}
+                                        onClick={() => handleSizeSelect(sizeName)}
+                                        style={{ minWidth: '45px', fontWeight: '500' }}
+                                    >
+                                        {sizeName}
+                                    </button>
+                                );
+                            })}
                         </div>
                     </div>
                 )}
@@ -141,26 +167,26 @@ const ProductInfo = ({ product }) => {
             {/* Price Card */}
             <div className="price-card mb-4 p-4 rounded-3">
                 <div className="d-flex align-items-center mb-1 flex-wrap">
-                    <span className="current-price me-3">₹{parseFloat(currentPrice.sellingPrice).toLocaleString('en-IN')}</span>
-                    {currentPrice.mrp > currentPrice.sellingPrice && (
+                    <span className="current-price me-3">₹{parseFloat(currentPrice.selling_price).toLocaleString('en-IN')}</span>
+                    {parseFloat(currentPrice.mrp) > parseFloat(currentPrice.selling_price) && (
                         <>
                             <span className="original-price me-3">₹{parseFloat(currentPrice.mrp).toLocaleString('en-IN')}</span>
                             <div className="discount-badge">
-                                {Math.round(((currentPrice.mrp - currentPrice.sellingPrice) / currentPrice.mrp) * 100)}% OFF
+                                {Math.round(((parseFloat(currentPrice.mrp) - parseFloat(currentPrice.selling_price)) / parseFloat(currentPrice.mrp)) * 100)}% OFF
                             </div>
                         </>
                     )}
                 </div>
-                <div className="taxes-text mb-3">{product.price.gstIncluded ? 'Inclusive of all taxes' : '+ GST'}</div>
-               
+                <div className="taxes-text mb-3">{product.price.tax_text || 'Inclusive of all taxes'}</div>
             </div>
+
             {/* Stock Alert */}
             <div className={`stock-alert d-flex justify-content-between align-items-center px-3 mb-4 rounded ${isOutOfStock ? 'bg-light' : ''}`}>
                 <div className="d-flex align-items-center gap-2">
                     <img src={timerIcon} alt="Timer" className="timer-icon" />
                     <div className="stock-text-col d-flex flex-column justify-content-center">
                         <div className={`stock-title ${isOutOfStock ? 'text-danger' : ''}`}>
-                            {isOutOfStock ? 'Out of Stock' : `Only ${selectedVariant?.stock?.quantity || 0} Pieces Available`}
+                            {isOutOfStock ? 'Out of Stock' : `Only ${selected_variant?.stock?.quantity || 0} Pieces Available`}
                         </div>
                         <div className="stock-subtitle">{isOutOfStock ? 'We will restock soon' : 'High demand – selling fast'}</div>
                     </div>
@@ -197,17 +223,19 @@ const ProductInfo = ({ product }) => {
                 <button 
                     className="btn btn-buy-now w-100 d-flex justify-content-center align-items-center gap-2" 
                     onClick={handleBuyNow}
-                    disabled={isOutOfStock}
+                    disabled={isOutOfStock || cartLoading}
                 >
                     <img src={buyNowIcon} alt="Buy Now" width="16" height="21" />
-                    Buy Now
+                    {cartLoading ? 'Processing...' : 'Buy Now'}
                 </button>
                 <button 
                     className="btn btn-add-cart w-100 d-flex justify-content-center align-items-center gap-2"
-                    disabled={isOutOfStock}
+                    disabled={isOutOfStock || cartLoading}
                     onClick={handleAddToCart}
                 >
-                    Add to Cart
+                    {cartLoading ? (
+                        <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
+                    ) : 'Add to Cart'}
                 </button>
                 <button className="btn btn-whatsapp w-100 d-flex justify-content-center align-items-center gap-2">
                     <img src={whatsappIcon} alt="WhatsApp" width="18" height="28" />

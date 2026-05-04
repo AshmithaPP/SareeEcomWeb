@@ -4,10 +4,16 @@ import './testimonials.css';
 import collection1 from 'assets/images/bridal/testimonial.png';
 import { useState } from 'react';
 
-const Testimonials = () => {
+const Testimonials = ({ dynamicTestimonials }) => {
     const [activeIndex, setActiveIndex] = useState(0);
 
-    const testimonials = [
+    const testimonials = dynamicTestimonials ? dynamicTestimonials.map(t => ({
+        image: t.image_url || collection1,
+        name: t.customer_name,
+        role: t.designation,
+        review: t.comment,
+        rating: Math.floor(t.rating)
+    })) : [
         {
             image: collection1,
             name: 'Anthony Bahringer',

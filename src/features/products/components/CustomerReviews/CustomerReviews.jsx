@@ -67,6 +67,20 @@ const ThumbsUpIcon = () => (
     </svg>
 );
 
+const EditPencilIcon = () => (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7" />
+        <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z" />
+    </svg>
+);
+
+const CloseIcon = () => (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <line x1="18" y1="6" x2="6" y2="18" />
+        <line x1="6" y1="6" x2="18" y2="18" />
+    </svg>
+);
+
 const ReviewCard = ({ review }) => {
     // Mapping API fields to UI component fields
     const customerName = review.userName || review.user_name || review.customer_name || review.Customer?.name || review.customer?.name || review.user?.name || "Guest User";
@@ -186,9 +200,19 @@ const CustomerReviews = ({ productId }) => {
                 <h3 className="reviews-section-title mb-0">Customer Reviews</h3>
                 <button 
                     onClick={() => setShowForm(!showForm)} 
-                    className="write-review-btn"
+                    className={`write-review-btn ${showForm ? 'cancel-mode' : ''}`}
                 >
-                    {showForm ? 'Cancel' : 'Write a Review'}
+                    {showForm ? (
+                        <>
+                            <CloseIcon />
+                            <span>Cancel</span>
+                        </>
+                    ) : (
+                        <>
+                            <EditPencilIcon />
+                            <span>Write a Review</span>
+                        </>
+                    )}
                 </button>
             </div>
 
@@ -218,7 +242,7 @@ const CustomerReviews = ({ productId }) => {
                                 placeholder="What did you like or dislike about the product?"
                             ></textarea>
                         </div>
-                        <button type="submit" className="btn btn-dark px-5 py-2 fw-bold" disabled={submitLoading}>
+                        <button type="submit" className="submit-review-btn" disabled={submitLoading}>
                             {submitLoading ? 'Submitting...' : 'Post Review'}
                         </button>
                     </form>

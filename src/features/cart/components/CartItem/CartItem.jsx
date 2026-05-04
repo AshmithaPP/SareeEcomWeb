@@ -1,38 +1,60 @@
-import React from 'react';
+import useCartStore from '@/store/useCartStore';
+import { toast } from 'react-toastify';
 import './cartItem.css';
-import { useCart } from '../../../../context/CartContext';
 
 const CartItem = ({ item }) => {
-    const { updateQuantity, removeFromCart } = useCart();
+    const { updateQuantity, removeFromCart, loading } = useCartStore();
 
-    const handleQuantityChange = (e) => {
-        const val = parseInt(e.target.value);
-        if (val >= 1) {
-            updateQuantity(item.id, val);
+    const handleIncrement = async () => {
+        const currentQty = Number(item.quantity);
+        const result = await updateQuantity(item.cart_item_id, currentQty + 1);
+        if (result && !result.success) {
+            toast.error(result.message || "Cannot increase quantity");
         }
     };
+
+    const handleDecrement = async () => {
+        const currentQty = Number(item.quantity);
+        if (currentQty > 1) {
+            await updateQuantity(item.cart_item_id, currentQty - 1);
+        }
+    };
+
+    const attributeText = item.attributes 
+        ? Object.entries(item.attributes).map(([key, val]) => `${key}: ${val}`).join(' | ')
+        : '';
 
     return (
         <div className="cart-item-row d-flex align-items-start mb-4">
             <div className="cart-item-image">
-                <img src={item.image} alt={item.name || item.title} />
+                <img src={item.image} alt={item.name} />
             </div>
             <div className="cart-item-details ms-4">
-                <h5 className="cart-item-title mb-1">{item.name || item.title}</h5>
-                <p className="cart-item-size text-muted mb-1">size:{item.size || 'XXL'}</p>
+                <h5 className="cart-item-title mb-1">{item.name}</h5>
+                {attributeText && <p className="cart-item-size text-muted mb-1">{attributeText}</p>}
                 <p className="cart-item-price mb-2">
-                    Rs {parseFloat(item.price?.toString().replace(/[^0-9.]/g, '') || item.discountedPrice?.toString().replace(/[^0-9.]/g, '') || 0).toFixed(2)}
+                    ₹{parseFloat(item.price).toLocaleString('en-IN')}
                 </p>
-                <div className="quantity-selector">
-                    <input 
-                        type="number" 
-                        value={item.quantity} 
-                        onChange={handleQuantityChange}
-                        min="1"
-                        className="quantity-input"
-                    />
+                <div className="quantity-selector-v2 d-flex align-items-center mb-2">
+                    <button 
+                        className="qty-btn minus" 
+                        onClick={handleDecrement}
+                        disabled={Number(item.quantity) <= 1}
+                    >
+                        <i className="bi bi-dash"></i>
+                    </button>
+                    <span className="qty-value mx-3">{item.quantity}</span>
+                    <button 
+                        className="qty-btn plus" 
+                        onClick={handleIncrement}
+                    >
+                        <i className="bi bi-plus"></i>
+                    </button>
                 </div>
-                <button className="remove-item-btn btn btn-link p-0 mt-2 text-danger" onClick={() => removeFromCart(item.id)}>
+                <button 
+                    className="remove-item-btn btn btn-link p-0 text-danger" 
+                    onClick={() => removeFromCart(item.cart_item_id)}
+                >
                     Remove
                 </button>
             </div>

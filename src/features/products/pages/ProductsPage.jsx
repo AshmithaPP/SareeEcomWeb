@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import useProductStore from '@/store/useProductStore';
 import Breadcrumbs from 'components/ui/Breadcrumbs/Breadcrumbs';
 import FilterSidebar from 'features/products/components/Filters/FilterSidebar';
@@ -8,15 +9,55 @@ import GiftSection from 'features/products/components/GiftSection/GiftSection';
 import './productsPage.css';
 
 const ProductsPage = () => {
-    const { products, loading, error, fetchProducts } = useProductStore();
+    const [searchParams, setSearchParams] = useSearchParams();
+    const [isSortOpen, setIsSortOpen] = useState(false);
+    const { products, loading, error, fetchProducts, pagination, activeFilters, clearAllFilters } = useProductStore();
 
+    // 1. Sync URL -> Zustand on Mount
     useEffect(() => {
-        fetchProducts({ page: 1, limit: 12 });
-    }, [fetchProducts]);
+        const params = Object.fromEntries([...searchParams]);
+        // Update store's activeFilters with URL params
+        useProductStore.setState({ activeFilters: params });
+    }, []);
 
-    const handleFilterChange = (filters) => {
-        console.log('Filters changed:', filters);
+    // 2. Sync Zustand -> URL & Fetch on changes
+    useEffect(() => {
+        const currentParams = new URLSearchParams(searchParams);
+        
+        // Update URL to match Zustand state
+        Object.entries(activeFilters).forEach(([key, value]) => {
+            currentParams.set(key, value);
+        });
+
+        // Remove keys that are NOT in activeFilters but are in the URL 
+        const activeKeys = Object.keys(activeFilters);
+        [...searchParams.keys()].forEach(key => {
+            if (!activeKeys.includes(key) && key !== 'page' && key !== 'limit' && key !== 'sort' && key !== 'category') {
+                currentParams.delete(key);
+            }
+        });
+
+        setSearchParams(currentParams, { replace: true });
+        
+        // Trigger fetch
+        fetchProducts();
+    }, [activeFilters]);
+
+    const handleSortChange = (sortValue) => {
+        useProductStore.setState((state) => ({
+            activeFilters: { ...state.activeFilters, sort: sortValue, page: '1' }
+        }));
+        setIsSortOpen(false);
     };
+
+    // Close sort on outside click
+    useEffect(() => {
+        const closeSort = (e) => {
+            if (!e.target.closest('.sort-dropdown')) setIsSortOpen(false);
+        };
+        document.addEventListener('click', closeSort);
+        return () => document.removeEventListener('click', closeSort);
+    }, []);
 
     const breadcrumbItems = [
         { label: 'Home', path: '/' },
@@ -28,7 +69,7 @@ const ProductsPage = () => {
             <div className="container py-5 text-center">
                 <h3 className="text-danger">Error loading products</h3>
                 <p>{error}</p>
-                <button className="btn btn-primary mt-3" onClick={() => fetchProducts()}>Retry</button>
+                <button className="btn btn-primary mt-3" onClick={() => fetchProducts(Object.fromEntries([...searchParams]))}>Retry</button>
             </div>
         );
     }
@@ -46,28 +87,62 @@ const ProductsPage = () => {
             <div className="row g-3 g-md-4">
                 {/* Left Sidebar Filters */}
                 <div className="col-lg-3 col-md-4">
-                    <FilterSidebar onFilterChange={handleFilterChange} />
+                    <FilterSidebar />
                 </div>
 
                 {/* Right Side Content Grid */}
                 <div className="col-lg-9 col-md-8">
                     {/* Header Section */}
                     <div className="row mb-4">
-                        <div className="col-12 d-flex justify-content-between align-items-center">
-                            <h2 className="products-title">Kanchipuram Silk Sarees</h2>
+                        <div className="col-12 d-flex justify-content-between align-items-center flex-wrap gap-3">
+                            <h2 className="products-title m-0">
+                                {activeFilters.category 
+                                    ? activeFilters.category.split(',').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(', ') 
+                                    : 'All Collections'}
+                            </h2>
 
-                            <div className="products-meta-controls d-flex align-items-center">
-                                <span className="products-count">
-                                    {loading ? 'Loading...' : `Showing ${products.length} products`}
+                            <div className="products-meta-controls d-flex align-items-center gap-3">
+                                <div className="products-search-box">
+                                    <input 
+                                        type="text" 
+                                        placeholder="Search in this collection..."
+                                        className="search-input"
+                                        defaultValue={activeFilters.search || ''}
+                                        onKeyDown={(e) => {
+                                            if (e.key === 'Enter') {
+                                                useProductStore.setState((state) => ({
+                                                    activeFilters: { ...state.activeFilters, search: e.target.value, page: '1' }
+                                                }));
+                                            }
+                                        }}
+                                    />
+                                    <i className="bi bi-search search-icon"></i>
+                                </div>
+
+                                <span className="products-count text-muted d-none d-lg-block">
+                                    {loading ? 'Searching...' : `${pagination.total_products || 0} Products`}
                                 </span>
 
-                                <div className="sort-dropdown">
-                                    <button className="sort-btn">
-                                        <span className="sort-text">Featured</span>
-                                        <svg width="21" height="21" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="sort-arrow">
-                                            <path d="M6 9L12 15L18 9" stroke="#000000" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-                                        </svg>
+                                <div className="sort-dropdown dropdown">
+                                    <button 
+                                        className="sort-btn dropdown-toggle" 
+                                        type="button"
+                                        onClick={() => setIsSortOpen(!isSortOpen)}
+                                    >
+                                        <span className="sort-text">
+                                            Sort By: {
+                                                activeFilters.sort === 'price_low_to_high' ? 'Price: Low to High' : 
+                                                activeFilters.sort === 'price_high_to_low' ? 'Price: High to Low' : 
+                                                activeFilters.sort === 'popularity' ? 'Popularity' : 'Newest'
+                                            }
+                                        </span>
                                     </button>
+                                    <ul className={`dropdown-menu dropdown-menu-end shadow-sm ${isSortOpen ? 'show' : ''}`}>
+                                        <li><button className="dropdown-item" onClick={() => handleSortChange('newest')}>Newest First</button></li>
+                                        <li><button className="dropdown-item" onClick={() => handleSortChange('popularity')}>Most Popular</button></li>
+                                        <li><button className="dropdown-item" onClick={() => handleSortChange('price_low_to_high')}>Price: Low to High</button></li>
+                                        <li><button className="dropdown-item" onClick={() => handleSortChange('price_high_to_low')}>Price: High to Low</button></li>
+                                    </ul>
                                 </div>
                             </div>
                         </div>

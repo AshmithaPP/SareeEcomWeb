@@ -42,7 +42,7 @@ const priceData = [
     }
 ];
 
-const ShopByPrice = () => {
+const ShopByPrice = ({ data }) => {
     const sectionRef = useRef(null);
 
     useEffect(() => {
@@ -57,17 +57,27 @@ const ShopByPrice = () => {
             { threshold: 0.1 }
         );
 
-        const reveals = sectionRef.current.querySelectorAll('.reveal');
-        reveals.forEach((reveal) => observer.observe(reveal));
+        if (sectionRef.current) {
+            const reveals = sectionRef.current.querySelectorAll('.reveal');
+            reveals.forEach((reveal) => observer.observe(reveal));
 
-        return () => {
-            reveals.forEach((reveal) => observer.unobserve(reveal));
-        };
+            return () => {
+                reveals.forEach((reveal) => observer.unobserve(reveal));
+            };
+        }
     }, []);
 
+    const displayData = data && data.length > 0 ? data.map((item, index) => ({
+        id: index + 1,
+        title: item.label,
+        type: index === 0 ? 'large' : 'small',
+        image: index === 0 ? largeSaree : (index === 1 ? everydaySaree : (index === 2 ? officeSaree : (index === 3 ? weddingSaree : festiveSaree))),
+        url: `/shop?min_price=${item.min_price}&max_price=${item.max_price}`
+    })) : priceData;
+
     // Layout configuration from data
-    const largeCard = priceData.find(item => item.type === 'large');
-    const smallCards = priceData.filter(item => item.type === 'small');
+    const largeCard = displayData.find(item => item.type === 'large');
+    const smallCards = displayData.filter(item => item.type === 'small');
 
     return (
         <section className="shop-by-price-section" ref={sectionRef}>
@@ -82,6 +92,7 @@ const ShopByPrice = () => {
                                 image={largeCard.image} 
                                 title={largeCard.title} 
                                 type="large" 
+                                url={largeCard.url}
                             />
                         )}
                     </div>
@@ -95,6 +106,7 @@ const ShopByPrice = () => {
                                     image={item.image}
                                     title={item.title}
                                     type="small"
+                                    url={item.url}
                                 />
                             ))}
                         </div>

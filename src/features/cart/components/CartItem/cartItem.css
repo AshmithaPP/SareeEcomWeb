@@ -35,20 +35,45 @@
     color: #E11D48; /* Exact red/pink as in image */
 }
 
-.quantity-selector {
+/* Quantity Selector V2 Styles */
+.quantity-selector-v2 {
+    border: 1px solid #ddd;
+    border-radius: 25px;
+    padding: 2px 8px;
+    width: fit-content;
+    background: #f9f9f9;
     margin-top: 10px;
 }
 
-.quantity-input {
-    width: 100px;
-    height: 48px;
-    padding: 5px;
-    border: 1px solid #E5E7EB;
+.qty-btn {
+    background: none;
+    border: none;
+    color: #333;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s ease;
+    cursor: pointer;
+}
+
+.qty-btn:hover:not(:disabled) {
+    background: #eee;
+    color: #000;
+}
+
+.qty-btn:disabled {
+    color: #ccc;
+    cursor: not-allowed;
+}
+
+.qty-value {
+    font-weight: 600;
+    font-size: 0.95rem;
+    min-width: 20px;
     text-align: center;
-    font-size: 16px;
-    font-family: 'Jost', sans-serif;
-    outline: none;
-    color: #3B82F6; /* Matches the '1' color if it was blue, but looking at image it's just black */
 }
 
 .remove-item-btn {

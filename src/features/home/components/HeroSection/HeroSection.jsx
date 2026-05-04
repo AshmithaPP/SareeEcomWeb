@@ -1,20 +1,22 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 import { Link } from 'react-router-dom';
 import './hero_section.css';
-import useSettingsStore from '@/store/useSettingsStore';
 import heroRightFallback from 'assets/images/silk/heroRight.png';
 
-const HeroSection = () => {
-    const { fetchSettings, getHeroSettings } = useSettingsStore();
-    const heroSettings = getHeroSettings();
-
-    useEffect(() => {
-        fetchSettings();
-    }, [fetchSettings]);
-
+const HeroSection = ({ dynamicData }) => {
     const IMAGE_BASE_URL = 'http://localhost:5000';
-    const heroImage = heroSettings.image 
-        ? (heroSettings.image.startsWith('http') ? heroSettings.image : `${IMAGE_BASE_URL}${heroSettings.image}`)
+    
+    // Default fallback if no data
+    const displayData = {
+        title: dynamicData?.title || 'Exquisite Hand-Woven Silk',
+        subtitle: dynamicData?.subtitle || 'Tradition meets luxury in every thread.',
+        buttonText: dynamicData?.cta_text || 'Explore Collection',
+        buttonLink: dynamicData?.redirect_url || '/shop',
+        image: dynamicData?.image_url
+    };
+
+    const heroImage = displayData.image 
+        ? (displayData.image.startsWith('http') ? displayData.image : `${IMAGE_BASE_URL}${displayData.image}`)
         : heroRightFallback;
 
     return (
@@ -22,23 +24,23 @@ const HeroSection = () => {
             <div className="container h-100">
                 <div className="row h-100">
                     <div className="col-md-6 hero-left">
-                        <h1 className="hero-title">{heroSettings.title}</h1>
+                        <h1 className="hero-title">{displayData.title}</h1>
                         <p className="hero-subtext">
-                            {heroSettings.subtitle.split('.').map((text, index, array) => (
+                            {displayData.subtitle ? displayData.subtitle.split('.').map((text, index, array) => (
                                 <React.Fragment key={index}>
                                     {text.trim()}{index < array.length - 1 ? '.' : ''}
                                     {index < array.length - 1 && <br />}
                                 </React.Fragment>
-                            ))}
+                            )) : ''}
                         </p>
-                        <Link to={heroSettings.buttonLink}>
-                            <button className="hero-btn">{heroSettings.buttonText}</button>
+                        <Link to={displayData.buttonLink}>
+                            <button className="hero-btn">{displayData.buttonText}</button>
                         </Link>
                     </div>
                     <div className="col-md-6 hero-right d-flex justify-content-end align-items-end d-none d-md-flex">
                         <img 
                             src={heroImage} 
-                            alt={heroSettings.title} 
+                            alt={displayData.title} 
                             className="hero-img img-fluid" 
                         />
                     </div>

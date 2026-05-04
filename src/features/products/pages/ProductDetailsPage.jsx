@@ -9,6 +9,7 @@ import WhyChoose from 'features/products/components/WhyChoose/WhyChoose';
 import ProductSpecifications from 'features/products/components/ProductSpecifications/ProductSpecifications';
 import AuthenticitySection from 'features/products/components/AuthenticitySection/AuthenticitySection';
 import CustomerReviews from 'features/products/components/CustomerReviews/CustomerReviews';
+import ProductCard from 'features/products/components/ProductCard/ProductCard';
 import silkMarkIcon from 'assets/icons/ui/silkmarkicon.png';
 import './productDetailsPage.css';
 
@@ -49,12 +50,17 @@ const ProductDetailsPage = () => {
         return <div className="container py-5 text-center"><h3>Product not found.</h3></div>;
     }
 
+    const breadcrumbItems = (product.breadcrumb || []).map(b => ({
+        label: b.name,
+        path: b.link
+    }));
+
     return (
         <div className="product-details-page container-fluid px-md-5 py-4">
             {/* Breadcrumb Row */}
             <div className="row mb-3">
                 <div className="col-12 d-flex justify-content-start">
-                    <Breadcrumbs />
+                    <Breadcrumbs items={breadcrumbItems} />
                 </div>
             </div>
 
@@ -63,8 +69,8 @@ const ProductDetailsPage = () => {
                 {/* Left Column: Product Image Gallery */}
                 <div className="col-lg-6 product-image-column">
                     <ProductImage 
-                        media={product.selectedVariant?.images || product.media} 
-                        video={product.video || product.media?.video}
+                        media={product.selected_variant?.images || product.media} 
+                        video={product.media?.video}
                     />
                 </div>
 
@@ -73,35 +79,49 @@ const ProductDetailsPage = () => {
                     {/* Basic Info, Price, Actions */}
                     <ProductInfo product={product} />
 
-                    {/* Quality Badges Row */}
-                    <div className="quality-badges-section mt-4 d-flex justify-content-between flex-wrap gap-2">
-                        {qualityBadges.map((badge, index) => (
-                            <QualityBadge key={index} badge={badge} />
-                        ))}
+                    {/* Trust Badges Row */}
+                    <div className="quality-badges-section mt-4 d-flex justify-content-start flex-wrap gap-3">
+                        {(product.trust_badges || []).map((badge, index) => {
+                            // Handle both string and object formats from API
+                            const badgeData = typeof badge === 'string' ? { title: badge } : badge;
+                            return <QualityBadge key={index} badge={badgeData} />;
+                        })}
                     </div>
 
-                    {/* Why Choose Section */}
+                    {/* Features / Services Highlights */}
                     <div className="why-choose-section mt-4">
-                        <WhyChoose features={features} />
+                        <WhyChoose features={product.highlights || []} />
                     </div>
                 </div>
             </div>
 
-            {/* Product Specifications Section (Full width / container width row below) */}
-            <div className="row mt-4 ">
+            {/* Product Specifications Section */}
+            <div className="row mt-5">
                 <div className="col-12">
                     <ProductSpecifications 
-                        specifications={product.specifications} 
-                        careInstructions={product.careInstructions || product.care_instructions}
+                        specifications={product.specifications || []} 
+                        services={product.services || []}
                     />
                 </div>
             </div>
 
-            {/* Authenticity Section */}
-            {authenticityData && (
-                <div className="row mb-4 ">
+            {/* Related Products Section */}
+            {product.related_products?.length > 0 && (
+                <div className="row mt-5 mb-4">
                     <div className="col-12">
-                        <AuthenticitySection {...authenticityData} />
+                        <h3 className="section-title mb-4">Related Products</h3>
+                        <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
+                            {product.related_products.map((item) => (
+                                <div className="col" key={item.product_id}>
+                                    <ProductCard product={{
+                                        ...item,
+                                        title: item.name,
+                                        image: item.image_url,
+                                        discountedPrice: `₹${parseFloat(item.price).toLocaleString('en-IN')}`
+                                    }} />
+                                </div>
+                            ))}
+                        </div>
                     </div>
                 </div>
             )}
@@ -109,10 +129,9 @@ const ProductDetailsPage = () => {
             {/* Customer Reviews Section */}
             <div className="row mb-5">
                 <div className="col-12">
-                    <CustomerReviews productId={product.product_id || product.id} />
+                    <CustomerReviews productId={product.product_id} />
                 </div>
             </div>
-
         </div>
     );
 };

@@ -5,16 +5,18 @@ import Logo from 'assets/images/logo/Logo-SareeEcom.png';
 import SearchIcon from 'assets/icons/ui/search-line.png';
 import UserIcon from 'assets/icons/ui/contact.png';
 import CartIcon from 'assets/icons/ui/shopping-cart.png';
-import { useWishlist } from 'context/WishlistContext';
-import { useCart } from 'context/CartContext';
 import useSettingsStore from '@/store/useSettingsStore';
 import useAuthStore from '@/store/useAuthStore';
+import useCartStore from '@/store/useCartStore';
+import useWishlistStore from '@/store/useWishlistStore';
 import { useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
     const [menuOpen, setMenuOpen] = useState(false);
-    const { wishlistItems } = useWishlist();
-    const { cartItems } = useCart();
+    const { items: wishlistItems, fetchWishlist } = useWishlistStore();
+    const { cart, fetchCart } = useCartStore();
+    const cartItems = cart.items || [];
+    
     const { fetchSettings, getSiteInfo } = useSettingsStore();
     const { user, isAuthenticated, logout } = useAuthStore();
     const navigate = useNavigate();
@@ -23,10 +25,12 @@ const Navbar = () => {
 
     useEffect(() => {
         fetchSettings();
-    }, [fetchSettings]);
+        fetchCart();
+        fetchWishlist();
+    }, [fetchSettings, fetchCart, fetchWishlist]);
 
     const IMAGE_BASE_URL = 'http://localhost:5000';
-    const logoSrc = siteInfo.site_logo 
+    const logoSrc = siteInfo.site_logo
         ? (siteInfo.site_logo.startsWith('http') ? siteInfo.site_logo : `${IMAGE_BASE_URL}${siteInfo.site_logo}`)
         : Logo;
 
@@ -62,8 +66,8 @@ const Navbar = () => {
 
     return (
         <div className="navbar-wrapper">
-            <div 
-                className={`menu-backdrop${menuOpen ? ' show' : ''}`} 
+            <div
+                className={`menu-backdrop${menuOpen ? ' show' : ''}`}
                 onClick={() => setMenuOpen(false)}
             ></div>
             <div className="navbar-inner">
@@ -74,7 +78,7 @@ const Navbar = () => {
                         alt={siteInfo.site_title || "Kanchipuram Silk Logo"}
                         className="logo-img"
                         onError={(e) => {
-                            e.target.onerror = null; 
+                            e.target.onerror = null;
                             e.target.src = Logo;
                         }}
                     />
@@ -120,21 +124,21 @@ const Navbar = () => {
                                     </NavLink>
                                 )}
                             </div>
-                            <NavLink 
-                                to={isAuthenticated ? "/wishlist" : "/login"} 
+                            <NavLink
+                                to={isAuthenticated ? "/wishlist" : "/login"}
                                 className="nav-icon wishlist-nav-icon"
                             >
                                 <i className="bi bi-heart thick-heart"></i>
-                                {isAuthenticated && wishlistItems.length > 0 && (
+                                {wishlistItems.length > 0 && (
                                     <span className="wishlist-badge">{wishlistItems.length}</span>
                                 )}
                             </NavLink>
-                            <NavLink 
-                                to={isAuthenticated ? "/cart" : "/login"} 
+                            <NavLink
+                                to="/cart"
                                 className="nav-icon cart-nav-icon"
                             >
                                 <img src={CartIcon} alt="Cart" />
-                                {isAuthenticated && cartItems.length > 0 && (
+                                {cartItems.length > 0 && (
                                     <span className="cart-badge">{cartItems.length}</span>
                                 )}
                             </NavLink>
@@ -168,21 +172,21 @@ const Navbar = () => {
                                 </NavLink>
                             )}
                         </div>
-                        <NavLink 
-                            to={isAuthenticated ? "/wishlist" : "/login"} 
-                            className="nav-icon wishlist-nav-icon"
-                        >
-                            <i className="bi bi-heart thick-heart"></i>
-                            {isAuthenticated && wishlistItems.length > 0 && (
-                                <span className="wishlist-badge">{wishlistItems.length}</span>
-                            )}
-                        </NavLink>
-                        <NavLink 
-                            to={isAuthenticated ? "/cart" : "/login"} 
+                            <NavLink
+                                to={isAuthenticated ? "/wishlist" : "/login"}
+                                className="nav-icon wishlist-nav-icon"
+                            >
+                                <i className="bi bi-heart thick-heart"></i>
+                                {wishlistItems.length > 0 && (
+                                    <span className="wishlist-badge">{wishlistItems.length}</span>
+                                )}
+                            </NavLink>
+                        <NavLink
+                            to="/cart"
                             className="nav-icon cart-nav-icon"
                         >
                             <img src={CartIcon} alt="Cart" />
-                            {isAuthenticated && cartItems.length > 0 && (
+                            {cartItems.length > 0 && (
                                 <span className="cart-badge">{cartItems.length}</span>
                             )}
                         </NavLink>

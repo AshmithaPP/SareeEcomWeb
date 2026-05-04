@@ -1,26 +1,28 @@
-import React from 'react';
-import './cartSummary.css';
+import useCartStore from '@/store/useCartStore';
 import { useNavigate } from 'react-router-dom';
-import { useCart } from '../../../../context/CartContext';
+import './cartSummary.css';
 
 const CartSummary = () => {
-    const { cartItems, cartTotal } = useCart();
+    const { cart } = useCartStore();
     const navigate = useNavigate();
+
+    const items = cart.items || [];
+    const summary = cart.summary || { total: 0 };
 
     return (
         <div className="cart-summary-card p-4">
             <div className="summary-items mb-4">
-                {cartItems.map((item) => (
-                    <div className="summary-item d-flex justify-content-between mb-2" key={item.id}>
-                        <span className="summary-item-name">{item.name || item.title}</span>
-                        <span className="summary-item-price">Rs {parseFloat(item.price?.toString().replace(/[^0-9.]/g, '') || item.discountedPrice?.toString().replace(/[^0-9.]/g, '') || 0).toFixed(2)}</span>
+                {items.map((item, index) => (
+                    <div className="summary-item d-flex justify-content-between mb-2" key={item.cart_item_id || index}>
+                        <span className="summary-item-name">{item.name} (x{item.quantity})</span>
+                        <span className="summary-item-price">₹{parseFloat(item.total).toLocaleString('en-IN')}</span>
                     </div>
                 ))}
             </div>
 
             <div className="summary-total d-flex justify-content-between align-items-center pt-3 mb-4">
-                <span className="total-label">Total</span>
-                <span className="total-price">Rs {cartTotal.toFixed(2)}</span>
+                <span className="total-label">Total Amount</span>
+                <span className="total-price">₹{parseFloat(summary.total).toLocaleString('en-IN')}</span>
             </div>
 
             <button className="proceed-btn btn btn-dark w-100 py-3 mb-3" onClick={() => navigate('/checkout')}>

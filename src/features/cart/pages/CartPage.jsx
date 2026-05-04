@@ -1,12 +1,17 @@
-import React from 'react';
+import { useEffect } from 'react';
 import Breadcrumbs from 'components/ui/Breadcrumbs/Breadcrumbs';
 import CartItem from 'features/cart/components/CartItem/CartItem';
 import CartSummary from 'features/cart/components/CartSummary/CartSummary';
-import { useCart } from 'context/CartContext';
+import useCartStore from '@/store/useCartStore';
 import './cartPage.css';
 
 const CartPage = () => {
-    const { cartItems } = useCart();
+    const { cart, fetchCart, loading } = useCartStore();
+    const cartItems = cart.items || [];
+
+    useEffect(() => {
+        fetchCart();
+    }, [fetchCart]);
 
     const breadcrumbItems = [
         { label: 'Home', path: '/' },
@@ -31,8 +36,8 @@ const CartPage = () => {
                         {/* Left: Cart Items */}
                         <div className="col-lg-7">
                             <div className="cart-items-list">
-                                {cartItems.map((item) => (
-                                    <CartItem key={item.id} item={item} />
+                                {cartItems.map((item, index) => (
+                                    <CartItem key={item.cart_item_id || index} item={item} />
                                 ))}
                             </div>
                         </div>

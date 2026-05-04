@@ -1,8 +1,9 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { useCart } from 'context/CartContext';
 import useAuthStore from '@/store/useAuthStore';
 import WishlistButton from 'components/common/WishlistButton';
+import useCartStore from '@/store/useCartStore';
+import { toast } from 'react-toastify';
 import styles from './ProductCard.module.css';
 import cartIcon from 'assets/icons/ui/cartIcon.png';
 import starIcon from 'assets/icons/ui/stars.png';
@@ -10,31 +11,32 @@ import starIcon from 'assets/icons/ui/stars.png';
 const ProductCard = ({ product }) => {
     const navigate = useNavigate();
     const { isAuthenticated } = useAuthStore();
-    const {
-        title,
-        image,
-        discount,
-        discountedPrice,
-        originalPrice,
-        discountBg,
-        rating,
-        stockStatus
-    } = product;
-    const { addToCart } = useCart();
+    const { addToCart } = useCartStore();
 
-    const handleAddToCart = (e) => {
+    const id = product.product_id || product.id;
+    const slug = product.slug || id;
+    const title = product.title || product.name || product.product_name;
+    const image = product.image || product.thumbnail || product.image_url;
+    const stockStatus = product.stockStatus || (product.stock_status || 'in_stock');
+    const discountedPrice = product.discountedPrice || (product.price?.selling_price ? `₹${parseFloat(product.price.selling_price).toLocaleString('en-IN')}` : `₹${product.price}`);
+    const originalPrice = product.originalPrice || (product.price?.mrp ? `₹${parseFloat(product.price.mrp).toLocaleString('en-IN')}` : null);
+    const discount = product.discount || (product.price?.discountPercentage ? `${product.price.discountPercentage}% off` : null);
+    const discountBg = product.discountBg;
+    const rating = product.rating;
+
+    const handleAddToCart = async (e) => {
         e.stopPropagation();
-        if (!isAuthenticated) {
-            navigate('/login');
-            return;
-        }
         if (stockStatus === 'out_of_stock') return;
-        addToCart(product);
+        
+        const result = await addToCart(id, null, 1);
+        if (result?.success) {
+            toast.success('Added to cart!');
+        } else {
+            toast.error(result?.message || 'Failed to add to cart');
+        }
     };
 
     const isOutOfStock = stockStatus === 'out_of_stock';
-    const id = product.product_id || product.id;
-    const slug = product.slug || id;
 
     return (
         <div className={`${styles.cardItem} ${isOutOfStock ? styles.outOfStock : ''}`} onClick={() => navigate(`/product-details/${slug}`)} style={{ cursor: 'pointer' }}>

@@ -37,15 +37,24 @@ const occasionItems = [
   },
 ];
 
-const ShopByOccasion = () => {
+const ShopByOccasion = ({ dynamicData }) => {
+  const IMAGE_BASE_URL = 'http://localhost:5000';
+  
+  const occasions = dynamicData && dynamicData.length > 0 ? dynamicData.map(item => ({
+    id: item.occasion_id || item.id,
+    name: item.name,
+    image: item.image_url ? (item.image_url.startsWith('http') ? item.image_url : `${IMAGE_BASE_URL}${item.image_url}`) : bridalSaree,
+    url: item.redirect_url || `/shop?occasion=${item.name}`
+  })) : occasionItems;
+
   return (
     <section className="shop-by-occasion-section py-5">
       <div className="container">
         <h2 className="section-heading mb-5">Shop By Occasion</h2>
         <div className="row justify-content-center row-cols-2 row-cols-md-3 row-cols-lg-5 g-4">
-          {occasionItems.map((item) => (
+          {occasions.map((item) => (
             <div className="col d-flex justify-content-center" key={item.id}>
-              <CircleCard image={item.image} title={item.name} />
+              <CircleCard image={item.image} title={item.name} url={item.url} />
             </div>
           ))}
         </div>

@@ -3,18 +3,19 @@ import { useNavigate } from 'react-router-dom';
 import './productCard.css';
 import heartIcon from 'assets/icons/ui/heartIcon.png'; 
 import CartIcon from 'assets/icons/ui/shopping-cart.png';
-import { useWishlist } from 'context/WishlistContext';
-import { useCart } from 'context/CartContext';
 import useAuthStore from '@/store/useAuthStore';
+import useCartStore from '@/store/useCartStore';
+import useWishlistStore from '@/store/useWishlistStore';
+import { toast } from 'react-toastify';
 
 const ProductCard = ({ product }) => {
-    // Handle both Frontend mock data and Backend raw API data
-    const name = product.name || product.title;
+    // Handle both Frontend mock data and Backend raw API data (Product, Home, etc.)
+    const name = product.name || product.title || product.product_name;
     const id = product.product_id || product.id;
     const isBestSeller = product.isBestSeller || product.is_best_seller;
     
     // Image fallback
-    const image = product.thumbnail || product.image;
+    const image = product.thumbnail || product.image || product.image_url;
 
     // Price and Discount Logic
     let price = product.price || product.discountedPrice;
@@ -28,28 +29,30 @@ const ProductCard = ({ product }) => {
         discount = product.price.discountPercentage > 0 ? product.price.discountPercentage : null;
     }
     const navigate = useNavigate();
-    const { toggleWishlist, isInWishlist } = useWishlist();
-    const { addToCart } = useCart();
+    const { items: wishlistItems, toggleWishlist } = useWishlistStore();
+    const { addToCart } = useCartStore();
     const { isAuthenticated } = useAuthStore();
 
-    const isLiked = isInWishlist(id);
+    const isLiked = wishlistItems.some(item => item.product_id === id);
 
-    const handleWishlistToggle = (e) => {
+    const handleWishlistToggle = async (e) => {
         e.stopPropagation();
-        if (!isAuthenticated) {
-            navigate('/login');
-            return;
+        const result = await toggleWishlist(id);
+        if (result.success) {
+            if (result.action === 'added') {
+                toast.success('Added to wishlist!');
+            } else {
+                toast.info('Removed from wishlist');
+            }
+        } else {
+            toast.error(result.message || 'Failed to update wishlist');
         }
-        toggleWishlist(product);
     };
 
     const handleAddToCart = (e) => {
         e.stopPropagation();
-        if (!isAuthenticated) {
-            navigate('/login');
-            return;
-        }
-        addToCart(product);
+        // For simple product card, we might not have a variant_id, so we just navigate
+        navigate(`/product-details/${slug}`);
     };
 
     const slug = product.slug || id;

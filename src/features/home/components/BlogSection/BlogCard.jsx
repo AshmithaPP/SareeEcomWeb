@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import './blogSection.css';
 
-const BlogCard = ({ image, category, date, title, description, link }) => {
+const BlogCard = ({ id, image, category, date, title, description, link }) => {
   return (
     <div className="blog-card">
       <div className="blog-image-wrapper">
@@ -15,7 +15,7 @@ const BlogCard = ({ image, category, date, title, description, link }) => {
         </div>
         <h3 className="blog-title">{title}</h3>
         <p className="blog-description">{description}</p>
-        <Link to="/blogdetails" className="blog-readmore">Read More...</Link>
+        <Link to={`/blog/${id}`} className="blog-readmore">Read More...</Link>
       </div>
     </div>
   );

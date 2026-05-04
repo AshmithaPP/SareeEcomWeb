@@ -1,17 +1,24 @@
-import React from 'react';
+import { useEffect } from 'react';
 import Breadcrumbs from 'components/ui/Breadcrumbs/Breadcrumbs';
 import Sidebar from 'features/wishlist/components/Sidebar/Sidebar';
 import WishlistCard from 'features/wishlist/components/WishlistCard/WishlistCard';
-import { useWishlist } from 'context/WishlistContext';
-import { useCart } from 'context/CartContext';
+import useWishlistStore from '@/store/useWishlistStore';
+import useCartStore from '@/store/useCartStore';
 import './wishlistPage.css';
 
 const WishlistPage = () => {
-    const { wishlistItems } = useWishlist();
-    const { addToCart } = useCart();
+    const { items: wishlistItems, fetchWishlist } = useWishlistStore();
+    const { addToCart } = useCartStore();
+
+    useEffect(() => {
+        fetchWishlist();
+    }, [fetchWishlist]);
 
     const handleAddAllToCart = () => {
-        wishlistItems.forEach(item => addToCart(item));
+        // Since addToCart in store requires productId and variantId
+        wishlistItems.forEach(item => {
+            addToCart(item.product_id, item.variant_id || null);
+        });
     };
 
     const breadcrumbItems = [
@@ -44,7 +51,7 @@ const WishlistPage = () => {
                                 <>
                                     <div className="row row-cols-2 row-cols-md-3 row-cols-lg-4 g-4">
                                         {wishlistItems.map((item) => (
-                                            <div className="col" key={item.id}>
+                                            <div className="col" key={`${item.product_id}-${item.variant_id || 'default'}`}>
                                                 <WishlistCard product={item} />
                                             </div>
                                         ))}

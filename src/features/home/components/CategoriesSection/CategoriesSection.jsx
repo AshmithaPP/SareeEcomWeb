@@ -7,8 +7,15 @@ import bridalSaree from 'assets/images/bridal/bridal_saree.png';
 import traditionalSilk from 'assets/images/bridal/traditional_silk.png';
 import lightweightSilk from 'assets/images/bridal/lightweight_silk.png';
 
-const CategoriesSection = () => {
-    const categories = [
+const CategoriesSection = ({ dynamicCategories }) => {
+    const IMAGE_BASE_URL = 'http://localhost:5000';
+    
+    const categories = dynamicCategories ? dynamicCategories.map(cat => ({
+        id: cat.category_id,
+        title: cat.category_name,
+        count: "View Collection", // or fetch count if available
+        imageUrl: cat.image_url ? (cat.image_url.startsWith('http') ? cat.image_url : `${IMAGE_BASE_URL}${cat.image_url}`) : bridalSaree
+    })) : [
         {
             id: 1,
             title: "Bridal Kanchipuram Sarees",

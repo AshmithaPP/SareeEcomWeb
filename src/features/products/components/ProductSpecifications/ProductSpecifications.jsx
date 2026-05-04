@@ -10,23 +10,20 @@ import coolIcon from '../../../../assets/icons/ui/cool.png';
 import chemicalIcon from '../../../../assets/icons/ui/chemical.png';
 import handIcon from '../../../../assets/icons/ui/hand.png';
 
-const ProductSpecifications = ({ specifications, careInstructions }) => {
-    // Map API Data to Specifications format
-    const specificationsData = specifications && Object.keys(specifications).length > 0 
-        ? Object.entries(specifications).map(([key, value]) => ({
-            label: `${key}:`,
-            value: value
-        })) 
-        : [];
+const ProductSpecifications = ({ specifications, services }) => {
+    // Map API Data to Specifications format (new array structure)
+    const specificationsData = (specifications || []).map(item => ({
+        label: item.label,
+        value: item.value
+    }));
 
-    // Map API Data to Care Instructions format
-    const careInstructionsData = (careInstructions && careInstructions.length > 0)
-        ? careInstructions.map((item, index) => ({
-            text: typeof item === 'string' ? item : item.text,
-            // Cycle through local icons if not provided in API
-            icon: item.icon || [dropIcon, flowerIcon, coolIcon, chemicalIcon, handIcon][index % 5]
-        }))
-        : [];
+    // Map API Data (services/care instructions) to the expected format
+    const careInstructionsData = (services || []).map((item, index) => ({
+        // Safely handle both string and object {title: '...'} formats
+        text: typeof item === 'object' ? (item.title || JSON.stringify(item)) : item,
+        // Cycle through local icons for a rich look
+        icon: [dropIcon, flowerIcon, coolIcon, chemicalIcon, handIcon][index % 5]
+    }));
 
     return (
         <div className="product-specifications-section mt-5 mb-5 pb-5">

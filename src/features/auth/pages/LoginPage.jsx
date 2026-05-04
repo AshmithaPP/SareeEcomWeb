@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import useAuthStore from '@/store/useAuthStore';
+import useCartStore from '@/store/useCartStore';
+import useWishlistStore from '@/store/useWishlistStore';
 import './loginPage.css';
 
 const LoginPage = () => {
@@ -30,6 +32,9 @@ const LoginPage = () => {
 
             if (data.success) {
                 setAuth(data.data.user, data.data.accessToken);
+                // Merge Guest Data into User Account
+                await useCartStore.getState().mergeCart();
+                await useWishlistStore.getState().mergeWishlist();
                 navigate('/');
             } else {
                 setError(data.message || 'Login failed. Please check your credentials.');

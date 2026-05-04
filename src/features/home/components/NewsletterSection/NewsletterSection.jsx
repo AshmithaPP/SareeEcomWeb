@@ -2,13 +2,17 @@ import React, { useState } from 'react';
 import './newsletterSection.css';
 import newsletterImg from 'assets/images/silk/NewsSection.png'; // Verified file name
 
-const NewsletterSection = () => {
+const NewsletterSection = ({ dynamicData }) => {
   const [email, setEmail] = useState('');
+
+  const displayData = dynamicData || {
+    title: "Enter The World Of Timeless Sarees",
+    subtitle: "Be The First To Discover Our Latest Kanchipuram Collections, Festive Edits, And Exclusive Store Events."
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
     console.log('Email Submitted:', email);
-    // Add newsletter subscription logic here
   };
 
   return (
@@ -19,10 +23,10 @@ const NewsletterSection = () => {
             {/* Left Content Column */}
             <div className="col-lg-7 col-md-12 d-flex flex-column justify-content-center newsletter-content">
               <h2 className="newsletter-title">
-                Enter The World Of Timeless Sarees
+                {displayData.title}
               </h2>
               <p className="newsletter-subtitle">
-                Be The First To Discover Our Latest Kanchipuram Collections, Festive Edits, And Exclusive Store Events.
+                {displayData.subtitle}
               </p>
               
               <form onSubmit={handleSubmit} className="newsletter-form d-flex">
