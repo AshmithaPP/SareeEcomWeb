@@ -8,6 +8,7 @@ import CartPage from 'features/cart/pages/CartPage'
 import ContactPage from 'features/contact/pages/ContactPage'
 import CheckoutPage from 'pages/CheckoutPage'
 import OrderConfirmationPage from 'pages/OrderConfirmationPage'
+import MyOrders from 'pages/MyOrders'
 import AboutPage from '@/features/about/pages/AboutPage'
 import BlogPage from '@/features/blog/components/pages/BlogPage'
 import BlogDetails from '@/features/blog/components/pages/BlogDetails'
@@ -28,8 +29,9 @@ const AppRoutes = () => {
       <Route path="/blog" element={<BlogPage />} />
       <Route path="/blog/:id" element={<BlogDetails />} />
       <Route path="/about" element={<AboutPage />} />
-      <Route path="/checkout" element={<CheckoutPage />} />
+      <Route path="/checkout" element={<ProtectedRoute><CheckoutPage /></ProtectedRoute>} />
       <Route path="/order-confirmation/:orderId?" element={<OrderConfirmationPage />} />
+      <Route path="/orders" element={<ProtectedRoute><MyOrders /></ProtectedRoute>} />
 
     </Routes>
   )

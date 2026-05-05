@@ -25,7 +25,12 @@ const CartSummary = () => {
                 <span className="total-price">₹{parseFloat(summary.total).toLocaleString('en-IN')}</span>
             </div>
 
-            <button className="proceed-btn btn btn-dark w-100 py-3 mb-3" onClick={() => navigate('/checkout')}>
+            <button 
+                className={`proceed-btn btn ${items.length === 0 ? 'btn-secondary' : 'btn-dark'} w-100 py-3 mb-3`} 
+                onClick={() => items.length > 0 && navigate('/checkout')}
+                disabled={items.length === 0}
+                title={items.length === 0 ? "Add items to cart to proceed" : ""}
+            >
                 Proceed to Checkout
             </button>
 

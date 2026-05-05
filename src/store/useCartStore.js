@@ -148,6 +148,52 @@ const useCartStore = create(
         } finally {
             set({ loading: false });
         }
+      },
+
+      applyCoupon: async (code, subtotal) => {
+        set({ loading: true, error: null });
+        try {
+          const res = await fetch('http://localhost:5000/api/coupons/validate', {
+            method: 'POST',
+            headers: get().getHeaders(),
+            body: JSON.stringify({ code, orderAmount: subtotal })
+          });
+          const data = await res.json();
+          if (data.success) {
+            const updatedCart = { ...get().cart };
+            const discount = parseFloat(data.data.discount_amount);
+            const delivery = parseFloat(updatedCart.summary.delivery) || 0;
+            const subtotalVal = parseFloat(updatedCart.summary.subtotal) || 0;
+            
+            updatedCart.summary.discount = discount;
+            updatedCart.summary.total = subtotalVal + delivery - discount;
+            
+            set({ cart: updatedCart, loading: false });
+            return { success: true, data: data.data };
+          } else {
+            set({ error: data.message, loading: false });
+            return { success: false, message: data.message };
+          }
+        } catch (err) {
+          set({ error: err.message, loading: false });
+          return { success: false, message: err.message };
+        }
+      },
+
+      fetchActiveCoupons: async () => {
+        try {
+          const res = await fetch('http://localhost:5000/api/coupons/active', {
+            headers: get().getHeaders()
+          });
+          const data = await res.json();
+          if (data.success) {
+            return data.data;
+          }
+          return [];
+        } catch (err) {
+          console.error("Failed to fetch coupons", err);
+          return [];
+        }
       }
     }),
     {

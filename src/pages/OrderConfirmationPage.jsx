@@ -11,10 +11,12 @@ const OrderConfirmationPage = () => {
   const { orderId } = useParams();
   const navigate = useNavigate();
   
-  const { orderDetails: orderData, loading, error, fetchOrderDetails } = useOrderStore();
+  const { currentOrder, loading, error, fetchOrderDetails } = useOrderStore();
 
   useEffect(() => {
-    fetchOrderDetails(orderId);
+    if (orderId) {
+      fetchOrderDetails(orderId);
+    }
   }, [orderId, fetchOrderDetails]);
 
   if (loading) {
@@ -30,23 +32,31 @@ const OrderConfirmationPage = () => {
     );
   }
 
-  if (error) {
+  if (error || !currentOrder) {
     return (
       <div className="order-conf-wrapper">
         <div className="text-center p-5 bg-white rounded shadow-sm" style={{ maxWidth: '500px' }}>
-          <h2 style={{ fontFamily: 'Jost', color: '#800000' }}>Oops!</h2>
-          <p style={{ fontFamily: 'Jost', color: '#5A413D' }}>{error}</p>
+          <h2 style={{ fontFamily: 'Jost', color: '#800000' }}>{error ? 'Oops!' : 'Order Not Found'}</h2>
+          <p style={{ fontFamily: 'Jost', color: '#5A413D' }}>{error || 'We could not find the details for this order.'}</p>
           <button 
             className="order-conf-btn-track mt-3" 
-            onClick={() => window.location.reload()}
+            onClick={() => navigate('/products')}
             style={{ width: 'auto', padding: '0 32px', margin: '0 auto' }}
           >
-            Retry
+            Back to Shop
           </button>
         </div>
       </div>
     );
   }
+
+  // Parse shipping address if it's a string
+  const address = typeof currentOrder.shipping_address === 'string' 
+    ? JSON.parse(currentOrder.shipping_address) 
+    : currentOrder.shipping_address;
+
+  // Get first product for summary or list all
+  const firstItem = currentOrder.items?.[0] || {};
 
   return (
     <div className="order-conf-wrapper">
@@ -62,7 +72,7 @@ const OrderConfirmationPage = () => {
             </div>
             <h1 className="order-conf-title">Order Confirmed!</h1>
             <p className="order-conf-subtext">
-              Thank you for your purchase. Your Kanchipuram silk saree order has been successfully placed and is being prepared for transit.
+              Thank you for your purchase. Your order #{currentOrder.order_number} has been successfully placed and is being prepared for transit.
             </p>
           </header>
 
@@ -77,37 +87,45 @@ const OrderConfirmationPage = () => {
                 <div className="order-conf-summary-row">
                   <div className="order-conf-summary-item">
                     <span className="order-conf-item-label">ORDER ID</span>
-                    <div className="order-conf-item-value">{orderData.orderId}</div>
+                    <div className="order-conf-item-value">#{currentOrder.order_number}</div>
                   </div>
                   <div className="order-conf-summary-item">
                     <span className="order-conf-item-label">ORDER DATE</span>
-                    <div className="order-conf-item-value">{orderData.orderDate}</div>
+                    <div className="order-conf-item-value">{new Date(currentOrder.created_at).toLocaleDateString()}</div>
                   </div>
                 </div>
 
                 <div className="order-conf-summary-row">
                   <div className="order-conf-summary-item">
                     <span className="order-conf-item-label">PAYMENT METHOD</span>
-                    <div className="order-conf-item-value">{orderData.paymentMethod}</div>
+                    <div className="order-conf-item-value" style={{ textTransform: 'uppercase' }}>{currentOrder.payment_method}</div>
                   </div>
                   <div className="order-conf-summary-item">
                     <span className="order-conf-item-label">TOTAL AMOUNT</span>
-                    <div className="order-conf-item-value order-conf-total-value">{orderData.totalAmount}</div>
+                    <div className="order-conf-item-value order-conf-total-value">₹{currentOrder.total_amount}</div>
                   </div>
                 </div>
               </div>
 
-              <div className="order-conf-product-box">
-                <div className="order-conf-product-image-container">
-                  <img src={sareeImage} alt="Product" className="img-fluid" />
+              {/* Display items */}
+              {currentOrder.items?.map((item, idx) => (
+                <div className="order-conf-product-box" key={idx} style={{ marginBottom: '15px' }}>
+                  <div className="order-conf-product-image-container">
+                    <img 
+                      src={item.image_url ? (item.image_url.startsWith('http') ? item.image_url : `http://localhost:5000${item.image_url}`) : sareeImage} 
+                      alt={item.name} 
+                      className="img-fluid" 
+                    />
+                  </div>
+                  <div className="order-conf-product-info">
+                    <span className="order-conf-product-badge">Silk Saree</span>
+                    <h3 className="order-conf-product-name">{item.name}</h3>
+                    {item.variant_name && <div className="order-conf-product-qty text-muted">{item.variant_name}</div>}
+                    <div className="order-conf-product-qty">Quantity: {item.quantity}</div>
+                    <div className="order-conf-product-price">₹{item.price}</div>
+                  </div>
                 </div>
-                <div className="order-conf-product-info">
-                  <span className="order-conf-product-badge">{orderData.product.type}</span>
-                  <h3 className="order-conf-product-name">{orderData.product.name}</h3>
-                  <div className="order-conf-product-qty">Quantity: {orderData.product.quantity}</div>
-                  <div className="order-conf-product-price">{orderData.product.price}</div>
-                </div>
-              </div>
+              ))}
             </div>
 
             {/* Right Column: Delivery Details */}
@@ -119,28 +137,68 @@ const OrderConfirmationPage = () => {
                 </div>
 
                 <div className="order-conf-delivery-body">
-                  <div className="order-conf-customer-name">{orderData.delivery.customerName}</div>
-                  <div className="order-conf-customer-address">{orderData.delivery.address}</div>
-                  <div className="order-conf-customer-phone">{orderData.delivery.phone}</div>
+                  <div className="order-conf-customer-name">{address?.full_name}</div>
+                  <div className="order-conf-customer-address">
+                    {address?.address_line1}, {address?.address_line2 && `${address.address_line2}, `}
+                    {address?.city}, {address?.state} - {address?.postal_code}
+                  </div>
+                  <div className="order-conf-customer-phone">Ph: {address?.phone}</div>
                 </div>
 
                 <div className="order-conf-arrival-section">
-                  <span className="order-conf-arrival-label">ESTIMATED ARRIVAL</span>
-                  <div className="order-conf-arrival-date">{orderData.delivery.estimatedArrival}</div>
+                  <span className="order-conf-arrival-label">ORDER STATUS</span>
+                  <div className="order-conf-arrival-date" style={{ textTransform: 'capitalize' }}>{currentOrder.status}</div>
                 </div>
 
-                <div className="order-conf-note-box">
+                {currentOrder.tracking_id && (
+                  <div className="order-conf-shipping-info mt-3 p-3" style={{ background: '#f8f9fa', borderRadius: '8px' }}>
+                    <div style={{ fontSize: '12px', fontWeight: 'bold', color: '#800000', marginBottom: '5px' }}>SHIPPING INFO</div>
+                    <div style={{ fontSize: '13px' }}><strong>Courier:</strong> {currentOrder.courier_name}</div>
+                    <div style={{ fontSize: '13px' }}><strong>Tracking ID:</strong> {currentOrder.tracking_id}</div>
+                    {currentOrder.estimated_delivery_date && (
+                        <div style={{ fontSize: '13px' }}><strong>Est. Delivery:</strong> {new Date(currentOrder.estimated_delivery_date).toLocaleDateString()}</div>
+                    )}
+                  </div>
+                )}
+
+                {/* Tracking Timeline */}
+                <div className="order-conf-timeline mt-4">
+                  <div style={{ fontSize: '12px', fontWeight: 'bold', color: '#800000', marginBottom: '15px' }}>TRACKING TIMELINE</div>
+                  <div className="tracking-steps" style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+                    {currentOrder.timeline?.map((step, idx) => (
+                      <div key={idx} style={{ display: 'flex', gap: '15px', position: 'relative' }}>
+                        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+                          <div style={{ 
+                            width: '12px', height: '12px', borderRadius: '50%', 
+                            background: idx === currentOrder.timeline.length - 1 ? '#800000' : '#dee2e6',
+                            zIndex: 2 
+                          }} />
+                          {idx !== currentOrder.timeline.length - 1 && (
+                            <div style={{ width: '2px', flex: 1, background: '#dee2e6', position: 'absolute', top: '12px' }} />
+                          )}
+                        </div>
+                        <div>
+                          <div style={{ fontSize: '13px', fontWeight: 'bold', textTransform: 'capitalize' }}>{step.status}</div>
+                          <div style={{ fontSize: '11px', color: '#6c757d' }}>{step.message}</div>
+                          <div style={{ fontSize: '10px', color: '#adb5bd' }}>{new Date(step.created_at).toLocaleString()}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <div className="order-conf-note-box mt-4">
                   <i className="bi bi-shield-check order-conf-note-icon"></i>
-                  <p className="order-conf-note-text">{orderData.delivery.packagingNote}</p>
+                  <p className="order-conf-note-text">Your heritage silk is being packed with extra care to preserve its quality during transit.</p>
                 </div>
               </div>
 
               <div className="order-conf-action-buttons">
-                <button className="order-conf-btn-track">
-                  TRACK ORDER <i className="bi bi-arrow-right ms-2"></i>
+                <button className="order-conf-btn-track" onClick={() => navigate('/products')}>
+                  VIEW MORE PRODUCTS <i className="bi bi-arrow-right ms-2"></i>
                 </button>
-                <button className="order-conf-btn-continue" onClick={() => navigate('/products')}>
-                  CONTINUE SHOPPING
+                <button className="order-conf-btn-continue" onClick={() => navigate('/')}>
+                  BACK TO HOME
                 </button>
               </div>
             </div>

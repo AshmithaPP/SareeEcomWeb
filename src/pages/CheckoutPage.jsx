@@ -1,4 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import useAddressStore from '../store/useAddressStore';
+import useAuthStore from '../store/useAuthStore';
+import useCartStore from '../store/useCartStore';
+import useOrderStore from '../store/useOrderStore';
 import { useNavigate } from 'react-router-dom';
 import './checkoutPage.css';
 import leafIcon from 'assets/icons/ui/leaficon.png';
@@ -9,25 +13,62 @@ import vaikundhasilk from 'assets/images/silk/vaikundhasilk.jpg'
 
 const CheckoutPage = () => {
     const navigate = useNavigate();
+    const { addresses, fetchAddresses, addAddress, loading: addressLoading } = useAddressStore();
+    const { cart, fetchCart, applyCoupon: applyCouponAPI, fetchActiveCoupons } = useCartStore();
+    const { placeOrder, loading: orderLoading } = useOrderStore();
+    const { isAuthenticated, user } = useAuthStore();
+    
+    const cartItems = cart?.items || [];
+    const cartSummary = cart?.summary || {};
+    
     const [couponCode, setCouponCode] = useState('');
     const [isCouponApplied, setIsCouponApplied] = useState(false);
+    const [showAddressList, setShowAddressList] = useState(false);
+    const [selectedAddress, setSelectedAddress] = useState(null);
+    const [availableCoupons, setAvailableCoupons] = useState([]);
+    const [showCouponList, setShowCouponList] = useState(false);
     const [formData, setFormData] = useState({
         fullName: '',
         mobileNumber: '',
         email: '',
         address: '',
+        address2: '',
         city: '',
         state: '',
         pincode: '',
         saveAddress: false,
-        orderNotes: ''
+        orderNotes: '',
+        addressType: 'home'
     });
 
-    const subtotal = 18499;
-    const discountAmount = isCouponApplied ? Math.round(subtotal * 0.1) : 0;
-    const shipping = 0; // FREE
-    const gst = 1982;
-    const totalAmount = subtotal - discountAmount + shipping;
+    useEffect(() => {
+        if (isAuthenticated) {
+            fetchAddresses();
+            fetchCart();
+        }
+    }, [isAuthenticated, fetchAddresses, fetchCart]);
+
+    // Automatically select default address if available
+    useEffect(() => {
+        if (addresses.length > 0 && !selectedAddress) {
+            const defaultAddr = addresses.find(addr => addr.is_default) || addresses[0];
+            setSelectedAddress(defaultAddr);
+        }
+    }, [addresses, selectedAddress]);
+
+    useEffect(() => {
+        if (isAuthenticated) {
+            fetchActiveCoupons().then(setAvailableCoupons);
+        }
+    }, [isAuthenticated, fetchActiveCoupons]);
+
+    const subtotal = parseFloat(cartSummary.subtotal) || 0;
+    const discountAmount = parseFloat(cartSummary.discount) || 0;
+    const shipping = parseFloat(cartSummary.delivery) || 0;
+    const gst = parseFloat(cartSummary.tax) || 0;
+    const totalAmount = parseFloat(cartSummary.total) || 0;
+
+    const [paymentMethod, setPaymentMethod] = useState('UPI');
 
     const handleInputChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -37,38 +78,100 @@ const CheckoutPage = () => {
         }));
     };
 
-    const applyCoupon = () => {
-        if (couponCode.toUpperCase() === 'HERITAGE10') {
-            setIsCouponApplied(true);
-            alert('Coupon Applied Successfully! 10% Discounted.');
-        } else {
-            alert('Invalid Coupon Code');
-        }
-    };
-
-    const handlePayNow = (e) => {
-        e.preventDefault();
-        // Basic validation
-        const requiredFields = ['fullName', 'mobileNumber', 'email', 'address', 'city', 'state', 'pincode'];
-        const missingFields = requiredFields.filter(field => !formData[field]);
-
-        if (missingFields.length > 0) {
-            alert('Please fill in all required delivery address fields.');
+    const applyCoupon = async () => {
+        if (!couponCode) return;
+        if (subtotal <= 0) {
+            alert('Please add items to your cart before applying a coupon.');
             return;
         }
-
-        alert('Redirecting to Payment Gateway...');
+        const result = await applyCouponAPI(couponCode, subtotal);
+        if (result.success) {
+            setIsCouponApplied(true);
+            alert(`Coupon Applied! You saved ₹${result.data.discount_amount}`);
+        } else {
+            alert(result.message || 'Invalid Coupon');
+        }
     };
 
-    const openWhatsApp = () => {
-        const summary = `Order Summary:
-Product: Vaikuntha Kanchipuram Silk
-Total Amount: ₹${totalAmount}
-Customer: ${formData.fullName}
-Address: ${formData.address}, ${formData.city}, ${formData.state} - ${formData.pincode}`;
-        const encodedMsg = encodeURIComponent(summary);
-        window.open(`https://wa.me/91XXXXXXXXXX?text=${encodedMsg}`, '_blank');
+    const getDeliveryAddress = () => {
+        if (selectedAddress && !showAddressList) {
+            return selectedAddress;
+        }
+        return {
+            full_name: formData.fullName,
+            phone: formData.mobileNumber,
+            address_line1: formData.address,
+            address_line2: formData.address2,
+            city: formData.city,
+            state: formData.state,
+            postal_code: formData.pincode
+        };
     };
+
+    const handlePayNow = async (e) => {
+        if (e) e.preventDefault();
+
+        const deliveryAddress = getDeliveryAddress();
+        
+        // 1. Prepare Payload
+        const isRazorpay = ['UPI', 'CARD', 'NETBANKING'].includes(paymentMethod);
+        const payload = {
+            payment_method: isRazorpay ? 'razorpay' : 'cod',
+            coupon_code: isCouponApplied ? couponCode : null,
+        };
+
+        if (selectedAddress && !showAddressList) {
+            payload.address_id = selectedAddress.address_id;
+        } else {
+            // Validate form data for new address
+            const requiredFields = ['fullName', 'mobileNumber', 'email', 'address', 'city', 'state', 'pincode'];
+            const missingFields = requiredFields.filter(field => !formData[field]);
+
+            if (missingFields.length > 0) {
+                alert('Please fill in all required delivery address fields.');
+                return;
+            }
+
+            payload.address = {
+                full_name: formData.fullName,
+                phone: formData.mobileNumber,
+                address_line1: formData.address,
+                address_line2: formData.address2 || "",
+                city: formData.city,
+                state: formData.state,
+                postal_code: formData.pincode,
+                country: 'India'
+            };
+
+            // Option to save address for authenticated users
+            if (formData.saveAddress && isAuthenticated) {
+                const result = await addAddress({ ...payload.address, address_type: formData.addressType });
+                if (result.success) {
+                    payload.address_id = result.data.address_id;
+                    delete payload.address;
+                }
+            }
+        }
+
+        // 2. Call placeOrder (The store handles the Razorpay 3-step sequence internally)
+        const result = await placeOrder(payload);
+
+        if (result.success) {
+            alert('Order placed successfully!');
+            navigate(`/order-confirmation/${result.data.order_id}`);
+        } else {
+            if (result.message !== 'Payment cancelled') {
+                alert('Failed to place order: ' + result.message);
+            }
+        }
+    };
+
+    const handleSelectSavedAddress = (addr) => {
+        setSelectedAddress(addr);
+        setShowAddressList(false);
+    };
+
+
 
     return (
         <div className="checkout-container py-5">
@@ -78,125 +181,201 @@ Address: ${formData.address}, ${formData.city}, ${formData.state} - ${formData.p
                         <section className="delivery-address-section mb-4">
                             <div className="d-flex justify-content-between align-items-center mb-4">
                                 <h2 className="checkout-section-title">Delivery Address</h2>
-                                <button className="btn-select-address">SELECT SAVED ADDRESS</button>
+                                {isAuthenticated && addresses.length > 0 && !showAddressList && (
+                                    <button className="btn-select-address" onClick={() => setShowAddressList(true)}>
+                                        SELECT SAVED ADDRESS
+                                    </button>
+                                )}
                             </div>
 
-                            <form className="address-form">
-                                <div className="row mb-4">
-                                    <div className="col-md-6 mb-3 mb-md-0">
-                                        <div className="form-input-group">
-                                            <input 
-                                                type="text" 
-                                                name="fullName"
-                                                placeholder="Full Name" 
-                                                className="custom-input" 
-                                                onChange={handleInputChange}
-                                                required 
-                                            />
+                            {showAddressList ? (
+                                <div className="saved-addresses-list">
+                                    {addresses.map(addr => (
+                                        <div 
+                                            key={addr.address_id} 
+                                            className={`address-card ${selectedAddress?.address_id === addr.address_id ? 'selected' : ''}`}
+                                            onClick={() => handleSelectSavedAddress(addr)}
+                                        >
+                                            <div className="d-flex justify-content-between">
+                                                <h6>{addr.full_name} {addr.is_default ? '(Default)' : ''}</h6>
+                                                {selectedAddress?.address_id === addr.address_id && (
+                                                    <span className="badge bg-success" style={{fontSize: '10px'}}>SELECTED</span>
+                                                )}
+                                            </div>
+                                            <p>{addr.address_line1}, {addr.city}, {addr.state} - {addr.postal_code}</p>
+                                            <p>Phone: {addr.phone}</p>
                                         </div>
-                                    </div>
-                                    <div className="col-md-6">
-                                        <div className="form-input-group">
-                                            <input 
-                                                type="text" 
-                                                name="mobileNumber"
-                                                placeholder="Mobile Number" 
-                                                className="custom-input" 
-                                                onChange={handleInputChange}
-                                                required 
-                                            />
+                                    ))}
+                                    <button className="btn-add-new mt-3 w-100" onClick={() => {
+                                        setShowAddressList(false);
+                                        setSelectedAddress(null);
+                                    }}>
+                                        + ADD NEW ADDRESS
+                                    </button>
+                                </div>
+                            ) : selectedAddress ? (
+                                <div className="selected-address-box mb-4">
+                                    <div className="d-flex justify-content-between align-items-start">
+                                        <div>
+                                            <h6 className="fw-bold mb-2">{selectedAddress.full_name}</h6>
+                                            <p className="mb-1">{selectedAddress.address_line1}</p>
+                                            {selectedAddress.address_line2 && <p className="mb-1">{selectedAddress.address_line2}</p>}
+                                            <p className="mb-1">{selectedAddress.city}, {selectedAddress.state} - {selectedAddress.postal_code}</p>
+                                            <p className="mb-0">Phone: {selectedAddress.phone}</p>
                                         </div>
+                                        <button className="btn-change-address" onClick={() => setShowAddressList(true)}>
+                                            CHANGE
+                                        </button>
                                     </div>
                                 </div>
+                            ) : (
+                                <form className="address-form">
+                                    <div className="row mb-4">
+                                        <div className="col-md-6 mb-3 mb-md-0">
+                                            <div className="form-input-group">
+                                                <input 
+                                                    type="text" 
+                                                    name="fullName"
+                                                    placeholder="Full Name" 
+                                                    className="custom-input" 
+                                                    onChange={handleInputChange}
+                                                    required 
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="col-md-6">
+                                            <div className="form-input-group">
+                                                <input 
+                                                    type="text" 
+                                                    name="mobileNumber"
+                                                    placeholder="Mobile Number" 
+                                                    className="custom-input" 
+                                                    onChange={handleInputChange}
+                                                    required 
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
 
-                                <div className="row mb-4">
-                                    <div className="col-12">
-                                        <div className="form-input-group">
-                                            <input 
-                                                type="email" 
-                                                name="email"
-                                                placeholder="Email Address (For tracking updates)" 
-                                                className="custom-input full-width" 
-                                                onChange={handleInputChange}
-                                                required 
-                                            />
+                                    <div className="row mb-4">
+                                        <div className="col-12">
+                                            <div className="form-input-group">
+                                                <input 
+                                                    type="email" 
+                                                    name="email"
+                                                    placeholder="Email Address (For tracking updates)" 
+                                                    className="custom-input full-width" 
+                                                    onChange={handleInputChange}
+                                                    required 
+                                                />
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                <div className="row mb-4">
-                                    <div className="col-12">
-                                        <div className="form-input-group">
-                                            <input 
-                                                type="text" 
-                                                name="address"
-                                                placeholder="Flat, House no., Building, Apartment" 
-                                                className="custom-input full-width" 
-                                                onChange={handleInputChange}
-                                                required 
-                                            />
+                                    <div className="row mb-4">
+                                        <div className="col-12">
+                                            <div className="form-input-group">
+                                                <input 
+                                                    type="text" 
+                                                    name="address"
+                                                    placeholder="Flat, House no., Building, Apartment" 
+                                                    className="custom-input full-width" 
+                                                    onChange={handleInputChange}
+                                                    required 
+                                                />
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
 
-                                <div className="row mb-4">
-                                    <div className="col-md-6 mb-3 mb-md-0">
-                                        <div className="form-input-group">
-                                            <input 
-                                                type="text" 
-                                                name="city"
-                                                placeholder="City" 
-                                                className="custom-input" 
-                                                onChange={handleInputChange}
-                                                required 
-                                            />
+                                    <div className="row mb-4">
+                                        <div className="col-12">
+                                            <div className="form-input-group">
+                                                <input 
+                                                    type="text" 
+                                                    name="address2"
+                                                    placeholder="Area, Street, Sector, Village (Optional)" 
+                                                    className="custom-input full-width" 
+                                                    onChange={handleInputChange}
+                                                />
+                                            </div>
                                         </div>
                                     </div>
-                                    <div className="col-md-3 mb-3 mb-md-0">
-                                        <div className="form-input-group select-wrapper">
-                                            <select 
-                                                name="state" 
-                                                className="custom-input select-input" 
-                                                onChange={handleInputChange}
-                                                required
-                                            >
-                                                <option value="">State</option>
-                                                <option value="Tamil Nadu">Tamil Nadu</option>
-                                                <option value="Karnataka">Karnataka</option>
-                                                <option value="Andhra Pradesh">Andhra Pradesh</option>
-                                                <option value="Telangana">Telangana</option>
-                                                <option value="Kerala">Kerala</option>
-                                                <option value="Maharashtra">Maharashtra</option>
-                                            </select>
-                                        </div>
-                                    </div>
-                                    <div className="col-md-3">
-                                        <div className="form-input-group">
-                                            <input 
-                                                type="text" 
-                                                name="pincode"
-                                                placeholder="Pincode" 
-                                                className="custom-input" 
-                                                onChange={handleInputChange}
-                                                required 
-                                            />
-                                        </div>
-                                    </div>
-                                </div>
 
-                                <div className="d-flex align-items-center mt-3">
-                                    <input 
-                                        type="checkbox" 
-                                        id="saveAddress" 
-                                        name="saveAddress"
-                                        className="custom-checkbox" 
-                                        onChange={handleInputChange}
-                                    />
-                                    <label htmlFor="saveAddress" className="checkbox-label ms-2">
-                                        Save this address for faster checkouts
-                                    </label>
-                                </div>
-                            </form>
+                                    <div className="row mb-4">
+                                        <div className="col-md-6 mb-3 mb-md-0">
+                                            <div className="form-input-group">
+                                                <input 
+                                                    type="text" 
+                                                    name="city"
+                                                    placeholder="City" 
+                                                    className="custom-input" 
+                                                    onChange={handleInputChange}
+                                                    required 
+                                                />
+                                            </div>
+                                        </div>
+                                        <div className="col-md-3 mb-3 mb-md-0">
+                                            <div className="form-input-group select-wrapper">
+                                                <select 
+                                                    name="state" 
+                                                    className="custom-input select-input" 
+                                                    onChange={handleInputChange}
+                                                    required
+                                                >
+                                                    <option value="">State</option>
+                                                    <option value="Tamil Nadu">Tamil Nadu</option>
+                                                    <option value="Karnataka">Karnataka</option>
+                                                    <option value="Andhra Pradesh">Andhra Pradesh</option>
+                                                    <option value="Telangana">Telangana</option>
+                                                    <option value="Kerala">Kerala</option>
+                                                    <option value="Maharashtra">Maharashtra</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div className="col-md-3">
+                                            <div className="form-input-group">
+                                                <input 
+                                                    type="text" 
+                                                    name="pincode"
+                                                    placeholder="Pincode" 
+                                                    className="custom-input" 
+                                                    onChange={handleInputChange}
+                                                    required 
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="row mb-4">
+                                        <div className="col-md-6">
+                                            <div className="form-input-group select-wrapper">
+                                                <select 
+                                                    name="addressType" 
+                                                    className="custom-input select-input" 
+                                                    onChange={handleInputChange}
+                                                    value={formData.addressType}
+                                                >
+                                                    <option value="home">Home (7 AM - 9 PM delivery)</option>
+                                                    <option value="office">Office (10 AM - 6 PM delivery)</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div className="d-flex align-items-center mt-3">
+                                        <input 
+                                            type="checkbox" 
+                                            id="saveAddress" 
+                                            name="saveAddress"
+                                            className="custom-checkbox" 
+                                            onChange={handleInputChange}
+                                        />
+                                        <label htmlFor="saveAddress" className="checkbox-label ms-2">
+                                            Save this address for faster checkouts
+                                        </label>
+                                    </div>
+                                </form>
+                            )}
                         </section>
 
                         <div className="eco-shipping-box mb-4">
@@ -214,68 +393,98 @@ Address: ${formData.address}, ${formData.city}, ${formData.state} - ${formData.p
                             
                             <div className="payment-options">
                                 {/* UPI Option (Selected in image) */}
-                                <div className="payment-item upi-item active-payment mb-3">
+                                <div 
+                                    className={`payment-item upi-item ${paymentMethod === 'UPI' ? 'active-payment' : ''} mb-3`}
+                                    onClick={() => setPaymentMethod('UPI')}
+                                    style={{cursor: 'pointer'}}
+                                >
                                     <div className="d-flex justify-content-between align-items-center">
                                         <div className="d-flex align-items-center">
-                                            <div className="custom-radio-outer me-3">
-                                                <div className="custom-radio-inner"></div>
+                                            <div className={`custom-radio-outer ${paymentMethod !== 'UPI' ? 'unselected' : ''} me-3`}>
+                                                {paymentMethod === 'UPI' && <div className="custom-radio-inner"></div>}
                                             </div>
-                                            <span className="payment-name">UPI (Google Pay / PhonePe / Paytm)</span>
+                                            <span className={`payment-name ${paymentMethod !== 'UPI' ? 'inactive' : ''}`}>UPI (Google Pay / PhonePe / Paytm)</span>
                                         </div>
                                         <div className="payment-icon-right">
                                             <i className="bi bi-wallet2"></i>
                                         </div>
                                     </div>
-                                    <div className="payment-details ms-5 mt-2">
-                                        <p className="payment-desc mb-3">Pay directly from your bank account using UPI apps.</p>
-                                        <div className="d-flex gap-3">
-                                            <button className="btn-payment-action">USE STORED ID</button>
-                                            <button className="btn-payment-action secondary">NEW UPI ID</button>
+                                    {paymentMethod === 'UPI' && (
+                                        <div className="payment-details ms-5 mt-2">
+                                            <p className="payment-desc mb-3">Pay directly from your bank account using UPI apps.</p>
+                                            <div className="d-flex gap-3">
+                                                <button className="btn-payment-action">USE STORED ID</button>
+                                                <button className="btn-payment-action secondary">NEW UPI ID</button>
+                                            </div>
                                         </div>
-                                    </div>
+                                    )}
                                 </div>
 
                                 {/* Card Option */}
-                                <div className="payment-item card-item mb-3">
+                                <div 
+                                    className={`payment-item card-item ${paymentMethod === 'CARD' ? 'active-payment' : ''} mb-3`}
+                                    onClick={() => setPaymentMethod('CARD')}
+                                    style={{cursor: 'pointer'}}
+                                >
                                     <div className="d-flex align-items-center">
-                                        <div className="custom-radio-outer unselected me-3"></div>
-                                        <span className="payment-name inactive">Credit / Debit Card</span>
-                                    </div>
-                                    <div className="card-form ms-5 mt-3">
-                                        <div className="form-input-group mb-3">
-                                            <input type="text" placeholder="Card Number" className="custom-input full-width" disabled />
+                                        <div className={`custom-radio-outer ${paymentMethod !== 'CARD' ? 'unselected' : ''} me-3`}>
+                                            {paymentMethod === 'CARD' && <div className="custom-radio-inner"></div>}
                                         </div>
-                                        <div className="row">
-                                            <div className="col-md-6 mb-3 mb-md-0">
-                                                <input type="text" placeholder="Expiry (MM/YY)" className="custom-input full-width" disabled />
+                                        <span className={`payment-name ${paymentMethod !== 'CARD' ? 'inactive' : ''}`}>Credit / Debit Card</span>
+                                    </div>
+                                    {paymentMethod === 'CARD' && (
+                                        <div className="card-form ms-5 mt-3">
+                                            <div className="form-input-group mb-3">
+                                                <input type="text" placeholder="Card Number" className="custom-input full-width" />
                                             </div>
-                                            <div className="col-md-6">
-                                                <input type="text" placeholder="CVV" className="custom-input full-width" disabled />
+                                            <div className="row">
+                                                <div className="col-md-6 mb-3 mb-md-0">
+                                                    <input type="text" placeholder="Expiry (MM/YY)" className="custom-input full-width" />
+                                                </div>
+                                                <div className="col-md-6">
+                                                    <input type="text" placeholder="CVV" className="custom-input full-width" />
+                                                </div>
                                             </div>
                                         </div>
-                                    </div>
+                                    )}
                                 </div>
 
                                 {/* Net Banking & COD Row */}
                                 <div className="payment-row mb-4">
-                                    <div className="payment-item half-width">
+                                    <div 
+                                        className={`payment-item half-width ${paymentMethod === 'NETBANKING' ? 'active-payment' : ''}`}
+                                        onClick={() => setPaymentMethod('NETBANKING')}
+                                        style={{cursor: 'pointer'}}
+                                    >
                                         <div className="d-flex align-items-center">
-                                            <div className="custom-radio-outer unselected me-3"></div>
+                                            <div className={`custom-radio-outer ${paymentMethod !== 'NETBANKING' ? 'unselected' : ''} me-3`}>
+                                                {paymentMethod === 'NETBANKING' && <div className="custom-radio-inner"></div>}
+                                            </div>
                                             <span className="payment-name font-small">Net Banking</span>
                                         </div>
                                     </div>
-                                    <div className="payment-item half-width">
+                                    <div 
+                                        className={`payment-item half-width ${paymentMethod === 'COD' ? 'active-payment' : ''}`}
+                                        onClick={() => setPaymentMethod('COD')}
+                                        style={{cursor: 'pointer'}}
+                                    >
                                         <div className="d-flex align-items-center">
-                                            <div className="custom-radio-outer unselected me-3"></div>
+                                            <div className={`custom-radio-outer ${paymentMethod !== 'COD' ? 'unselected' : ''} me-3`}>
+                                                {paymentMethod === 'COD' && <div className="custom-radio-inner"></div>}
+                                            </div>
                                             <span className="payment-name font-small">Cash on Delivery</span>
                                         </div>
                                     </div>
                                 </div>
                             </div>
                         </section>
-
-                        <button className="btn-whatsapp w-100 mb-5" onClick={openWhatsApp}>
-                            <i className="bi bi-whatsapp me-2"></i> ORDER VIA WHATS APP
+                        
+                        <button 
+                            className="btn-pay-now w-100 mb-5" 
+                            onClick={handlePayNow}
+                            disabled={orderLoading || cartItems.length === 0}
+                        >
+                            {orderLoading ? 'PLACING ORDER...' : 'PLACE ORDER'}
                         </button>
 
                         <div className="row mt-5">
@@ -290,6 +499,44 @@ Address: ${formData.address}, ${formData.city}, ${formData.state} - ${formData.p
                                         onChange={(e) => setCouponCode(e.target.value)}
                                     />
                                     <button className="btn-apply" onClick={applyCoupon}>APPLY</button>
+                                </div>
+                                <div className="mt-2">
+                                    <button 
+                                        className="btn-view-offers" 
+                                        onClick={() => setShowCouponList(!showCouponList)}
+                                        style={{ background: 'none', border: 'none', color: '#A42829', fontSize: '0.85rem', fontWeight: '600', padding: 0 }}
+                                    >
+                                        {showCouponList ? 'HIDE OFFERS' : 'VIEW AVAILABLE OFFERS'}
+                                    </button>
+                                    
+                                    {showCouponList && (
+                                        <div className="available-coupons-list mt-2 p-3 border rounded bg-light">
+                                            {availableCoupons.length > 0 ? (
+                                                availableCoupons.map(coupon => (
+                                                    <div key={coupon.coupon_id} className="coupon-item-mini mb-2 pb-2 border-bottom d-flex justify-content-between align-items-center">
+                                                        <div>
+                                                            <strong className="d-block" style={{ color: '#A42829' }}>{coupon.code}</strong>
+                                                            <small className="text-muted">
+                                                                {coupon.discount_type === 'percentage' ? `${coupon.discount_value}% OFF` : `₹${coupon.discount_value} OFF`}
+                                                                {coupon.min_order_value > 0 && ` on orders above ₹${coupon.min_order_value}`}
+                                                            </small>
+                                                        </div>
+                                                        <button 
+                                                            className="btn btn-sm btn-outline-dark"
+                                                            onClick={() => {
+                                                                setCouponCode(coupon.code);
+                                                                setShowCouponList(false);
+                                                            }}
+                                                        >
+                                                            USE
+                                                        </button>
+                                                    </div>
+                                                ))
+                                            ) : (
+                                                <small className="text-muted">No active coupons available right now.</small>
+                                            )}
+                                        </div>
+                                    )}
                                 </div>
                                 <p className="coupon-hint mt-2">Apply "HERITAGE10" for 10% off on your first silk weave.</p>
                             </div>
@@ -310,19 +557,21 @@ Address: ${formData.address}, ${formData.city}, ${formData.state} - ${formData.p
                         <section className="order-summary-card">
                             <h2 className="summary-title">Order Summary</h2>
                             
-                            <div className="product-summary-row">
-                                <div className="product-img-box">
-                                    <img src={vaikundhasilk} alt="Vaikuntha Kanchipuram Silk" />
-                                </div>
-                                <div className="product-info-box flex-grow-1">
-                                    <h4 className="prod-name">Vaikuntha Kanchipuram Silk</h4>
-                                    <p className="prod-desc">Maroon & Antique Gold | Handloom</p>
-                                    <div className="d-flex justify-content-between align-items-center mt-2">
-                                        <span className="prod-qty">Qty: 1</span>
-                                        <span className="prod-price">₹18,499</span>
+                            {cartItems.map((item, idx) => (
+                                <div className="product-summary-row" key={item.cart_item_id || idx}>
+                                    <div className="product-img-box">
+                                        <img src={item.image || vaikundhasilk} alt={item.name} />
+                                    </div>
+                                    <div className="product-info-box flex-grow-1">
+                                        <h4 className="prod-name">{item.name}</h4>
+                                        <p className="prod-desc">{item.variant_name || 'Standard'}</p>
+                                        <div className="d-flex justify-content-between align-items-center mt-2">
+                                            <span className="prod-qty">Qty: {item.quantity}</span>
+                                            <span className="prod-price">₹{parseFloat(item.price).toLocaleString('en-IN')}</span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
+                            ))}
 
                             <div className="stock-alert-badge">
                                 <span className="dot"></span> 
@@ -355,7 +604,13 @@ Address: ${formData.address}, ${formData.city}, ${formData.state} - ${formData.p
                                 </div>
                             </div>
 
-                            <button className="btn-pay-now w-100 mt-4" onClick={handlePayNow}>PAY NOW</button>
+                            <button 
+                                className="btn-pay-now w-100 mt-4" 
+                                onClick={handlePayNow}
+                                disabled={orderLoading || cartItems.length === 0}
+                            >
+                                {orderLoading ? 'PLACING ORDER...' : 'PLACE ORDER'}
+                            </button>
                             <p className="secure-text">3D-SECURE PAYMENT AUTHORIZATION ACTIVE</p>
                         </section>
 
