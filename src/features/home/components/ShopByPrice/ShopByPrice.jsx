@@ -67,11 +67,15 @@ const ShopByPrice = ({ data }) => {
         }
     }, []);
 
+    const IMAGE_BASE_URL = 'http://localhost:5000';
+
     const displayData = data && data.length > 0 ? data.map((item, index) => ({
         id: index + 1,
         title: item.label,
         type: index === 0 ? 'large' : 'small',
-        image: index === 0 ? largeSaree : (index === 1 ? everydaySaree : (index === 2 ? officeSaree : (index === 3 ? weddingSaree : festiveSaree))),
+        image: item.image_url 
+            ? (item.image_url.startsWith('http') ? item.image_url : `${IMAGE_BASE_URL}${item.image_url}`)
+            : (index === 0 ? largeSaree : (index === 1 ? everydaySaree : (index === 2 ? officeSaree : (index === 3 ? weddingSaree : festiveSaree)))),
         url: `/shop?min_price=${item.min_price}&max_price=${item.max_price}`
     })) : priceData;
 

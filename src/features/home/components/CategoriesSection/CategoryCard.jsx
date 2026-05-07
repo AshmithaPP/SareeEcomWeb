@@ -12,7 +12,7 @@ const CategoryCard = ({ title, count, imageUrl, buttonText = "View Collections",
                 <div className={styles.contentBox}>
                     <h3 className={styles.title}>{title}</h3>
                     <div className={styles.countBadge}>
-                        <span className={styles.countText}>{count} Designs</span>
+                        <span className={styles.countText}>{count}</span>
                     </div>
                     <button className={styles.viewBtn}>
                         <span className={styles.btnText}>{buttonText}</span>

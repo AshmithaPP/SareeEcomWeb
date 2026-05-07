@@ -10,8 +10,8 @@ const HeroSection = ({ dynamicData }) => {
     const displayData = {
         title: dynamicData?.title || 'Exquisite Hand-Woven Silk',
         subtitle: dynamicData?.subtitle || 'Tradition meets luxury in every thread.',
-        buttonText: dynamicData?.cta_text || 'Explore Collection',
-        buttonLink: dynamicData?.redirect_url || '/shop',
+        buttonText: dynamicData?.cta?.text || dynamicData?.cta_text || 'Explore Collection',
+        buttonLink: dynamicData?.cta?.redirect_url || dynamicData?.redirect_url || '/products',
         image: dynamicData?.image_url
     };
 

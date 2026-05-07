@@ -4,10 +4,16 @@ import newsletterImg from 'assets/images/silk/NewsSection.png'; // Verified file
 
 const NewsletterSection = ({ dynamicData }) => {
   const [email, setEmail] = useState('');
+  const IMAGE_BASE_URL = 'http://localhost:5000';
 
-  const displayData = dynamicData || {
-    title: "Enter The World Of Timeless Sarees",
-    subtitle: "Be The First To Discover Our Latest Kanchipuram Collections, Festive Edits, And Exclusive Store Events."
+  const displayData = {
+    title: dynamicData?.title || "Enter The World Of Timeless Sarees",
+    subtitle: dynamicData?.subtitle || "Be The First To Discover Our Latest Kanchipuram Collections, Festive Edits, And Exclusive Store Events.",
+    emailPlaceholder: dynamicData?.email_placeholder || "Enter Your Email Address",
+    buttonText: dynamicData?.button_text || "Stay Connected",
+    image: dynamicData?.image_url 
+      ? (dynamicData.image_url.startsWith('http') ? dynamicData.image_url : `${IMAGE_BASE_URL}${dynamicData.image_url}`)
+      : newsletterImg
   };
 
   const handleSubmit = (e) => {
@@ -33,14 +39,14 @@ const NewsletterSection = ({ dynamicData }) => {
                 <input
                   type="email"
                   className="form-control newsletter-input"
-                  placeholder="Enter Your Email Address"
+                  placeholder={displayData.emailPlaceholder}
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                   required
                 />
 
                 <button type="submit" className="btn newsletter-btn">
-                  Stay Connected
+                  {displayData.buttonText}
                 </button>
               </form>
             </div>
@@ -49,8 +55,8 @@ const NewsletterSection = ({ dynamicData }) => {
             <div className="col-lg-5 col-md-12 newsletter-image-col">
               <div className="newsletter-image-wrapper">
                 <img 
-                  src={newsletterImg} 
-                  alt="Newsletter Decorative" 
+                  src={displayData.image} 
+                  alt={displayData.title} 
                   className="newsletter-image"
                 />
               </div>
