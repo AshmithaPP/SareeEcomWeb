@@ -5,7 +5,7 @@ import Breadcrumbs from 'components/ui/Breadcrumbs/Breadcrumbs';
 import FilterSidebar from 'features/products/components/Filters/FilterSidebar';
 import ProductCard from 'features/products/components/ProductCard/ProductCard';
 import Pagination from 'features/products/components/Pagination/Pagination';
-import GiftSection from 'features/products/components/GiftSection/GiftSection';
+
 import './productsPage.css';
 
 const ProductsPage = () => {
@@ -178,12 +178,7 @@ const ProductsPage = () => {
                 </div>
             </div>
 
-            {/* Gift Section */}
-            <div className="row mt-5">
-                <div className="col-12">
-                    <GiftSection />
-                </div>
-            </div>
+
         </div>
     );
 };

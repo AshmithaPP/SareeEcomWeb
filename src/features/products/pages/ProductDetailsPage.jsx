@@ -68,8 +68,8 @@ const ProductDetailsPage = () => {
             <div className="row g-3 g-md-4 g-lg-5">
                 {/* Left Column: Product Image Gallery */}
                 <div className="col-lg-6 product-image-column">
-                    <ProductImage 
-                        media={product.selected_variant?.images || product.media} 
+                    <ProductImage
+                        media={product.selected_variant?.images || product.media}
                         video={product.media?.video}
                     />
                 </div>
@@ -98,8 +98,8 @@ const ProductDetailsPage = () => {
             {/* Product Specifications Section */}
             <div className="row mt-5">
                 <div className="col-12">
-                    <ProductSpecifications 
-                        specifications={product.specifications || []} 
+                    <ProductSpecifications
+                        specifications={product.specifications || []}
                         services={product.services || []}
                     />
                 </div>

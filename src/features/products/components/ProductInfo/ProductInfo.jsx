@@ -29,7 +29,7 @@ const ProductInfo = ({ product }) => {
 
     const handleBuyNow = async () => {
         const variantId = product.selected_variant?.variant_id || product.default_variant_id;
-        
+
         const result = await addToCart(product.product_id, variantId, 1);
         if (result.success) {
             navigate('/checkout');
@@ -40,7 +40,7 @@ const ProductInfo = ({ product }) => {
 
     const handleAddToCart = async () => {
         const variantId = product.selected_variant?.variant_id || product.default_variant_id;
-        
+
         const result = await addToCart(product.product_id, variantId, 1);
         if (result.success) {
             toast.success("Added to cart successfully!");
@@ -52,7 +52,7 @@ const ProductInfo = ({ product }) => {
     if (!product) return null;
 
     const { name, brand, rating, selected_variant, variants } = product;
-    
+
     // Use variant price if available, otherwise fallback to base price
     const currentPrice = selected_variant?.price || product.price;
     const isOutOfStock = selected_variant?.stock?.status === 'out_of_stock';
@@ -89,7 +89,7 @@ const ProductInfo = ({ product }) => {
                         <span className="bridal-badge mb-2 d-inline-block">Bridal Special</span>
                         <h1 className="product-title m-0 text-capitalize">{name}</h1>
                     </div>
-                    <button 
+                    <button
                         className={`pdp-wishlist-btn ${isLiked ? 'liked' : ''}`}
                         onClick={handleWishlistToggle}
                         style={{ background: 'none', border: 'none', fontSize: '1.5rem', outline: 'none' }}
@@ -107,8 +107,8 @@ const ProductInfo = ({ product }) => {
                 <div className="stars d-flex gap-1">
                     {[1, 2, 3, 4, 5].map((star) => (
                         <svg key={star} width="24" height="24" viewBox="0 0 24 24" fill={star <= Math.round(parseFloat(rating.average)) ? "#FFC107" : "#E5E7EB"} xmlns="http://www.w3.org/2000/svg">
-                            <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" 
-                                  stroke={star <= Math.round(parseFloat(rating.average)) ? "#FFC107" : "#E5E7EB"} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
+                            <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z"
+                                stroke={star <= Math.round(parseFloat(rating.average)) ? "#FFC107" : "#E5E7EB"} strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                         </svg>
                     ))}
                 </div>
@@ -122,14 +122,14 @@ const ProductInfo = ({ product }) => {
                         <div className="variant-label mb-2">Color: <strong>{activeColor}</strong></div>
                         <div className="d-flex gap-2">
                             {colors.map((color, idx) => (
-                                <button 
+                                <button
                                     key={idx}
                                     className={`color-swatch ${activeColor === color.name ? 'active' : ''}`}
-                                    style={{ 
-                                        backgroundColor: color.code, 
-                                        width: '32px', 
-                                        height: '32px', 
-                                        borderRadius: '50%', 
+                                    style={{
+                                        backgroundColor: color.code,
+                                        width: '32px',
+                                        height: '32px',
+                                        borderRadius: '50%',
                                         border: activeColor === color.name ? '2px solid #000' : '1px solid #ddd',
                                         padding: '2px',
                                         backgroundClip: 'content-box'
@@ -149,7 +149,7 @@ const ProductInfo = ({ product }) => {
                             {sizes.map((size, idx) => {
                                 const sizeName = typeof size === 'object' ? size.name : size;
                                 return (
-                                    <button 
+                                    <button
                                         key={idx}
                                         className={`size-chip btn btn-outline-dark ${activeSize === sizeName ? 'active bg-dark text-white' : ''}`}
                                         onClick={() => handleSizeSelect(sizeName)}
@@ -220,15 +220,15 @@ const ProductInfo = ({ product }) => {
 
             {/* Action Buttons */}
             <div className="action-buttons-container d-flex flex-column gap-3 mb-5">
-                <button 
-                    className="btn btn-buy-now w-100 d-flex justify-content-center align-items-center gap-2" 
+                <button
+                    className="btn btn-buy-now w-100 d-flex justify-content-center align-items-center gap-2"
                     onClick={handleBuyNow}
                     disabled={isOutOfStock || cartLoading}
                 >
                     <img src={buyNowIcon} alt="Buy Now" width="16" height="21" />
                     {cartLoading ? 'Processing...' : 'Buy Now'}
                 </button>
-                <button 
+                <button
                     className="btn btn-add-cart w-100 d-flex justify-content-center align-items-center gap-2"
                     disabled={isOutOfStock || cartLoading}
                     onClick={handleAddToCart}

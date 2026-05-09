@@ -36,9 +36,9 @@ const useCartStore = create(
           const res = await fetch(API_URL, { headers: get().getHeaders() });
           const data = await res.json();
           if (data.success) {
-              set({ cart: data, loading: false });
+            set({ cart: data, loading: false });
           } else {
-              set({ error: data.message, loading: false });
+            set({ error: data.message, loading: false });
           }
         } catch (err) {
           set({ error: err.message, loading: false });
@@ -110,21 +110,21 @@ const useCartStore = create(
       },
 
       clearCart: async () => {
-          set({ loading: true, error: null });
-          try {
-              const res = await fetch(`${API_URL}/clear`, {
-                  method: 'DELETE',
-                  headers: get().getHeaders()
-              });
-              const data = await res.json();
-              if (data.success) {
-                  set({ cart: { items: [], summary: {} }, loading: false });
-              } else {
-                  set({ error: data.message, loading: false });
-              }
-          } catch (err) {
-              set({ error: err.message, loading: false });
+        set({ loading: true, error: null });
+        try {
+          const res = await fetch(`${API_URL}/clear`, {
+            method: 'DELETE',
+            headers: get().getHeaders()
+          });
+          const data = await res.json();
+          if (data.success) {
+            set({ cart: { items: [], summary: {} }, loading: false });
+          } else {
+            set({ error: data.message, loading: false });
           }
+        } catch (err) {
+          set({ error: err.message, loading: false });
+        }
       },
 
       mergeCart: async () => {
@@ -134,21 +134,23 @@ const useCartStore = create(
 
         set({ loading: true });
         try {
-            const res = await fetch(`${API_URL}/merge`, {
-                method: 'POST',
-                headers: get().getHeaders(),
-                body: JSON.stringify({ guest_id: guestId })
-            });
-            const data = await res.json();
-            if (data.success) {
-                await get().fetchCart();
-            }
+          const res = await fetch(`${API_URL}/merge`, {
+            method: 'POST',
+            headers: get().getHeaders(),
+            body: JSON.stringify({ guest_id: guestId })
+          });
+          const data = await res.json();
+          if (data.success) {
+            await get().fetchCart();
+          }
         } catch (err) {
-            console.error("Merge failed", err);
+          console.error("Merge failed", err);
         } finally {
-            set({ loading: false });
+          set({ loading: false });
         }
       },
+
+
 
       applyCoupon: async (code, subtotal) => {
         set({ loading: true, error: null });
@@ -164,10 +166,10 @@ const useCartStore = create(
             const discount = parseFloat(data.data.discount_amount);
             const delivery = parseFloat(updatedCart.summary.delivery) || 0;
             const subtotalVal = parseFloat(updatedCart.summary.subtotal) || 0;
-            
+
             updatedCart.summary.discount = discount;
             updatedCart.summary.total = subtotalVal + delivery - discount;
-            
+
             set({ cart: updatedCart, loading: false });
             return { success: true, data: data.data };
           } else {
