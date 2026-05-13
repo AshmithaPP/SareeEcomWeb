@@ -13,10 +13,13 @@ const ProductCard = ({ product }) => {
     const { isAuthenticated } = useAuthStore();
     const { addToCart } = useCartStore();
 
-    const id = product.product_id || product.id;
-    const slug = product.slug || id;
-    const title = product.title || product.name || product.product_name;
-    const image = product.image || product.thumbnail || product.image_url;
+    // Ensure ID is a valid number or string from multiple possible sources
+    const rawId = product.product_id || product.id || (product.product && (product.product.product_id || product.product.id));
+    const id = (typeof rawId === 'object' && rawId !== null) ? (rawId.id || rawId.product_id) : rawId;
+    
+    const slug = product.slug || (product.product && product.product.slug) || id;
+    const title = product.title || product.name || product.product_name || (product.product && (product.product.title || product.product.name));
+    const image = product.image || product.thumbnail || product.image_url || (product.product && product.product.image_url);
     const stockStatus = product.stockStatus || (product.stock_status || 'in_stock');
     const discountedPrice = product.discountedPrice || (product.price?.selling_price ? `₹${parseFloat(product.price.selling_price).toLocaleString('en-IN')}` : `₹${product.price}`);
     const originalPrice = product.originalPrice || (product.price?.mrp ? `₹${parseFloat(product.price.mrp).toLocaleString('en-IN')}` : null);
@@ -26,9 +29,15 @@ const ProductCard = ({ product }) => {
 
     const handleAddToCart = async (e) => {
         e.stopPropagation();
-        if (stockStatus === 'out_of_stock') return;
+        if (stockStatus === 'out_of_stock' || isOutOfStock) return;
         
-        const result = await addToCart(id, null, 1);
+        // Try to find any variant ID if available
+        const variantId = product.variant_id || product.default_variant_id || (product.variants && product.variants[0]?.variant_id) || null;
+        
+        // Ensure ID is sent as a clean value
+        const productIdToSend = (typeof id === 'string' && !isNaN(id)) ? Number(id) : id;
+
+        const result = await addToCart(productIdToSend, variantId, 1);
         if (result?.success) {
             toast.success('Added to cart!');
         } else {
@@ -36,7 +45,7 @@ const ProductCard = ({ product }) => {
         }
     };
 
-    const isOutOfStock = stockStatus === 'out_of_stock';
+    const isOutOfStock = stockStatus === 'out_of_stock' || stockStatus === 'sold_out';
 
     return (
         <div className={`${styles.cardItem} ${isOutOfStock ? styles.outOfStock : ''}`} onClick={() => navigate(`/product-details/${slug}`)} style={{ cursor: 'pointer' }}>

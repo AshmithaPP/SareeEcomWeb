@@ -10,22 +10,29 @@ const BlogDetails = () => {
     const { id } = useParams();
     const { selectedBlog: blog, fetchBlogById, loading } = useBlogStore();
 
-    // Scroll to top and fetch data on mount
+    // Fetch data when ID changes
     useEffect(() => {
-        window.scrollTo(0, 0);
-        fetchBlogById(id);
+        if (id) {
+            fetchBlogById(id);
+        }
     }, [id, fetchBlogById]);
+
+    // Scroll to top when blog changes
+    useEffect(() => {
+        if (blog) {
+            window.scrollTo(0, 0);
+        }
+    }, [blog]);
 
     if (loading) return <div className={styles.loading}>Loading...</div>;
     if (!blog) return <div className={styles.error}>Blog post not found.</div>;
 
-    const imageUrl = blog.image?.startsWith('/uploads') 
-        ? `http://localhost:5000${blog.image}` 
-        : (blog.image || BlogDetailMain);
+    const imageUrl = (blog.image_url || blog.image)?.startsWith('/uploads') 
+        ? `http://localhost:5000${blog.image_url || blog.image}` 
+        : (blog.image_url || blog.image || BlogDetailMain);
 
     return (
         <div className={styles.blogDetailsPage}>
-          <ContactHero/>
             <header className={styles.heroSection}>
                 <h1 className={styles.title}>
                     {blog.title}

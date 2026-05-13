@@ -1,8 +1,9 @@
 .product-details-page {
     background-color: #FFFFFF;
-    padding-top: 40px;
-    padding-bottom: 80px;
-    overflow-x: hidden; /* Prevent horizontal "dancing" layout */
+    padding-top: 20px;
+    padding-bottom: 40px;
+    overflow-x: hidden;
+    /* Prevent horizontal "dancing" layout */
 }
 
 @media (max-width: 991.98px) {

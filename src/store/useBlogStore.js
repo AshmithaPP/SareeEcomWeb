@@ -52,7 +52,10 @@ const useBlogStore = create((set) => ({
         } catch (error) {
             set({ error: error.message, loading: false });
         }
-    }
+    },
+
+    // Alias for compatibility
+    fetchBlogById: (id) => useBlogStore.getState().fetchBlogBySlug(id)
 }));
 
 export default useBlogStore;

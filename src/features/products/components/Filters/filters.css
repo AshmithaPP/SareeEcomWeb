@@ -1,12 +1,14 @@
 .filter-sidebar {
     width: 288px;
     background: #FFFFFF;
-    border: none; /* Removed border based on latest image */
+    border: none;
+    /* Removed border based on latest image */
     border-radius: 8px;
     padding: 24px;
     box-sizing: border-box;
     opacity: 1;
-    box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.05); /* Added drop shadow */
+    box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.05);
+    /* Added drop shadow */
 }
 
 /* Header */
@@ -41,8 +43,10 @@
 
 /* Filter Sections */
 .filter-section {
-    padding-bottom: 0px; /* Removed border padding */
-    margin-bottom: 20px; /* Restored/adjusted space and margin balance */
+    padding-bottom: 0px;
+    /* Removed border padding */
+    margin-bottom: 20px;
+    /* Restored/adjusted space and margin balance */
 }
 
 .filter-section:last-child {
@@ -55,7 +59,8 @@
     justify-content: space-between;
     align-items: center;
     cursor: pointer;
-    font-family: 'Jost', sans-serif; /* Updated to Jost */
+    font-family: 'Jost', sans-serif;
+    /* Updated to Jost */
     font-weight: 500;
     font-size: 16px;
     line-height: 24px;
@@ -91,14 +96,16 @@
     font-size: 14px;
     line-height: 20px;
     letter-spacing: -0.5px;
-    color: #4B5563; /* Grey-ish text for secondary label */
+    color: #4B5563;
+    /* Grey-ish text for secondary label */
 }
 
 /* Slider Track */
 .slider-container {
     position: relative;
     width: 240px;
-    height: 8px; /* Track height spec */
+    height: 8px;
+    /* Track height spec */
     margin-bottom: 12px;
 }
 
@@ -108,14 +115,17 @@
     transform: translateY(-50%);
     width: 100%;
     height: 8px;
-    background-color: #E5E7EB; /* Track background spec */
-    border-radius: 9999px; /* Spec border-radius slider */
+    background-color: #E5E7EB;
+    /* Track background spec */
+    border-radius: 9999px;
+    /* Spec border-radius slider */
 }
 
 .slider-filled-track {
     position: absolute;
     height: 8px;
-    background-color: #A42829; /* Updated to Spec Red */
+    background-color: #A42829;
+    /* Updated to Spec Red */
     border-radius: 9999px;
 }
 
@@ -124,8 +134,10 @@
     width: 100%;
     background: transparent;
     -webkit-appearance: none;
-    appearance: none; /* Added for compatibility */
-    pointer-events: none; /* Ignore range track */
+    appearance: none;
+    /* Added for compatibility */
+    pointer-events: none;
+    /* Ignore range track */
     top: 50%;
     transform: translateY(-50%);
     margin: 0;
@@ -133,12 +145,15 @@
 
 .slider-input::-webkit-slider-thumb {
     -webkit-appearance: none;
-    appearance: none; /* Added for compatibility */
-    pointer-events: auto; /* Enable thumbs */
+    appearance: none;
+    /* Added for compatibility */
+    pointer-events: auto;
+    /* Enable thumbs */
     width: 16px;
     height: 16px;
     border-radius: 50%;
-    background-color: #A42829; /* Updated to Spec Red */
+    background-color: #A42829;
+    /* Updated to Spec Red */
     cursor: pointer;
     border: 2px solid #FFFFFF;
 }
@@ -185,7 +200,8 @@
     list-style: none;
     padding: 0;
     margin: 0;
-    max-height: 321px; /* Spec height 321 for lists */
+    max-height: 321px;
+    /* Spec height 321 for lists */
     display: flex;
     flex-direction: column;
 }
@@ -193,8 +209,10 @@
 .pattern-item {
     display: flex;
     align-items: center;
-    height: 38px; /* Spec height 38 */
-    padding-left: 4px; /* Spec left 4px */
+    height: 38px;
+    /* Spec height 38 */
+    padding-left: 4px;
+    /* Spec left 4px */
     cursor: pointer;
     transition: background-color 0.2s ease;
 }
@@ -205,7 +223,8 @@
 
 .pattern-item.active .pattern-name {
     font-weight: 500;
-    color: #A42829; /* Visual feedback for active */
+    color: #A42829;
+    /* Visual feedback for active */
 }
 
 .pattern-name {
@@ -214,7 +233,8 @@
     font-size: 14px;
     line-height: 20px;
     letter-spacing: -0.5px;
-    color: #000000; /* Spec black */
+    color: #000000;
+    /* Spec black */
 }
 
 /* Show More Button */
@@ -227,7 +247,8 @@
     font-size: 14px;
     line-height: 14px;
     letter-spacing: -0.5px;
-    color: #800020; /* Spec burgundy/maroon */
+    color: #800020;
+    /* Spec burgundy/maroon */
     cursor: pointer;
     padding: 0;
     margin-top: 12px;
@@ -244,17 +265,21 @@
     padding: 0;
     margin: 0;
     display: grid;
-    grid-template-columns: repeat(2, 114px); /* 2 columns, 114px width each spec */
+    grid-template-columns: repeat(2, 114px);
+    /* 2 columns, 114px width each spec */
     column-gap: 12px;
-    row-gap: 16px; /* Space between rows */
-    max-height: 96px; /* Spec height 96 for list box */
+    row-gap: 16px;
+    /* Space between rows */
+    max-height: 96px;
+    /* Spec height 96 for list box */
 }
 
 .color-item {
     display: flex;
     align-items: center;
     gap: 8px;
-    height: 24px; /* Spec height 24 */
+    height: 24px;
+    /* Spec height 24 */
     cursor: pointer;
     transition: transform 0.1s ease;
 }
@@ -270,8 +295,10 @@
 .color-circle {
     width: 24px;
     height: 24px;
-    border-radius: 9999px; /* Circle spec */
-    border: 1px solid #E5E7EB; /* Border for light colors */
+    border-radius: 9999px;
+    /* Circle spec */
+    border: 1px solid #E5E7EB;
+    /* Border for light colors */
     flex-shrink: 0;
 }
 
@@ -297,11 +324,13 @@
     display: flex;
     flex-direction: column;
     gap: 8px;
-    max-height: 104px; /* Spec height 104 for list box */
+    max-height: 104px;
+    /* Spec height 104 for list box */
 }
 
 .occasion-item {
-    height: 20px; /* Spec height 20 */
+    height: 20px;
+    /* Spec height 20 */
     display: flex;
     align-items: center;
 }
@@ -319,7 +348,8 @@
     height: 13px;
     border-radius: 1px;
     border: 0.5px solid #E5E7EB;
-    accent-color: #A42829; /* Matches breadcrumbs/slider */
+    accent-color: #A42829;
+    /* Matches breadcrumbs/slider */
     cursor: pointer;
 }
 

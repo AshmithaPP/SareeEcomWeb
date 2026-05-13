@@ -10,8 +10,6 @@ const BlogPage = () => {
         <div className="about_page">
             <ContactHero/>
             <BlogSection showTitle={true} />
-            <BlogSection showTitle={false} />
-            <BlogSection showTitle={false} />
 
             <Testimonials/>
              <NewsletterSection />

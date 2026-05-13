@@ -51,14 +51,23 @@ const ProductCard = ({ product }) => {
 
     const handleAddToCart = (e) => {
         e.stopPropagation();
-        // For simple product card, we might not have a variant_id, so we just navigate
-        navigate(`/product-details/${slug}`);
+        const searchParams = new URLSearchParams(window.location.search);
+        const color = searchParams.get('color');
+        const detailUrl = `/product-details/${slug}${color ? `?color=${color}` : ''}`;
+        navigate(detailUrl);
     };
 
     const slug = product.slug || id;
 
+    const handleCardClick = () => {
+        const searchParams = new URLSearchParams(window.location.search);
+        const color = searchParams.get('color');
+        const detailUrl = `/product-details/${slug}${color ? `?color=${color}` : ''}`;
+        navigate(detailUrl);
+    };
+
     return (
-        <div className="product-card" onClick={() => navigate(`/product-details/${slug}`)} style={{ cursor: 'pointer' }}>
+        <div className="product-card" onClick={handleCardClick} style={{ cursor: 'pointer' }}>
             {/* Image Section */}
             <div className="product-image-container">
                 <img src={image} alt={name} className="product-image" />

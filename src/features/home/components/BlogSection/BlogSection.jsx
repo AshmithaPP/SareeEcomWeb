@@ -8,13 +8,14 @@ import Blog3 from 'assets/images/silk/Blog3.png';
 import useBlogStore from '@/store/useBlogStore';
 
 const BlogSection = ({ showTitle = true, title = "Our Blogs", customTitleClass = "", dynamicBlogs }) => {
-  const { blogs: storeBlogs, fetchBlogs } = useBlogStore();
+  const { blogs: storeBlogs, fetchBlogs, loading } = useBlogStore();
 
   useEffect(() => {
-    if (!dynamicBlogs) {
+    // Only fetch if we don't have dynamicBlogs, store is empty, and it's not currently loading
+    if (!dynamicBlogs && storeBlogs.length === 0 && !loading) {
       fetchBlogs();
     }
-  }, [fetchBlogs, dynamicBlogs]);
+  }, [dynamicBlogs, storeBlogs.length, loading, fetchBlogs]);
 
   const blogs = dynamicBlogs || storeBlogs;
 
@@ -34,7 +35,10 @@ const BlogSection = ({ showTitle = true, title = "Our Blogs", customTitleClass =
           {blogs.map((blog) => (
             <div className="col-lg-4 col-md-6 col-12 d-flex justify-content-center" key={blog.blog_id || blog.id}>
               <BlogCard 
-                {...blog} 
+                id={blog.slug || blog.blog_id || blog.id}
+                title={blog.title}
+                category={blog.category}
+                date={blog.published_date || blog.date}
                 image={getImageUrl(blog.image_url || blog.image)} 
                 description={blog.excerpt || blog.subtitle || (blog.content ? blog.content.substring(0, 100).replace(/<[^>]*>?/gm, '') + '...' : '')}
               />

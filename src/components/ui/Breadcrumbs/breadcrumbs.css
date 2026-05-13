@@ -25,7 +25,7 @@
 
 /* Custom separator */
 .breadcrumb-item + .breadcrumb-item::before {
-    content: "/";
+    content: ">";
     color: #4B5563; /* Grey */
     padding: 0 2px; /* Tighter separator padding */
 }

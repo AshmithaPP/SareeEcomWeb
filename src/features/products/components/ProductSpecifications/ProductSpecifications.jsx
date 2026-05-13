@@ -26,19 +26,19 @@ const ProductSpecifications = ({ specifications, services }) => {
     }));
 
     return (
-        <div className="product-specifications-section mt-5 mb-5 pb-5">
+        <div className="product-specifications-section mt-2 mb-4 pb-4">
             <div className="product-specifications-wrapper d-flex flex-column">
-                
+
                 {/* Heading */}
-                <h2 className="specifications-heading">Product Specifications</h2>
-                
+                <h2 className="specifications-heading" style={{ fontSize: '20px', marginBottom: '15px' }}>Product Specifications</h2>
+
                 {/* Specs Table */}
                 <div className="specifications-table-container">
                     <SpecificationsTable specs={specificationsData} />
                 </div>
-                
+
                 {/* Care Instructions Section */}
-                <div className="care-instructions-container">
+                <div className="care-instructions-container mt-3">
                     <CareInstructions instructions={careInstructionsData} />
                 </div>
 

@@ -16,11 +16,17 @@
 .title {
     font-family: 'Jost', sans-serif !important;
     font-weight: 500;
-    font-size: 66px;
+    font-size: 56px;
     line-height: 73px;
     letter-spacing: -0.5px;
     color: #A42829;
-    margin-bottom: 24px;
+    text-align: center;
+    max-width: 953px;
+    height: 146px;
+    margin: 0 auto 24px auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .subheading {

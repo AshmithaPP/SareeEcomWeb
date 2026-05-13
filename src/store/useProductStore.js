@@ -114,7 +114,13 @@ const useProductStore = create((set, get) => ({
     fetchProductBySlug: async (slug) => {
         set({ loading: true, error: null, selectedProduct: null });
         try {
-            const response = await fetch(`${API_BASE_URL}/products/${slug}`);
+            // Include active filters in detail fetch so backend can pre-select correct variant
+            const searchParams = new URLSearchParams();
+            Object.entries(get().activeFilters).forEach(([key, value]) => {
+                if (value) searchParams.append(key, value);
+            });
+            const qs = searchParams.toString();
+            const response = await fetch(`${API_BASE_URL}/products/${slug}${qs ? '?' + qs : ''}`);
             if (!response.ok) {
                 throw new Error(`Error fetching product details: ${response.statusText}`);
             }

@@ -23,7 +23,7 @@ const ProductsPage = () => {
     // 2. Sync Zustand -> URL & Fetch on changes
     useEffect(() => {
         const currentParams = new URLSearchParams(searchParams);
-        
+
         // Update URL to match Zustand state
         Object.entries(activeFilters).forEach(([key, value]) => {
             currentParams.set(key, value);
@@ -38,7 +38,7 @@ const ProductsPage = () => {
         });
 
         setSearchParams(currentParams, { replace: true });
-        
+
         // Trigger fetch
         fetchProducts();
     }, [activeFilters]);
@@ -96,15 +96,15 @@ const ProductsPage = () => {
                     <div className="row mb-4">
                         <div className="col-12 d-flex justify-content-between align-items-center flex-wrap gap-3">
                             <h2 className="products-title m-0">
-                                {activeFilters.category 
-                                    ? activeFilters.category.split(',').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(', ') 
+                                {activeFilters.category
+                                    ? activeFilters.category.split(',').map(s => s.charAt(0).toUpperCase() + s.slice(1)).join(', ')
                                     : 'All Collections'}
                             </h2>
 
                             <div className="products-meta-controls d-flex align-items-center gap-3">
                                 <div className="products-search-box">
-                                    <input 
-                                        type="text" 
+                                    <input
+                                        type="text"
                                         placeholder="Search in this collection..."
                                         className="search-input"
                                         defaultValue={activeFilters.search || ''}
@@ -124,16 +124,16 @@ const ProductsPage = () => {
                                 </span>
 
                                 <div className="sort-dropdown dropdown">
-                                    <button 
-                                        className="sort-btn dropdown-toggle" 
+                                    <button
+                                        className="sort-btn dropdown-toggle"
                                         type="button"
                                         onClick={() => setIsSortOpen(!isSortOpen)}
                                     >
                                         <span className="sort-text">
                                             Sort By: {
-                                                activeFilters.sort === 'price_low_to_high' ? 'Price: Low to High' : 
-                                                activeFilters.sort === 'price_high_to_low' ? 'Price: High to Low' : 
-                                                activeFilters.sort === 'popularity' ? 'Popularity' : 'Newest'
+                                                activeFilters.sort === 'price_low_to_high' ? 'Price: Low to High' :
+                                                    activeFilters.sort === 'price_high_to_low' ? 'Price: High to Low' :
+                                                        activeFilters.sort === 'popularity' ? 'Popularity' : 'Newest'
                                             }
                                         </span>
                                     </button>

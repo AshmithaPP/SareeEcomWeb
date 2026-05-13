@@ -56,7 +56,7 @@ const ProductDetailsPage = () => {
     }));
 
     return (
-        <div className="product-details-page container-fluid px-md-5 py-4">
+        <div className="product-details-page container-fluid px-md-4 py-3">
             {/* Breadcrumb Row */}
             <div className="row mb-3">
                 <div className="col-12 d-flex justify-content-start">
@@ -65,7 +65,7 @@ const ProductDetailsPage = () => {
             </div>
 
             {/* Main Content Area */}
-            <div className="row g-3 g-md-4 g-lg-5">
+            <div className="row g-3 g-md-4 align-items-start">
                 {/* Left Column: Product Image Gallery */}
                 <div className="col-lg-6 product-image-column">
                     <ProductImage
@@ -79,24 +79,23 @@ const ProductDetailsPage = () => {
                     {/* Basic Info, Price, Actions */}
                     <ProductInfo product={product} />
 
-                    {/* Trust Badges Row */}
-                    <div className="quality-badges-section mt-4 d-flex justify-content-start flex-wrap gap-3">
+                    {/* Trust Badges Row - Moved back here to fix overlap */}
+                    <div className="quality-badges-section mt-3 d-flex justify-content-start flex-wrap gap-2">
                         {(product.trust_badges || []).map((badge, index) => {
-                            // Handle both string and object formats from API
                             const badgeData = typeof badge === 'string' ? { title: badge } : badge;
                             return <QualityBadge key={index} badge={badgeData} />;
                         })}
                     </div>
 
-                    {/* Features / Services Highlights */}
-                    <div className="why-choose-section mt-4">
+                    {/* Features / Services Highlights - Moved back here to fix overlap */}
+                    <div className="why-choose-section mt-3">
                         <WhyChoose features={product.highlights || []} />
                     </div>
                 </div>
             </div>
 
             {/* Product Specifications Section */}
-            <div className="row mt-5">
+            <div className="row mt-3">
                 <div className="col-12">
                     <ProductSpecifications
                         specifications={product.specifications || []}

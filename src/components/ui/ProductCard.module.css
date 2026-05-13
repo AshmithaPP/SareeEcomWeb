@@ -157,7 +157,8 @@
     gap: 2px;
 }
 
-.starFilled, .starEmpty {
+.starFilled,
+.starEmpty {
     width: 14px;
     height: 14px;
 }

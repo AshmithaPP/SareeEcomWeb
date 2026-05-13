@@ -21,37 +21,34 @@ const CollectionsGrid = ({ data }) => <CategoriesSection dynamicCategories={data
 
 const IMAGE_BASE_URL = 'http://localhost:5000';
 
+const mapHomeProduct = (p) => {
+  const pid = p.product_id || p.id || (p.product && (p.product.product_id || p.product.id));
+  return {
+    ...p,
+    id: pid,
+    product_id: pid,
+    title: p.product_name || p.name || p.title || (p.product && (p.product.product_name || p.product.name)),
+    discountedPrice: p.price ? (String(p.price).startsWith('₹') ? p.price : `₹${p.price}`) : p.discountedPrice,
+    originalPrice: p.original_price ? (String(p.original_price).startsWith('₹') ? p.original_price : `₹${p.original_price}`) : p.originalPrice,
+    image: p.image_url ? (p.image_url.startsWith('http') ? p.image_url : `${IMAGE_BASE_URL}${p.image_url}`) : (p.image || (p.product && p.product.image_url ? `${IMAGE_BASE_URL}${p.product.image_url}` : '')),
+    discount: p.discount_percentage > 0 ? `${p.discount_percentage}% OFF` : (p.discount || null),
+    rating: p.rating ? (typeof p.rating === 'object' ? p.rating : { average: p.rating, count: p.reviews_count || 0 }) : null,
+    stockStatus: p.stock_status || p.stockStatus || 'in_stock',
+    slug: p.slug || (p.product && p.product.slug) || pid
+  };
+};
+
 const ProductCarousel = ({ title, data }) => (
   <ShopByCollections 
     title={title} 
-    products={data.map(p => ({
-      id: p.product_id,
-      title: p.product_name,
-      discountedPrice: `₹${p.price}`,
-      originalPrice: `₹${p.original_price}`,
-      image: p.image_url ? (p.image_url.startsWith('http') ? p.image_url : `${IMAGE_BASE_URL}${p.image_url}`) : '',
-      discount: p.discount_percentage > 0 ? `${p.discount_percentage}% OFF` : null,
-      rating: { average: p.rating, count: p.reviews_count },
-      stockStatus: p.stock_status,
-      slug: p.slug || p.product_id
-    }))} 
+    products={data.map(mapHomeProduct)} 
   />
 );
 
 const ProductSection = ({ data }) => (
   <ShopByCollections 
     title={data.title} 
-    products={data.products.map(p => ({
-      id: p.product_id,
-      title: p.product_name,
-      discountedPrice: `₹${p.price}`,
-      originalPrice: `₹${p.original_price}`,
-      image: p.image_url ? (p.image_url.startsWith('http') ? p.image_url : `${IMAGE_BASE_URL}${p.image_url}`) : '',
-      discount: p.discount_percentage > 0 ? `${p.discount_percentage}% OFF` : null,
-      rating: { average: p.rating, count: p.reviews_count },
-      stockStatus: p.stock_status,
-      slug: p.slug || p.product_id
-    }))} 
+    products={data.products.map(mapHomeProduct)} 
   />
 );
 
