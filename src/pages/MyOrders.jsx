@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { API_BASE } from '@/config/api';
+
 import './myOrders.css';
 
 const MyOrders = () => {
@@ -12,7 +14,7 @@ const MyOrders = () => {
         const fetchOrders = async () => {
             try {
                 const token = localStorage.getItem('token');
-                const response = await axios.get('http://localhost:5000/api/orders', {
+                const response = await axios.get(`${API_BASE}/orders`, {
                     headers: { Authorization: `Bearer ${token}` }
                 });
                 console.log('📦 My Orders Response:', response.data);

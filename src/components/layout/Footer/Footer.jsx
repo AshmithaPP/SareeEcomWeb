@@ -1,5 +1,7 @@
 import React, { useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
+import { IMAGE_BASE } from '@/config/api';
+
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import './Footer.css';
 import LogoWhite from 'assets/images/logo/Logo-SareeEcom.png';
@@ -18,7 +20,7 @@ const Footer = () => {
         fetchSettings();
     }, [fetchSettings]);
 
-    const IMAGE_BASE_URL = 'http://localhost:5000';
+    const IMAGE_BASE_URL = IMAGE_BASE;
     const logoSrc = siteInfo.site_logo 
         ? (siteInfo.site_logo.startsWith('http') ? siteInfo.site_logo : `${IMAGE_BASE_URL}${siteInfo.site_logo}`)
         : LogoWhite;

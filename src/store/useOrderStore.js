@@ -2,8 +2,10 @@ import { create } from 'zustand';
 import axios from 'axios';
 import useAuthStore from './useAuthStore';
 import useCartStore from './useCartStore';
+import { API_BASE } from '@/config/api';
 
-const API_BASE = 'http://localhost:5000/api';
+
+
 
 const useOrderStore = create((set, get) => ({
     orders: [],

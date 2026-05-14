@@ -15,7 +15,7 @@ const CartSummary = () => {
                 {items.map((item, index) => (
                     <div className="summary-item d-flex justify-content-between mb-2" key={item.cart_item_id || index}>
                         <span className="summary-item-name">{item.name} (x{item.quantity})</span>
-                        <span className="summary-item-price">₹{parseFloat(item.total).toLocaleString('en-IN')}</span>
+                        <span className="summary-item-price">₹{parseFloat(item.line_total).toLocaleString('en-IN')}</span>
                     </div>
                 ))}
             </div>

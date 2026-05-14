@@ -1,5 +1,7 @@
 import React, { useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
+import { IMAGE_BASE } from '@/config/api';
+
 import useOrderStore from '@/store/useOrderStore';
 import './orderConfirmation.css';
 
@@ -112,7 +114,7 @@ const OrderConfirmationPage = () => {
                 <div className="order-conf-product-box" key={idx} style={{ marginBottom: '15px' }}>
                   <div className="order-conf-product-image-container">
                     <img 
-                      src={item.image_url ? (item.image_url.startsWith('http') ? item.image_url : `http://localhost:5000${item.image_url}`) : sareeImage} 
+                      src={item.image_url ? (item.image_url.startsWith('http') ? item.image_url : `${IMAGE_BASE}${item.image_url}`) : sareeImage} 
                       alt={item.name} 
                       className="img-fluid" 
                     />

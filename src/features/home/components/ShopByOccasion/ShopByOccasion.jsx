@@ -1,6 +1,8 @@
 import React from 'react';
 import CircleCard from './CircleCard';
 import './shopByOccasion.css';
+import { IMAGE_BASE } from '@/config/api';
+
 
 // Import local images
 import bridalSaree from 'assets/images/bridal/occasion1.png';
@@ -38,7 +40,7 @@ const occasionItems = [
 ];
 
 const ShopByOccasion = ({ dynamicData }) => {
-  const IMAGE_BASE_URL = 'http://localhost:5000';
+  const IMAGE_BASE_URL = IMAGE_BASE;
   
   const occasions = dynamicData && dynamicData.length > 0 ? dynamicData.map(item => ({
     id: item.occasion_id || item.id,

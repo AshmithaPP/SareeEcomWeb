@@ -185,10 +185,14 @@ const ProductInfo = ({ product }) => {
                 <div className="d-flex align-items-center gap-2">
                     <img src={timerIcon} alt="Timer" className="timer-icon" style={{ width: '20px' }} />
                     <div className="stock-text-col d-flex flex-column justify-content-center">
-                        <div className={`stock-title mb-0 ${isOutOfStock ? 'text-danger' : ''}`} style={{ fontSize: '14px' }}>
-                            {isOutOfStock ? 'Out of Stock' : `Only ${selected_variant?.stock?.quantity || 0} Pieces Available`}
+                        <div className={`stock-title mb-0 ${isOutOfStock ? 'text-danger' : 'text-success'}`} style={{ fontSize: '14px', textTransform: 'capitalize' }}>
+                            {isOutOfStock ? 'Out of Stock' : (selected_variant?.stock?.status?.replace('_', ' ') || 'In Stock')}
                         </div>
-                        <div className="stock-subtitle small" style={{ fontSize: '12px' }}>{isOutOfStock ? 'We will restock soon' : 'High demand – selling fast'}</div>
+                        {!isOutOfStock && (
+                            <div className="stock-subtitle small" style={{ fontSize: '12px' }}>
+                                {product.stock_meta?.urgency_text || 'High demand – selling fast'}
+                            </div>
+                        )}
                     </div>
                 </div>
                 {!isOutOfStock && <div className="viewing-count small">12 people viewing</div>}

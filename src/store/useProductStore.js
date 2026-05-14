@@ -1,6 +1,8 @@
 import { create } from 'zustand';
+import { API_BASE, IMAGE_BASE } from '@/config/api';
 
-const API_BASE_URL = 'http://localhost:5000/api';
+
+const API_BASE_URL = API_BASE;
 
 const useProductStore = create((set, get) => ({
     products: [],
@@ -76,7 +78,7 @@ const useProductStore = create((set, get) => ({
             const data = await response.json();
             
             if (data.success) {
-                const IMAGE_BASE_URL = 'http://localhost:5000';
+                const IMAGE_BASE_URL = IMAGE_BASE;
                 const mappedProducts = data.products.map(p => {
                     const fullImageUrl = p.image_url ? (p.image_url.startsWith('http') ? p.image_url : `${IMAGE_BASE_URL}${p.image_url}`) : '';
                     return {

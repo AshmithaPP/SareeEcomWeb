@@ -33,7 +33,7 @@ const CartItem = ({ item }) => {
                 <h5 className="cart-item-title mb-1">{item.name}</h5>
                 {attributeText && <p className="cart-item-size text-muted mb-1">{attributeText}</p>}
                 <p className="cart-item-price mb-2">
-                    ₹{parseFloat(item.price).toLocaleString('en-IN')}
+                    ₹{parseFloat(item.unit_price).toLocaleString('en-IN')}
                 </p>
                 <div className="quantity-selector-v2 d-flex align-items-center mb-2">
                     <button 
@@ -47,6 +47,7 @@ const CartItem = ({ item }) => {
                     <button 
                         className="qty-btn plus" 
                         onClick={handleIncrement}
+                        disabled={Number(item.quantity) >= 10}
                     >
                         <i className="bi bi-plus"></i>
                     </button>

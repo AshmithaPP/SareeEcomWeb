@@ -1,6 +1,8 @@
 import React from 'react';
 import TrendingCard from './TrendingCard';
 import './trendingPicks.css';
+import { IMAGE_BASE } from '@/config/api';
+
 
 // Import images from assets
 import occasion1 from 'assets/images/bridal/occasion1.png';
@@ -24,7 +26,7 @@ const trendingCardsData = [
 ];
 
 const TrendingPicks = ({ data }) => {
-    const IMAGE_BASE_URL = 'http://localhost:5000';
+    const IMAGE_BASE_URL = IMAGE_BASE;
     
     const displayData = data && data.length > 0 ? data.map((item, index) => ({
         id: item.category_id || item.id,

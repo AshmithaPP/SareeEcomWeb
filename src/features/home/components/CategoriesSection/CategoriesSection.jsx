@@ -1,5 +1,7 @@
 import React, { useRef, useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { IMAGE_BASE } from '@/config/api';
+
 import CategoryCard from './CategoryCard';
 import styles from './CategoriesSection.module.css';
 import ArrowButton from 'components/common/ArrowButton';
@@ -14,7 +16,7 @@ const CategoriesSection = ({ dynamicCategories }) => {
     const scrollRef = useRef(null);
     const [canScrollLeft, setCanScrollLeft] = useState(false);
     const [canScrollRight, setCanScrollRight] = useState(true);
-    const IMAGE_BASE_URL = 'http://localhost:5000';
+    const IMAGE_BASE_URL = IMAGE_BASE;
     
     const categories = dynamicCategories ? dynamicCategories.map(cat => ({
         id: cat.category_id,

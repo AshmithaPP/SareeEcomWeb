@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import './newsletterSection.css';
+import { IMAGE_BASE } from '@/config/api';
+
 import newsletterImg from 'assets/images/silk/NewsSection.png'; // Verified file name
 
 const NewsletterSection = ({ dynamicData }) => {
   const [email, setEmail] = useState('');
-  const IMAGE_BASE_URL = 'http://localhost:5000';
+  const IMAGE_BASE_URL = IMAGE_BASE;
 
   const displayData = {
     title: dynamicData?.title || "Enter The World Of Timeless Sarees",

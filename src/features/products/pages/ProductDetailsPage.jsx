@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import useProductStore from '@/store/useProductStore';
 import Breadcrumbs from 'components/ui/Breadcrumbs/Breadcrumbs';
@@ -10,7 +10,7 @@ import ProductSpecifications from 'features/products/components/ProductSpecifica
 import AuthenticitySection from 'features/products/components/AuthenticitySection/AuthenticitySection';
 import CustomerReviews from 'features/products/components/CustomerReviews/CustomerReviews';
 import ProductCard from 'features/products/components/ProductCard/ProductCard';
-import silkMarkIcon from 'assets/icons/ui/silkmarkicon.png';
+import ArrowButton from 'components/common/ArrowButton';
 import './productDetailsPage.css';
 
 const ProductDetailsPage = () => {
@@ -22,6 +22,36 @@ const ProductDetailsPage = () => {
             fetchProductBySlug(slug);
         }
     }, [slug, fetchProductBySlug]);
+
+    // Carousel Logic
+    const scrollRef = useRef(null);
+    const [canScrollLeft, setCanScrollLeft] = useState(false);
+    const [canScrollRight, setCanScrollRight] = useState(true);
+
+    const checkScroll = () => {
+        if (!scrollRef.current) return;
+        const { scrollLeft, scrollWidth, clientWidth } = scrollRef.current;
+        setCanScrollLeft(scrollLeft > 0);
+        setCanScrollRight(scrollLeft + clientWidth < scrollWidth - 5);
+    };
+
+    const handleScroll = (direction) => {
+        if (!scrollRef.current) return;
+        const scrollAmount = 300; // Consistent scroll step
+        const offset = direction === 'left' ? -scrollAmount : scrollAmount;
+        scrollRef.current.scrollBy({ left: offset, behavior: 'smooth' });
+    };
+
+    useEffect(() => {
+        const currentRef = scrollRef.current;
+        if (currentRef) {
+            currentRef.addEventListener('scroll', checkScroll);
+            setTimeout(checkScroll, 100);
+        }
+        return () => {
+            if (currentRef) currentRef.removeEventListener('scroll', checkScroll);
+        };
+    }, [product?.related_products]);
 
     // Dynamically derive quality badges from API
     const qualityBadges = product?.trustBadges || [];
@@ -106,20 +136,39 @@ const ProductDetailsPage = () => {
 
             {/* Related Products Section */}
             {product.related_products?.length > 0 && (
-                <div className="row mt-5 mb-4">
+                <div className="row mt-5 mb-4 justify-content-center">
                     <div className="col-12">
-                        <h3 className="section-title mb-4">Related Products</h3>
-                        <div className="row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-4 g-4">
-                            {product.related_products.map((item) => (
-                                <div className="col" key={item.product_id}>
-                                    <ProductCard product={{
-                                        ...item,
-                                        title: item.name,
-                                        image: item.image_url,
-                                        discountedPrice: `₹${parseFloat(item.price).toLocaleString('en-IN')}`
-                                    }} />
-                                </div>
-                            ))}
+                        <h3 className="section-title mb-4 text-center">Related Products</h3>
+                        
+                        <div className="related-carousel-wrapper position-relative">
+                            <div className="carousel-arrow arrow-left">
+                                <ArrowButton
+                                    direction="left"
+                                    onClick={() => handleScroll('left')}
+                                    disabled={!canScrollLeft}
+                                />
+                            </div>
+
+                            <div className="related-products-track" ref={scrollRef}>
+                                {product.related_products.map((item) => (
+                                    <div className="related-product-card" key={item.product_id}>
+                                        <ProductCard product={{
+                                            ...item,
+                                            title: item.name,
+                                            image: item.image_url,
+                                            discountedPrice: `₹${parseFloat(item.price).toLocaleString('en-IN')}`
+                                        }} />
+                                    </div>
+                                ))}
+                            </div>
+
+                            <div className="carousel-arrow arrow-right">
+                                <ArrowButton
+                                    direction="right"
+                                    onClick={() => handleScroll('right')}
+                                    disabled={!canScrollRight}
+                                />
+                            </div>
                         </div>
                     </div>
                 </div>

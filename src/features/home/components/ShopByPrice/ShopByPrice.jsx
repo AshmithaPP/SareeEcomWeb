@@ -1,6 +1,8 @@
 import React, { useEffect, useRef } from 'react';
 import './shopByPrice.css';
 import PriceCard from './PriceCard';
+import { IMAGE_BASE } from '@/config/api';
+
 
 // Import images
 import everydaySaree from 'assets/images/bridal/occasion1.png';
@@ -67,7 +69,7 @@ const ShopByPrice = ({ data }) => {
         }
     }, []);
 
-    const IMAGE_BASE_URL = 'http://localhost:5000';
+    const IMAGE_BASE_URL = IMAGE_BASE;
 
     const displayData = data && data.length > 0 ? data.map((item, index) => ({
         id: index + 1,

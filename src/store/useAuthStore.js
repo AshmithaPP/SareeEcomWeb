@@ -1,4 +1,6 @@
 import { create } from 'zustand';
+import { API_BASE } from '@/config/api';
+
 
 const useAuthStore = create((set, get) => ({
     user: JSON.parse(localStorage.getItem('user')) || null,
@@ -18,7 +20,7 @@ const useAuthStore = create((set, get) => ({
 
         try {
             if (userId) {
-                await fetch('http://localhost:5000/api/auth/logout', {
+                await fetch(`${API_BASE}/auth/logout`, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',

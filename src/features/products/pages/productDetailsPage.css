@@ -1,9 +1,74 @@
+/* Related Products Carousel */
+.related-carousel-wrapper {
+    position: relative;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.related-products-track {
+    display: flex;
+    justify-content: center;
+    gap: 1.5rem;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    padding: 15px 0;
+    scrollbar-width: none; /* Firefox */
+}
+
+.related-products-track::before,
+.related-products-track::after {
+    content: '';
+    margin: auto;
+}
+
+.related-products-track::-webkit-scrollbar {
+    display: none; /* Chrome, Safari, Opera */
+}
+
+/* On overflow, switch to flex-start to allow scrolling from the beginning */
+@media (max-width: 1200px) {
+    .related-products-track {
+        justify-content: flex-start;
+        padding-left: 20px;
+        padding-right: 20px;
+    }
+}
+
+.related-product-card {
+    flex: 0 0 280px;
+    transition: transform 0.3s ease;
+}
+
+.carousel-arrow {
+    position: absolute;
+    top: 195px; /* Centered with the 369px image part + 15px padding */
+    transform: translateY(-50%);
+    z-index: 10;
+    filter: drop-shadow(0 2px 5px rgba(0,0,0,0.2));
+}
+
+.arrow-left {
+    left: -25px;
+}
+
+.arrow-right {
+    right: -25px;
+}
+
+@media (max-width: 991.98px) {
+    .related-product-card {
+        flex: 0 0 250px;
+    }
+    .carousel-arrow {
+        display: none; /* Hide arrows on mobile */
+    }
+}
+
 .product-details-page {
     background-color: #FFFFFF;
     padding-top: 20px;
     padding-bottom: 40px;
     overflow-x: hidden;
-    /* Prevent horizontal "dancing" layout */
 }
 
 @media (max-width: 991.98px) {

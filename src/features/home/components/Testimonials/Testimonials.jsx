@@ -1,12 +1,14 @@
 import TestimonialCard from './TestimonialCard';
 import ArrowButton from 'components/common/ArrowButton';
 import './testimonials.css';
+import { IMAGE_BASE } from '@/config/api';
+
 import collection1 from 'assets/images/bridal/testimonial.png';
 import { useState } from 'react';
 
 const Testimonials = ({ dynamicTestimonials }) => {
     const [activeIndex, setActiveIndex] = useState(0);
-    const IMAGE_BASE_URL = 'http://localhost:5000';
+    const IMAGE_BASE_URL = IMAGE_BASE;
 
     const testimonials = (dynamicTestimonials && dynamicTestimonials.length > 0) ? dynamicTestimonials.map(t => ({
         image: t.image_url ? (t.image_url.startsWith('http') ? t.image_url : `${IMAGE_BASE_URL}${t.image_url}`) : collection1,

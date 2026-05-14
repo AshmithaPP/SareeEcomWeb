@@ -44,7 +44,7 @@ const CheckoutPage = () => {
     useEffect(() => {
         if (isAuthenticated) {
             fetchAddresses();
-            fetchCart();
+            fetchCart(selectedAddress?.state || formData.state);
         }
     }, [isAuthenticated, fetchAddresses, fetchCart]);
 
@@ -64,9 +64,25 @@ const CheckoutPage = () => {
 
     const subtotal = parseFloat(cartSummary.subtotal) || 0;
     const discountAmount = parseFloat(cartSummary.discount) || 0;
-    const shipping = parseFloat(cartSummary.delivery) || 0;
-    const gst = parseFloat(cartSummary.tax) || 0;
+    const shipping = parseFloat(cartSummary.shipping_charge) || 0;
+    const shippingZone = cartSummary.shipping_zone || '';
+
+    const taxableAmount = parseFloat(cartSummary.taxable_amount) || 0;
+    const gstTotal = parseFloat(cartSummary.gst_amount) || 0;
+    const cgst = parseFloat(cartSummary.cgst_amount) || 0;
+    const sgst = parseFloat(cartSummary.sgst_amount) || 0;
+    const igst = parseFloat(cartSummary.igst_amount) || 0;
+    const gstRate = cartSummary.gst_rate || 12;
+
     const totalAmount = parseFloat(cartSummary.total) || 0;
+
+    // Fetch Cart with State when state changes
+    useEffect(() => {
+        const state = selectedAddress ? selectedAddress.state : formData.state;
+        if (state) {
+            fetchCart(state);
+        }
+    }, [formData.state, selectedAddress, fetchCart]);
 
     const [paymentMethod, setPaymentMethod] = useState('UPI');
 
@@ -564,44 +580,89 @@ const CheckoutPage = () => {
                                 </div>
                                 <div className="product-info-box flex-grow-1">
                                     <h4 className="prod-name">{item.name}</h4>
-                                    <p className="prod-desc">{item.variant_name || 'Standard'}</p>
-                                    <div className="d-flex justify-content-between align-items-center mt-2">
+                                    <p className="prod-desc">Variant: {item.attributes ? Object.entries(item.attributes).map(([k, v]) => `${v}`).join(', ') : 'Standard'}</p>
+                                    <div className="d-flex justify-content-between align-items-center mt-1">
                                         <span className="prod-qty">Qty: {item.quantity}</span>
-                                        <span className="prod-price">₹{parseFloat(item.price).toLocaleString('en-IN')}</span>
+                                        <span className="prod-price">₹{parseFloat(item.unit_price).toLocaleString('en-IN')}</span>
                                     </div>
+                                    {item.stock_quantity <= 5 && (
+                                        <p className="stock-warning mt-1">Only {item.stock_quantity} piece{item.stock_quantity > 1 ? 's' : ''} left in stock</p>
+                                    )}
                                 </div>
                             </div>
                         ))}
 
-                        <div className="stock-alert-badge">
-                            <span className="dot"></span>
-                            <span className="stock-alert-text">ONLY 1 PIECE LEFT IN STOCK</span>
-                        </div>
+                        {/* Stock Alert Badge (Optional) */}
+                        {cartItems.some(item => item.stock_quantity <= 3) && (
+                            <div className="stock-alert-badge">
+                                <span className="dot"></span>
+                                <span className="stock-alert-text">LIMITED STOCK AVAILABLE</span>
+                            </div>
+                        )}
 
                         <div className="price-details-box price-details">
                             <div className="price-row">
                                 <span className="label">Subtotal</span>
-                                <span className="value">₹{subtotal.toLocaleString()}</span>
+                                <span className="value">₹{subtotal.toLocaleString('en-IN')}</span>
                             </div>
-                            <div className="price-row">
-                                <span className="discount-label">Discount</span>
-                                <span className="discount-value">- ₹{discountAmount.toLocaleString()}</span>
-                            </div>
+                            {discountAmount > 0 && (
+                                <div className="price-row">
+                                    <span className="discount-label">Discount</span>
+                                    <span className="discount-value">- ₹{discountAmount.toLocaleString('en-IN')}</span>
+                                </div>
+                            )}
                             <div className="price-row">
                                 <span className="shipping-label d-flex align-items-center">
-                                    Shipping <i className="bi bi-info-circle ms-2" style={{ fontSize: '9.5px', opacity: 0.7 }}></i>
+                                    Shipping {shippingZone ? `(${shippingZone})` : ''} 
                                 </span>
-                                <span className="free-badge">FREE</span>
+                                <span className={shipping === 0 ? "free-badge" : "value"}>
+                                    {shipping === 0 ? `FREE (Order above ₹${parseFloat(cartSummary.free_shipping_threshold || 500).toLocaleString('en-IN')})` : `₹${shipping.toLocaleString('en-IN')}`}
+                                </span>
                             </div>
-                            <div className="price-row">
-                                <span className="gst-label">Includes GST (12%)</span>
-                                <span className="gst-value">₹{gst.toLocaleString()}</span>
+
+                            {/* Professional GST Breakdown */}
+                            <div className="price-breakdown-divider mt-2 pt-2 border-top">
+                                <div className="price-row small-row">
+                                    <span className="label-sm">Taxable Amount</span>
+                                    <span className="value-sm">₹{taxableAmount.toLocaleString('en-IN')}</span>
+                                </div>
+                                <div className="price-row small-row">
+                                    <span className="label-sm">Includes GST ({gstRate}%)</span>
+                                    <span className="value-sm">₹{gstTotal.toLocaleString('en-IN')}</span>
+                                </div>
+
+                                {igst > 0 && (
+                                    <div className="price-row extra-small-row">
+                                        <span className="label-xs">IGST ({gstRate}%)</span>
+                                        <span className="value-xs">₹{igst.toLocaleString('en-IN')}</span>
+                                    </div>
+                                )}
+
+                                {cgst > 0 && (
+                                    <div className="price-row extra-small-row">
+                                        <span className="label-xs">CGST ({(gstRate / 2).toFixed(1)}%) + SGST ({(gstRate / 2).toFixed(1)}%)</span>
+                                        <span className="value-xs">₹{cgst.toLocaleString('en-IN')} + ₹{sgst.toLocaleString('en-IN')}</span>
+                                    </div>
+                                )}
                             </div>
 
                             <div className="price-row total-row-highlight pt-3">
                                 <span className="total-label">TOTAL AMOUNT</span>
-                                <span className="total-value">₹{totalAmount.toLocaleString()}</span>
+                                <span className="total-value">₹{totalAmount.toLocaleString('en-IN')}</span>
                             </div>
+
+                            {/* Additional UX */}
+                            {(formData.state || selectedAddress?.state) && (
+                                <div className="delivery-info-mini mt-3 p-2 rounded bg-light border">
+                                    <p className="mb-0 small text-muted">
+                                        <i className="bi bi-truck me-2"></i>
+                                        Delivery to <strong>{selectedAddress ? selectedAddress.state : formData.state}</strong>
+                                    </p>
+                                    <p className="mb-0 small text-muted">
+                                        Estimated Delivery: <strong>{cartSummary.estimated_days || '3–5 Days'}</strong>
+                                    </p>
+                                </div>
+                            )}
                         </div>
 
                         <button
@@ -611,7 +672,6 @@ const CheckoutPage = () => {
                         >
                             {orderLoading ? 'PLACING ORDER...' : 'PLACE ORDER'}
                         </button>
-                        <p className="secure-text">3D-SECURE PAYMENT AUTHORIZATION ACTIVE</p>
                     </section>
 
                     <div className="quality-badges-row">

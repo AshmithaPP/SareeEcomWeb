@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
+import { IMAGE_BASE } from '@/config/api';
+
 import './navbar.css';
 import Logo from 'assets/images/logo/Logo-SareeEcom.png';
 import SearchIcon from 'assets/icons/ui/search-line.png';
@@ -29,7 +31,7 @@ const Navbar = () => {
         fetchWishlist();
     }, [fetchSettings, fetchCart, fetchWishlist]);
 
-    const IMAGE_BASE_URL = 'http://localhost:5000';
+    const IMAGE_BASE_URL = IMAGE_BASE;
     const logoSrc = siteInfo.site_logo
         ? (siteInfo.site_logo.startsWith('http') ? siteInfo.site_logo : `${IMAGE_BASE_URL}${siteInfo.site_logo}`)
         : Logo;

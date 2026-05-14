@@ -345,15 +345,16 @@
 /* Right Column (Order Summary Card) */
 .order-summary-card {
     width: 400px;
-    height: 685px;
+    height: auto;
+    display: flex;
+    flex-direction: column;
     background: #F0F0F0;
     border: 1px solid rgba(164, 40, 41, 0.66);
-    /* #A42829A8 */
     border-radius: 12px;
-    padding: 32px;
+    padding: 32px 32px 64px 32px;
     box-shadow: 0px 1px 2px 0px rgba(0, 0, 0, 0.05);
-    /* #0000000D */
     box-sizing: border-box;
+    position: relative;
 }
 
 .summary-title {
@@ -369,7 +370,8 @@
 
 .product-summary-row {
     width: 336px;
-    height: 136px;
+    height: auto;
+    min-height: 136px;
     display: flex;
     gap: 24px;
     padding-bottom: 8px;
@@ -392,41 +394,32 @@
 }
 
 .prod-name {
-    width: 245px;
-    height: 20px;
     font-family: var(--font-jost);
     font-weight: 700;
     font-size: 16px;
-    line-height: 20px;
+    line-height: 1.4;
     color: var(--primary-color);
+    margin-bottom: 4px;
 }
 
 .prod-desc {
-    width: 200px;
-    height: 16px;
     font-family: var(--font-jost);
     font-weight: 400;
     font-size: 12px;
-    line-height: 16px;
+    line-height: 1.4;
     color: rgba(27, 29, 14, 0.6);
-    /* #1B1D0E99 */
     margin: 4px 0 12px 0;
 }
 
 .prod-qty {
-    width: 35.36px;
-    height: 20px;
     font-family: var(--font-manrope);
     font-weight: 400;
     font-size: 14px;
     line-height: 20px;
     color: rgba(27, 29, 14, 0.5);
-    /* #1B1D0E80 */
 }
 
 .prod-price {
-    width: 62px;
-    height: 20px;
     font-family: var(--font-jost);
     font-weight: 600;
     font-size: 14px;
@@ -472,7 +465,8 @@
 
 .price-details-box {
     width: 336px;
-    height: 233px;
+    height: auto;
+    min-height: 233px;
     border-top: 1px solid var(--border-color);
     padding-top: 32px;
     padding-bottom: 8px;
@@ -488,95 +482,70 @@
 }
 
 .price-details .label {
-    width: 55.5px;
-    height: 20px;
     font-family: var(--font-jost);
-    font-weight: 400;
+    font-weight: 600;
     font-size: 14px;
     line-height: 20px;
-    color: var(--text-main);
-    opacity: 0.7;
-    /* #1B1D0EB2 */
+    color: #000000 !important;
 }
 
 .price-details .value {
     font-family: var(--font-manrope);
-    font-weight: 400;
+    font-weight: 600;
     font-size: 14px;
     line-height: 20px;
-    color: var(--text-main);
-    opacity: 0.7;
-    /* #1B1D0EB2 */
+    color: #000000 !important;
 }
 
 .price-details .discount-label {
-    width: 58.09px;
-    height: 20px;
     font-family: var(--font-jost);
-    font-weight: 400;
+    font-weight: 600;
     font-size: 14px;
-    line-height: 20px;
-    color: var(--accent-color);
-    /* #6C5E06 */
+    line-height: 1.5;
+    color: #000000 !important;
 }
 
 .price-details .discount-value {
-    width: 25.64px;
-    height: 20px;
     font-family: var(--font-manrope);
-    font-weight: 500;
+    font-weight: 600;
     font-size: 14px;
-    line-height: 20px;
-    color: var(--accent-color);
-    /* #6C5E06 */
+    line-height: 1.5;
+    color: #000000 !important;
 }
 
 .price-details .shipping-label {
-    width: 56.67px;
-    height: 20px;
     font-family: var(--font-jost);
-    font-weight: 400;
+    font-weight: 600;
     font-size: 14px;
-    line-height: 20px;
-    color: var(--text-main);
-    opacity: 0.7;
-    /* #1B1D0EB2 */
+    line-height: 1.5;
+    color: #000000 !important;
 }
 
 .price-details .free-badge {
-    width: 23.81px;
-    height: 20px;
-    font-family: var(--font-manrope);
+    font-family: var(--font-jost);
     font-weight: 700;
-    font-size: 10px;
-    line-height: 20px;
-    color: var(--accent-color);
-    /* #6C5E06 */
+    font-size: 13px;
+    line-height: 1.5;
+    color: #000000 !important;
     text-transform: uppercase;
+    text-align: right;
+    display: block;
 }
 
 .price-details .gst-label {
-    width: 106.73px;
-    height: 16px;
     font-family: var(--font-jost);
-    font-weight: 400;
+    font-weight: 600;
     font-size: 12px;
-    line-height: 16px;
-    color: var(--text-main);
-    opacity: 0.4;
-    /* #1B1D0E66 */
+    line-height: 1.5;
+    color: #000000 !important;
 }
 
 .price-details .gst-value {
-    width: 35.86px;
-    height: 16px;
     font-family: var(--font-manrope);
-    font-weight: 400;
+    font-weight: 600;
     font-size: 12px;
-    line-height: 16px;
-    color: var(--text-main);
-    opacity: 0.4;
-    /* #1B1D0E66 */
+    line-height: 1.5;
+    color: #000000 !important;
 }
 
 .total-row-highlight {
@@ -584,35 +553,104 @@
 }
 
 .total-label {
-    width: 139.33px;
-    height: 28px;
     font-family: var(--font-jost);
     font-weight: 700;
     font-size: 18px;
-    line-height: 28px;
+    line-height: 1.2;
     letter-spacing: -0.9px;
     color: var(--primary-color);
     text-transform: uppercase;
 }
 
 .total-value {
-    width: 122px;
-    height: 36px;
     font-family: var(--font-jost);
     font-weight: 700;
     font-size: 30px;
-    line-height: 36px;
+    line-height: 1.2;
     color: var(--primary-color);
+}
+
+/* Professional Price Breakdown Styles */
+.price-breakdown-divider {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.small-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.extra-small-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: -4px;
+}
+
+.label-sm, .value-sm {
+    font-size: 13px;
+    color: #000000 !important;
+    font-weight: 600;
+}
+
+.label-xs, .value-xs {
+    font-size: 11px;
+    color: #000000 !important;
+    font-weight: 600;
+    font-style: italic;
+}
+
+.delivery-info-mini {
+    background: #FFFFFF !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+.delivery-info-mini p {
+    font-size: 12px !important;
+    color: var(--text-muted-70) !important;
+}
+
+.stock-warning {
+    color: #BA1A1A;
+    font-size: 11px;
+    font-weight: 700;
+    margin: 0;
+    text-transform: uppercase;
+}
+
+.place-order-btn {
+    width: 336px;
+    height: 56px;
+    background: var(--primary-color);
+    border-radius: 4px;
+    border: none;
+    font-family: var(--font-jost);
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 20px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #FFFFFF;
+    cursor: pointer;
+    margin-top: 24px;
+    margin-bottom: 24px;
+    position: relative;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .btn-pay-now {
     width: 336px;
     height: 60px;
     background: #800000 !important;
-    /* Specific color from spec */
     color: #FFFFFF !important;
     border: none;
-    border-radius: 2px;
+    border-radius: 4px;
     padding: 20px 0;
     font-family: var(--font-jost);
     font-weight: 700;
@@ -624,6 +662,10 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    cursor: pointer;
+    margin-top: 40px;
+    margin-bottom: 24px;
+    transition: all 0.3s ease;
 }
 
 .secure-text {
@@ -727,7 +769,9 @@
 
     .order-summary-card {
         width: 400px;
-        height: 685px;
+        min-height: 685px;
+        height: auto;
+        padding-bottom: 80px;
     }
 
     .product-summary-row {

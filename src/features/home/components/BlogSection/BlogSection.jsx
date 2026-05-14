@@ -1,6 +1,8 @@
 import React, { useEffect } from 'react';
 import BlogCard from './BlogCard';
 import './blogSection.css';
+import { IMAGE_BASE } from '@/config/api';
+
 import Blog1 from 'assets/images/silk/Blog1.png';
 import Blog2 from 'assets/images/silk/Blog2.png';
 import Blog3 from 'assets/images/silk/Blog3.png';
@@ -23,7 +25,7 @@ const BlogSection = ({ showTitle = true, title = "Our Blogs", customTitleClass =
   const getImageUrl = (image) => {
     if (!image) return '';
     if (image.startsWith('http')) return image;
-    if (image.startsWith('/uploads')) return `http://localhost:5000${image}`;
+    if (image.startsWith('/uploads')) return `${IMAGE_BASE}${image}`;
     return image;
   };
 

@@ -1,5 +1,7 @@
 import React, { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
+import { IMAGE_BASE } from '@/config/api';
+
 import styles from './BlogDetails.module.css';
 import useBlogStore from '@/store/useBlogStore';
 import BlogSection from '@/features/home/components/BlogSection/BlogSection';
@@ -28,7 +30,7 @@ const BlogDetails = () => {
     if (!blog) return <div className={styles.error}>Blog post not found.</div>;
 
     const imageUrl = (blog.image_url || blog.image)?.startsWith('/uploads') 
-        ? `http://localhost:5000${blog.image_url || blog.image}` 
+        ? `${IMAGE_BASE}${blog.image_url || blog.image}` 
         : (blog.image_url || blog.image || BlogDetailMain);
 
     return (

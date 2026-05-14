@@ -1,8 +1,10 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import useCartStore from './useCartStore';
+import { API_BASE } from '@/config/api';
 
-const API_URL = 'http://localhost:5000/api/wishlist';
+
+const API_URL = `${API_BASE}/wishlist`;
 
 const useWishlistStore = create(
   persist(

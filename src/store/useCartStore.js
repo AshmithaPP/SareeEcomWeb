@@ -1,7 +1,9 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+import { API_BASE } from '@/config/api';
 
-const API_URL = 'http://localhost:5000/api/cart';
+
+const API_URL = `${API_BASE}/cart`;
 
 const useCartStore = create(
   persist(
@@ -29,11 +31,14 @@ const useCartStore = create(
         return headers;
       },
 
-      fetchCart: async () => {
+      fetchCart: async (state = null) => {
         get().initGuest();
         set({ loading: true, error: null });
         try {
-          const res = await fetch(API_URL, { headers: get().getHeaders() });
+          let url = API_URL;
+          if (state) url += `?state=${encodeURIComponent(state)}`;
+          
+          const res = await fetch(url, { headers: get().getHeaders() });
           const data = await res.json();
           if (data.success) {
             set({ cart: data, loading: false });
@@ -155,7 +160,7 @@ const useCartStore = create(
       applyCoupon: async (code, subtotal) => {
         set({ loading: true, error: null });
         try {
-          const res = await fetch('http://localhost:5000/api/coupons/validate', {
+          const res = await fetch(`${API_BASE}/coupons/validate`, {
             method: 'POST',
             headers: get().getHeaders(),
             body: JSON.stringify({ code, orderAmount: subtotal })
@@ -184,7 +189,7 @@ const useCartStore = create(
 
       fetchActiveCoupons: async () => {
         try {
-          const res = await fetch('http://localhost:5000/api/coupons/active', {
+          const res = await fetch(`${API_BASE}/coupons/active`, {
             headers: get().getHeaders()
           });
           const data = await res.json();

@@ -1,10 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { IMAGE_BASE } from '@/config/api';
+
 import './hero_section.css';
 import heroRightFallback from 'assets/images/silk/heroRight.png';
 
 const HeroSection = ({ dynamicData }) => {
-    const IMAGE_BASE_URL = 'http://localhost:5000';
+    const IMAGE_BASE_URL = IMAGE_BASE;
     
     // Default fallback if no data
     const displayData = {

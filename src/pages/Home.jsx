@@ -1,5 +1,7 @@
 import React, { useEffect } from "react";
 import { useHomeStore } from "@/store/homeStore";
+import { IMAGE_BASE } from '@/config/api';
+
 import HeroSection from "features/home/components/HeroSection/HeroSection";
 import CategoriesSection from "features/home/components/CategoriesSection/CategoriesSection";
 import ShopByCollections from "features/home/components/ShopByCollections/ShopByCollections";
@@ -19,7 +21,7 @@ const HomeHero = ({ data }) => <HeroSection dynamicData={data} />;
 
 const CollectionsGrid = ({ data }) => <CategoriesSection dynamicCategories={data} />;
 
-const IMAGE_BASE_URL = 'http://localhost:5000';
+const IMAGE_BASE_URL = IMAGE_BASE;
 
 const mapHomeProduct = (p) => {
   const pid = p.product_id || p.id || (p.product && (p.product.product_id || p.product.id));

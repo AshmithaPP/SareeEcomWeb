@@ -1,8 +1,10 @@
 import { create } from 'zustand';
 import axios from 'axios';
 import useAuthStore from './useAuthStore';
+import { API_BASE } from '@/config/api';
 
-const API_URL = 'http://localhost:5000/api/addresses';
+
+const API_URL = `${API_BASE}/addresses`;
 
 const useAddressStore = create((set, get) => ({
     addresses: [],
